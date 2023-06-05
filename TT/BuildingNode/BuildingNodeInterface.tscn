@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://cf8htcpolrkrl"]
+
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_tn1oh"]
+
+[node name="BuildingNodeInterface" type="MarginContainer"]
+custom_minimum_size = Vector2(128, 0)
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 136.0
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/margin_right = 8
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="GridContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_tn1oh")
+stretch_mode = 4

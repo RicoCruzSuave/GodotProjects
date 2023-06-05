@@ -1,0 +1,3427 @@
+[gd_scene load_steps=450 format=3 uid="uid://dq2rvw3xksgpu"]
+
+[ext_resource type="Shader" path="res://Util/step_color.gdshader" id="1_nrpjr"]
+[ext_resource type="Shader" path="res://Util/cave_ca.gdshader" id="2_j5nq2"]
+[ext_resource type="Script" path="res://Util/ConnectPoints.tres.gd" id="3_4pqs7"]
+[ext_resource type="Script" path="res://Util/RandomizeLocations.gd" id="3_57lvp"]
+[ext_resource type="Script" path="res://Util/SpriteDraw.gd" id="4_mkwim"]
+[ext_resource type="Script" path="res://MRD/Entity.gd" id="5_7nkbs"]
+[ext_resource type="Script" path="res://Util/TileMapAStar.gd" id="5_eqfpy"]
+[ext_resource type="Script" path="res://MRD/TurnManager.gd" id="8_vbswf"]
+[ext_resource type="Script" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
+
+[sub_resource type="GDScript" id="GDScript_12ta3"]
+script/source = "extends Node2D
+
+
+\"\"\"
+Solider:
+-Attack
+-Fight: Violence
+	-Intimidate(Taunt or fear)
+	-Smash (Break tiles, strong attack)
+	-Put down (debuff target, buff self)
+
+	-Lash out (attack of opprotunity)
+
+	S-I will win (stronger as hurt)
+	Da-Lunge (move and attack simultaneously)
+	H-Savage Strike (heavy bleed)
+	A-War potion (Action Surge)
+	Di-No retreat (no knockback)
+	K-Shield cast aside (double attack speed)
+	I-?Fear (weaker enemies are feared)
+
+Dancer:
+-Move
+-Flight: Performance/Dissociation
+	-Dance With Me (Move another)
+	-Cold Shoulder (Taunt)
+	-Im on your side (buff target, they cant target you)
+
+	S-
+	Da-
+	H-
+	A-
+	Di-
+	K-
+	I-Ballroom (chain dance)
+
+Huntress/Hunter:
+-Traps
+-Flight: Perfectionism
+	-Snare
+	-Bear trap
+	-Hunt
+	
+	-Ignore Pain
+
+	S-
+	Da-
+	H-
+	A-
+	Di-
+	K-
+	I-
+
+Alchemist:
+-Buff/Debuff
+-Fawn:Oscillating/People Pleasing/Bargaining?
+	-Make Potion
+	-Throw Potion
+	-Drink Potion
+	
+	-Juice
+
+	S-
+	Da-
+	H-
+	A-
+	Di-
+	K-
+	I-
+
+Diviner:
+-Control/Summon fodder
+-Fawn: Abusive relationships
+	-Convert
+	-Congregate
+	-Blessing
+
+	-Flog
+
+	S-
+	Da-
+	H-
+	A-
+	Di-
+	K-
+	I-
+
+
+Knight:
+-Defense
+-Freeze: Slow
+	-Bunker
+	-Sleep
+	-Get off me
+
+	S-
+	Da-
+	H-
+	A-
+	Di-
+	K-
+	I-
+
+
+Illusionist:
+-Spells
+-Freeze: Brain Fog/Hallucinations
+	-Hide
+	-Copy 
+	-Fog (changes target)
+
+	S-
+	Da-
+	H-
+	A-
+	Di-
+	K-
+	I-
+
+
+Status Effects:
+-Sleep
+-Frozen
+-Mad
+-Entranced
+-Dissociated
+-Panicked
+
+
+\"\"\"
+"
+
+[sub_resource type="Gradient" id="Gradient_x7pxh"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_m531t"]
+gradient = SubResource("Gradient_x7pxh")
+fill_from = Vector2(1, 0)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jynmo"]
+texture = SubResource("GradientTexture2D_m531t")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
+[sub_resource type="Gradient" id="Gradient_kfbtk"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gfx7t"]
+gradient = SubResource("Gradient_kfbtk")
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0.993939, 0.00606061)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xgpv2"]
+texture = SubResource("GradientTexture2D_gfx7t")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_npdhf"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_jynmo")
+sources/1 = SubResource("TileSetAtlasSource_xgpv2")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_uwnis"]
+viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3sknd"]
+shader = ExtResource("1_nrpjr")
+shader_parameter/steps = 1.0
+shader_parameter/alpha_included = false
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ngckj"]
+viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wdpt5"]
+viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w6u06"]
+shader = ExtResource("1_nrpjr")
+shader_parameter/steps = 1.0
+shader_parameter/alpha_included = false
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jj8l0"]
+noise_type = 3
+seed = 9
+frequency = 0.1139
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vl5d2"]
+width = 48
+height = 27
+noise = SubResource("FastNoiseLite_jj8l0")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_smvms"]
+viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ssx26"]
+resource_local_to_scene = true
+shader = ExtResource("2_j5nq2")
+shader_parameter/enabled = true
+shader_parameter/stopped = false
+shader_parameter/death_count = 4.0
+shader_parameter/life_count = 4.0
+shader_parameter/wall_values = SubResource("ViewportTexture_smvms")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_vaqt0"]
+viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4dpjf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_q87ll"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pn3ac"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r5aaa"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_52xgt"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6qnbn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nxjxj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ugf8x"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_m4xa6"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s654u"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_id5uh"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ob0ou"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pnaem"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uwwq2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1u7g5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ufknr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_67g1h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wwjj3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lfy1m"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_03gum"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_msa1a"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yde3x"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gl1wy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_otcyl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wqi0t"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_w3sw6"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4u057"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_sphhk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0ca6c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5y4sq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lni7y"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_inus5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_l7knp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_scfo3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8m3nf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yywb4"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tuuke"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xgyva"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_llp1k"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ng5ph"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tnc8i"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2qlwf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yleh6"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_y4r5v"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vk00v"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_74n8i"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_61k6e"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_skccb"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7b1ob"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_u70cj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_x4qpe"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fjb7j"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ugey5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xbgyi"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r2l7f"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tyhuc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1y2fd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jondn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lr7bn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4dkk2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ohpte"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_74d0t"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_omgr3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3cyis"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_417ii"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_f8bc2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_51elp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rukgh"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t1jrm"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_haffg"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c40s7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qwddt"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ufm8y"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pe0eh"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lpomy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0pagc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_spufj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_day3c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6cgbp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lsx8v"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dc4lk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lhq1p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ovxdh"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dos83"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xfyhe"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_twcna"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3hi5f"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_sepna"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_24w5y"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_30m1h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7iwh8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uu0jv"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r8j7o"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dincd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kvv03"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uek4x"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5hk5h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_f8nm5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qhnkt"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p467v"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_orfb0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8chy4"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_m2d5k"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7ex26"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tkgu5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jxayq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jf1fq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_oxvdy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_62t02"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3n2k5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7xpxd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_65y7q"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ui2p1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kvk21"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xex50"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_w35iq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8gkg8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_eowml"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n0cmn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6ltks"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b3orp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_51574"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_cogy8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1b5vp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jr0hi"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_73q5g"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yaaa7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_aftws"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j6xyy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_px0yq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pp5x0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xi7on"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_w4j2j"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nb0vr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_im6bu"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7ourf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vcyf0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_sxvx0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2rg7r"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d3uhr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ge8xd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_h77i3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lbbg7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uwx3h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3hbcy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a1slx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ijnrj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lfqbc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_h7mm0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fcpwj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_v52tu"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_12aia"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5ygn2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_cptfd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rd6xb"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8r572"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_eehmd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5jmcl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bhqp7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_cos5s"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qgwws"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_aynfj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_v2vrt"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b4pq5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_32u0y"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_020l7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7ctg1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a4n7c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_y2ntu"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tg72b"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6udq2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_i852o"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_iebuc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xikan"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_abugg"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ru0w0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p7kve"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qwr42"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_e5yr5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7nyc8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mg8vy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_k0wf2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jigbo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_l32mv"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tgb75"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_suvuc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0itbn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_itocr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gscuf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_faife"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ct1pa"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ys1pe"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gxahm"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_38s1x"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wld2c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ndn1a"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_py5ah"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7darc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_e7jsd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rs135"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_efscc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_aq0ck"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6x36j"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_shs8s"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gj3eu"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lf836"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_v6eia"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gbo3k"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_occth"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_i53ux"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_m2b0k"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dvo32"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wnko8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_h15fb"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bnr1r"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_l2d62"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ciam3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_clbsf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uj76e"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3bbh1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0sd34"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bqn6d"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_waff5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7ok0n"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_opjvl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yktdq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rj64h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_16xk1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nuwfj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_eccf1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d5txc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_f83dw"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ei3j5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qd754"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tdku2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_q1yhk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ehc1q"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_m6v0n"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jds2j"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_klmmp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6720p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1gv2p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kwt0w"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8rfpl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_iodl7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_moknw"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mptk7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wpcnc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1gko6"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fhkaf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nne63"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_73mh1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3ay0q"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bd4t3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3qgrt"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lnn4n"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8k5b2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qn7wr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_i7dy3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kga6j"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ov2qy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_e7ibr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pfpt2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_act3h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ut0td"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3rptc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qnsdo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_u037g"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uj023"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rdx1c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0q0q8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kp02a"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ridmn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5qj0j"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1n4rj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_cer18"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_34fkl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2nneo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0o1p2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qv330"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gdn4p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r2wxk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nmrcn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ffjrg"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3eitx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_y7h7q"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jkmrs"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_acl8c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_m1ijh"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wbc5s"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ks1ro"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6pnhv"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6mu3d"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s67h1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_hpoun"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4x16p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ku4pb"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_54x76"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wclyf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_elksx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lejnx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_is2hx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5mu2a"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pndsy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dlkfq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_haex3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dmtsv"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_njsmn"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nk8js"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mgts7"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xi23y"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wgmi4"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xmnm3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_abwrj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ljj0p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0e78h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a0gpu"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tvvvi"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6cdb3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_o74u0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2eqal"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0mib3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bnw4c"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_utgt0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_hhgnd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1w7vx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_imvrj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_h48oq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_u6dj1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7pnjq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_w7q2x"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_77ybf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_x4u2a"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jruu4"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tt4vi"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_g6f6l"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yfmgf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_i1cyr"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lpi47"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_v2qwd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_74v3d"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_64peo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_njkua"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vydox"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_g6tmo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_oqxn0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_32vr0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_j1kvf"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yqo44"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wj4p0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0ldhj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_m1rsc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yh8a4"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2g1e1"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_k3wl2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kpbba"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bk26g"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_52bjq"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yn28i"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6jfor"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ix666"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5niq2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_e8xfm"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_46y84"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_w4iwx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_qmlen"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0bnvp"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yl1j0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7exg8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ac006"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tle6t"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_jdfgk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0000m"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tb1jx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c1lub"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_thx24"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7jywl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_77xqc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nchw8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_w1e7h"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fp63f"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yr45d"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_lhrud"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kq5jx"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_g8rky"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_otikl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_b0jkk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a7qmo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ttfa0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5rq5w"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_reget"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nr8o3"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ncdl2"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nxlqy"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ggtoe"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7byca"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pbefj"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vx2bd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_q261p"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kqybk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7xfbo"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8l87v"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p5ff5"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yk6qd"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xjfn8"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rqqy0"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rgoqk"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2hspl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_h0efl"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_iefja"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_knqfc"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8i43n"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s3s2x"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mts7u"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_51uok"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_avbsb"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_r28ws"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mrgtv"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fu46y"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uh3wt"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_uaqoe"]
+size = Vector2(8, 8)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_e10nc"]
+size = Vector2(8, 8)
+
+[node name="mrd_base" type="Node2D"]
+
+[node name="CorePrinciples" type="Node2D" parent="."]
+
+[node name="ToDO" type="Node2D" parent="."]
+
+[node name="Gameplay" type="Node2D" parent="ToDO"]
+
+[node name="StaminaSystem" type="Node2D" parent="ToDO/Gameplay"]
+
+[node name="SpeedStack" type="Node2D" parent="ToDO/Gameplay"]
+
+[node name="ActionCommands" type="Node2D" parent="ToDO/Gameplay"]
+
+[node name="Move" type="Node2D" parent="ToDO/Gameplay/ActionCommands"]
+
+[node name="Wait" type="Node2D" parent="ToDO/Gameplay/ActionCommands"]
+
+[node name="Attack" type="Node2D" parent="ToDO/Gameplay/ActionCommands"]
+
+[node name="Specials" type="Node2D" parent="ToDO/Gameplay/ActionCommands"]
+
+[node name="Items" type="Node2D" parent="ToDO/Gameplay/ActionCommands"]
+
+[node name="AbilityDesigns" type="Node2D" parent="ToDO/Gameplay"]
+script = SubResource("GDScript_12ta3")
+
+[node name="UI" type="Node2D" parent="ToDO"]
+
+[node name="Art" type="Node2D" parent="ToDO"]
+
+[node name="Screens" type="Node2D" parent="."]
+
+[node name="Title" type="Node2D" parent="Screens"]
+
+[node name="Campfire" type="Node2D" parent="Screens"]
+
+[node name="Battle" type="Node2D" parent="Screens"]
+
+[node name="BattleMap" type="TileMap" parent="Screens/Battle"]
+tile_set = SubResource("TileSet_npdhf")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 0, 65536, 0, 0, 131072, 0, 0, 196608, 0, 0, 262144, 0, 0, 327680, 0, 0, 393216, 0, 0, 458752, 0, 0, 524288, 0, 0, 589824, 0, 0, 655360, 0, 0, 720896, 0, 0, 786432, 0, 0, 851968, 0, 0, 917504, 0, 0, 983040, 0, 0, 1048576, 0, 0, 1114112, 0, 0, 1179648, 0, 0, 1245184, 0, 0, 1310720, 0, 0, 1376256, 0, 0, 1441792, 0, 0, 1507328, 0, 0, 1572864, 0, 0, 1638400, 0, 0, 1703936, 0, 0, 1, 0, 0, 65537, 1, 0, 131073, 1, 0, 196609, 1, 0, 262145, 1, 0, 327681, 1, 0, 393217, 0, 0, 458753, 0, 0, 524289, 0, 0, 589825, 0, 0, 655361, 0, 0, 720897, 0, 0, 786433, 0, 0, 851969, 0, 0, 917505, 0, 0, 983041, 0, 0, 1048577, 0, 0, 1114113, 0, 0, 1179649, 0, 0, 1245185, 0, 0, 1310721, 0, 0, 1376257, 0, 0, 1441793, 0, 0, 1507329, 0, 0, 1572865, 0, 0, 1638401, 0, 0, 1703937, 0, 0, 2, 0, 0, 65538, 1, 0, 131074, 1, 0, 196610, 1, 0, 262146, 0, 0, 327682, 0, 0, 393218, 0, 0, 458754, 0, 0, 524290, 0, 0, 589826, 0, 0, 655362, 0, 0, 720898, 0, 0, 786434, 0, 0, 851970, 0, 0, 917506, 0, 0, 983042, 0, 0, 1048578, 0, 0, 1114114, 0, 0, 1179650, 0, 0, 1245186, 0, 0, 1310722, 0, 0, 1376258, 0, 0, 1441794, 0, 0, 1507330, 0, 0, 1572866, 0, 0, 1638402, 0, 0, 1703938, 0, 0, 3, 0, 0, 65539, 1, 0, 131075, 1, 0, 196611, 0, 0, 262147, 0, 0, 327683, 0, 0, 393219, 0, 0, 458755, 0, 0, 524291, 0, 0, 589827, 0, 0, 655363, 0, 0, 786435, 0, 0, 851971, 0, 0, 917507, 0, 0, 983043, 0, 0, 1048579, 0, 0, 1114115, 0, 0, 1179651, 0, 0, 1245187, 0, 0, 1310723, 0, 0, 1376259, 0, 0, 1441795, 0, 0, 1507331, 0, 0, 1572867, 0, 0, 1638403, 0, 0, 1703939, 0, 0, 4, 0, 0, 65540, 1, 0, 131076, 0, 0, 196612, 0, 0, 262148, 0, 0, 327684, 0, 0, 393220, 0, 0, 458756, 0, 0, 524292, 0, 0, 589828, 0, 0, 655364, 0, 0, 786436, 0, 0, 851972, 0, 0, 917508, 0, 0, 983044, 0, 0, 1048580, 0, 0, 1114116, 0, 0, 1179652, 0, 0, 1245188, 0, 0, 1310724, 0, 0, 1376260, 0, 0, 1441796, 0, 0, 1507332, 0, 0, 1572868, 0, 0, 1638404, 0, 0, 1703940, 0, 0, 5, 0, 0, 65541, 0, 0, 131077, 0, 0, 196613, 0, 0, 262149, 0, 0, 327685, 0, 0, 393221, 0, 0, 458757, 0, 0, 524293, 0, 0, 589829, 0, 0, 655365, 0, 0, 786437, 0, 0, 851973, 0, 0, 917509, 0, 0, 983045, 0, 0, 1048581, 0, 0, 1114117, 0, 0, 1179653, 0, 0, 1245189, 0, 0, 1310725, 0, 0, 1376261, 0, 0, 1441797, 0, 0, 1507333, 0, 0, 1572869, 0, 0, 1638405, 0, 0, 1703941, 0, 0, 6, 0, 0, 65542, 0, 0, 131078, 0, 0, 196614, 0, 0, 262150, 0, 0, 327686, 0, 0, 393222, 0, 0, 458758, 0, 0, 524294, 0, 0, 589830, 0, 0, 655366, 0, 0, 786438, 0, 0, 851974, 0, 0, 917510, 0, 0, 983046, 0, 0, 1048582, 0, 0, 1114118, 0, 0, 1179654, 0, 0, 1245190, 0, 0, 1310726, 0, 0, 1376262, 0, 0, 1441798, 0, 0, 1507334, 0, 0, 1572870, 0, 0, 1638406, 0, 0, 1703942, 0, 0, 7, 0, 0, 65543, 0, 0, 131079, 0, 0, 196615, 0, 0, 262151, 0, 0, 327687, 0, 0, 393223, 0, 0, 458759, 0, 0, 589831, 0, 0, 786439, 0, 0, 851975, 0, 0, 917511, 0, 0, 983047, 0, 0, 1048583, 1, 0, 1114119, 0, 0, 1179655, 0, 0, 1245191, 0, 0, 1310727, 0, 0, 1376263, 0, 0, 1441799, 0, 0, 1507335, 0, 0, 1572871, 0, 0, 1638407, 0, 0, 1703943, 0, 0, 8, 0, 0, 65544, 0, 0, 131080, 0, 0, 196616, 0, 0, 262152, 0, 0, 327688, 0, 0, 393224, 0, 0, 458760, 0, 0, 786440, 1, 0, 851976, 0, 0, 917512, 0, 0, 983048, 0, 0, 1048584, 1, 0, 1114120, 1, 0, 1179656, 0, 0, 1245192, 0, 0, 1310728, 0, 0, 1376264, 0, 0, 1441800, 0, 0, 1507336, 0, 0, 1572872, 0, 0, 1638408, 0, 0, 1703944, 0, 0, 9, 0, 0, 65545, 0, 0, 131081, 0, 0, 196617, 0, 0, 262153, 0, 0, 327689, 0, 0, 393225, 0, 0, 458761, 0, 0, 589833, 0, 0, 786441, 1, 0, 851977, 1, 0, 917513, 1, 0, 983049, 1, 0, 1048585, 1, 0, 1114121, 1, 0, 1179657, 0, 0, 1245193, 0, 0, 1310729, 0, 0, 1376265, 0, 0, 1441801, 0, 0, 1507337, 0, 0, 1572873, 0, 0, 1638409, 0, 0, 1703945, 0, 0, 10, 0, 0, 65546, 0, 0, 131082, 0, 0, 196618, 0, 0, 262154, 0, 0, 327690, 0, 0, 393226, 0, 0, 524298, 0, 0, 589834, 1, 0, 786442, 1, 0, 851978, 1, 0, 917514, 1, 0, 983050, 1, 0, 1048586, 1, 0, 1114122, 1, 0, 1179658, 1, 0, 1245194, 0, 0, 1310730, 0, 0, 1376266, 0, 0, 1441802, 0, 0, 1507338, 0, 0, 1572874, 0, 0, 1638410, 0, 0, 1703946, 0, 0, 11, 0, 0, 65547, 0, 0, 131083, 0, 0, 196619, 0, 0, 262155, 0, 0, 327691, 0, 0, 393227, 0, 0, 524299, 1, 0, 589835, 1, 0, 851979, 1, 0, 917515, 1, 0, 983051, 1, 0, 1048587, 1, 0, 1114123, 1, 0, 1179659, 1, 0, 1245195, 0, 0, 1310731, 0, 0, 1376267, 0, 0, 1441803, 0, 0, 1507339, 0, 0, 1572875, 0, 0, 1638411, 0, 0, 1703947, 0, 0, 12, 0, 0, 65548, 1, 0, 131084, 0, 0, 196620, 0, 0, 262156, 0, 0, 327692, 0, 0, 393228, 0, 0, 524300, 1, 0, 851980, 1, 0, 917516, 1, 0, 983052, 1, 0, 1048588, 1, 0, 1114124, 1, 0, 1179660, 1, 0, 1245196, 0, 0, 1310732, 0, 0, 1376268, 0, 0, 1441804, 0, 0, 1507340, 0, 0, 1572876, 0, 0, 1638412, 0, 0, 1703948, 0, 0, 13, 0, 0, 65549, 1, 0, 131085, 0, 0, 196621, 0, 0, 262157, 0, 0, 327693, 0, 0, 393229, 0, 0, 786445, 1, 0, 917517, 1, 0, 983053, 1, 0, 1048589, 1, 0, 1114125, 1, 0, 1179661, 1, 0, 1245197, 0, 0, 1310733, 0, 0, 1376269, 0, 0, 1441805, 0, 0, 1507341, 0, 0, 1572877, 0, 0, 1638413, 0, 0, 1703949, 0, 0, 14, 0, 0, 65550, 0, 0, 131086, 0, 0, 196622, 0, 0, 262158, 0, 0, 327694, 0, 0, 393230, 0, 0, 917518, 1, 0, 983054, 1, 0, 1048590, 1, 0, 1114126, 1, 0, 1179662, 1, 0, 1245198, 0, 0, 1310734, 0, 0, 1376270, 0, 0, 1441806, 0, 0, 1507342, 0, 0, 1572878, 0, 0, 1638414, 0, 0, 1703950, 0, 0, 15, 0, 0, 65551, 0, 0, 131087, 0, 0, 196623, 0, 0, 262159, 0, 0, 327695, 0, 0, 393231, 0, 0, 851983, 1, 0, 983055, 1, 0, 1048591, 1, 0, 1114127, 1, 0, 1179663, 0, 0, 1245199, 0, 0, 1310735, 0, 0, 1376271, 0, 0, 1441807, 0, 0, 1507343, 0, 0, 1572879, 0, 0, 1638415, 0, 0, 1703951, 0, 0, 16, 0, 0, 65552, 0, 0, 131088, 0, 0, 196624, 0, 0, 262160, 0, 0, 327696, 0, 0, 393232, 0, 0, 851984, 1, 0, 917520, 1, 0, 1048592, 1, 0, 1114128, 1, 0, 1179664, 0, 0, 1245200, 0, 0, 1310736, 0, 0, 1376272, 0, 0, 1441808, 0, 0, 1507344, 0, 0, 1572880, 0, 0, 1638416, 0, 0, 1703952, 0, 0, 17, 0, 0, 65553, 0, 0, 131089, 0, 0, 196625, 0, 0, 262161, 0, 0, 327697, 0, 0, 393233, 0, 0, 851985, 1, 0, 917521, 1, 0, 1048593, 1, 0, 1114129, 1, 0, 1179665, 0, 0, 1245201, 0, 0, 1310737, 0, 0, 1376273, 0, 0, 1441809, 0, 0, 1507345, 0, 0, 1572881, 0, 0, 1638417, 0, 0, 1703953, 0, 0, 18, 0, 0, 65554, 0, 0, 131090, 0, 0, 196626, 0, 0, 262162, 0, 0, 327698, 0, 0, 393234, 0, 0, 851986, 1, 0, 917522, 1, 0, 983058, 1, 0, 1114130, 1, 0, 1179666, 0, 0, 1245202, 0, 0, 1310738, 0, 0, 1376274, 0, 0, 1441810, 0, 0, 1507346, 0, 0, 1572882, 0, 0, 1638418, 0, 0, 1703954, 0, 0, 19, 0, 0, 65555, 0, 0, 131091, 0, 0, 196627, 0, 0, 262163, 0, 0, 327699, 0, 0, 393235, 0, 0, 851987, 1, 0, 917523, 1, 0, 983059, 1, 0, 1114131, 1, 0, 1179667, 0, 0, 1245203, 0, 0, 1310739, 0, 0, 1376275, 0, 0, 1441811, 0, 0, 1507347, 0, 0, 1572883, 0, 0, 1638419, 0, 0, 1703955, 0, 0, 20, 0, 0, 65556, 0, 0, 131092, 0, 0, 196628, 0, 0, 262164, 0, 0, 327700, 0, 0, 393236, 0, 0, 851988, 1, 0, 917524, 1, 0, 983060, 1, 0, 1114132, 1, 0, 1179668, 0, 0, 1245204, 0, 0, 1310740, 0, 0, 1376276, 0, 0, 1441812, 0, 0, 1507348, 0, 0, 1572884, 0, 0, 1638420, 0, 0, 1703956, 0, 0, 21, 0, 0, 65557, 1, 0, 131093, 0, 0, 196629, 0, 0, 262165, 0, 0, 327701, 0, 0, 393237, 0, 0, 917525, 1, 0, 983061, 1, 0, 1048597, 1, 0, 1179669, 0, 0, 1245205, 0, 0, 1310741, 0, 0, 1376277, 0, 0, 1441813, 0, 0, 1507349, 0, 0, 1572885, 0, 0, 1638421, 0, 0, 1703957, 0, 0, 22, 0, 0, 65558, 1, 0, 131094, 1, 0, 196630, 0, 0, 262166, 0, 0, 327702, 0, 0, 393238, 0, 0, 851990, 1, 0, 983062, 1, 0, 1048598, 1, 0, 1179670, 0, 0, 1245206, 0, 0, 1310742, 0, 0, 1376278, 0, 0, 1441814, 0, 0, 1507350, 0, 0, 1572886, 0, 0, 1638422, 0, 0, 1703958, 0, 0, 23, 0, 0, 65559, 1, 0, 131095, 1, 0, 196631, 1, 0, 262167, 0, 0, 327703, 0, 0, 393239, 0, 0, 655383, 1, 0, 851991, 1, 0, 917527, 1, 0, 1048599, 1, 0, 1179671, 0, 0, 1245207, 0, 0, 1310743, 0, 0, 1376279, 0, 0, 1441815, 0, 0, 1507351, 0, 0, 1572887, 0, 0, 1638423, 0, 0, 1703959, 0, 0, 24, 0, 0, 65560, 1, 0, 131096, 1, 0, 196632, 1, 0, 262168, 1, 0, 327704, 0, 0, 393240, 0, 0, 655384, 1, 0, 917528, 0, 0, 983064, 1, 0, 1114136, 0, 0, 1245208, 0, 0, 1310744, 0, 0, 1376280, 0, 0, 1441816, 0, 0, 1507352, 0, 0, 1572888, 0, 0, 1638424, 0, 0, 1703960, 0, 0, 25, 0, 0, 65561, 1, 0, 131097, 1, 0, 196633, 1, 0, 262169, 1, 0, 327705, 0, 0, 393241, 0, 0, 458777, 1, 0, 655385, 1, 0, 851993, 0, 0, 917529, 0, 0, 983065, 1, 0, 1245209, 0, 0, 1310745, 0, 0, 1376281, 0, 0, 1441817, 0, 0, 1507353, 0, 0, 1572889, 0, 0, 1638425, 0, 0, 1703961, 0, 0, 26, 0, 0, 65562, 1, 0, 131098, 1, 0, 196634, 1, 0, 262170, 0, 0, 327706, 0, 0, 393242, 1, 0, 458778, 1, 0, 655386, 1, 0, 851994, 0, 0, 917530, 0, 0, 983066, 1, 0, 1048602, 1, 0, 1114138, 0, 0, 1245210, 0, 0, 1310746, 0, 0, 1376282, 0, 0, 1441818, 0, 0, 1507354, 0, 0, 1572890, 0, 0, 1638426, 0, 0, 1703962, 0, 0, 27, 0, 0, 65563, 0, 0, 131099, 0, 0, 196635, 0, 0, 262171, 0, 0, 327707, 0, 0, 393243, 1, 0, 458779, 1, 0, 655387, 1, 0, 786459, 0, 0, 917531, 0, 0, 983067, 1, 0, 1048603, 1, 0, 1114139, 0, 0, 1245211, 0, 0, 1310747, 0, 0, 1376283, 0, 0, 1441819, 0, 0, 1507355, 0, 0, 1572891, 0, 0, 1638427, 0, 0, 1703963, 0, 0, 28, 0, 0, 65564, 0, 0, 131100, 0, 0, 196636, 0, 0, 262172, 0, 0, 327708, 1, 0, 393244, 1, 0, 458780, 0, 0, 655388, 0, 0, 786460, 0, 0, 851996, 0, 0, 1179676, 0, 0, 1245212, 0, 0, 1310748, 0, 0, 1376284, 0, 0, 1441820, 0, 0, 1507356, 0, 0, 1572892, 0, 0, 1638428, 0, 0, 1703964, 0, 0, 29, 0, 0, 65565, 0, 0, 131101, 0, 0, 196637, 0, 0, 262173, 0, 0, 327709, 1, 0, 393245, 0, 0, 458781, 0, 0, 1048605, 1, 0, 1114141, 1, 0, 1179677, 0, 0, 1245213, 0, 0, 1310749, 0, 0, 1376285, 0, 0, 1441821, 0, 0, 1507357, 0, 0, 1572893, 0, 0, 1638429, 0, 0, 1703965, 0, 0, 30, 0, 0, 65566, 0, 0, 131102, 0, 0, 196638, 0, 0, 262174, 0, 0, 327710, 1, 0, 393246, 1, 0, 458782, 0, 0, 655390, 0, 0, 851998, 0, 0, 917534, 0, 0, 983070, 0, 0, 1048606, 1, 0, 1114142, 1, 0, 1179678, 0, 0, 1245214, 0, 0, 1310750, 0, 0, 1376286, 0, 0, 1441822, 0, 0, 1507358, 0, 0, 1572894, 0, 0, 1638430, 0, 0, 1703966, 0, 0, 31, 0, 0, 65567, 0, 0, 131103, 0, 0, 196639, 0, 0, 262175, 0, 0, 327711, 1, 0, 393247, 1, 0, 458783, 1, 0, 655391, 0, 0, 851999, 0, 0, 917535, 0, 0, 983071, 0, 0, 1048607, 1, 0, 1114143, 1, 0, 1179679, 0, 0, 1245215, 0, 0, 1310751, 0, 0, 1376287, 0, 0, 1441823, 0, 0, 1507359, 0, 0, 1572895, 0, 0, 1638431, 0, 0, 1703967, 0, 0, 32, 0, 0, 65568, 0, 0, 131104, 0, 0, 196640, 1, 0, 262176, 1, 0, 327712, 1, 0, 393248, 1, 0, 458784, 1, 0, 655392, 0, 0, 720928, 0, 0, 852000, 0, 0, 917536, 0, 0, 983072, 0, 0, 1048608, 1, 0, 1114144, 1, 0, 1179680, 0, 0, 1245216, 1, 0, 1310752, 1, 0, 1376288, 0, 0, 1441824, 0, 0, 1507360, 0, 0, 1572896, 0, 0, 1638432, 0, 0, 1703968, 0, 0, 33, 0, 0, 65569, 0, 0, 131105, 1, 0, 196641, 1, 0, 262177, 1, 0, 327713, 1, 0, 393249, 1, 0, 458785, 1, 0, 655393, 0, 0, 720929, 0, 0, 852001, 0, 0, 917537, 0, 0, 983073, 0, 0, 1048609, 1, 0, 1114145, 1, 0, 1179681, 1, 0, 1245217, 1, 0, 1310753, 1, 0, 1376289, 1, 0, 1441825, 0, 0, 1507361, 0, 0, 1572897, 0, 0, 1638433, 0, 0, 1703969, 0, 0, 34, 0, 0, 65570, 1, 0, 131106, 1, 0, 196642, 1, 0, 262178, 1, 0, 327714, 1, 0, 393250, 1, 0, 458786, 1, 0, 655394, 0, 0, 720930, 0, 0, 786466, 0, 0, 852002, 0, 0, 917538, 0, 0, 983074, 0, 0, 1048610, 1, 0, 1114146, 1, 0, 1179682, 1, 0, 1245218, 1, 0, 1310754, 1, 0, 1376290, 1, 0, 1441826, 1, 0, 1507362, 0, 0, 1572898, 0, 0, 1638434, 0, 0, 1703970, 0, 0, 35, 0, 0, 65571, 1, 0, 131107, 1, 0, 196643, 1, 0, 262179, 1, 0, 327715, 1, 0, 393251, 1, 0, 458787, 1, 0, 655395, 0, 0, 720931, 0, 0, 786467, 0, 0, 852003, 0, 0, 917539, 0, 0, 983075, 0, 0, 1048611, 1, 0, 1114147, 1, 0, 1179683, 1, 0, 1245219, 1, 0, 1310755, 1, 0, 1376291, 1, 0, 1441827, 1, 0, 1507363, 1, 0, 1572899, 1, 0, 1638435, 1, 0, 1703971, 0, 0, 36, 0, 0, 65572, 1, 0, 131108, 1, 0, 196644, 1, 0, 262180, 1, 0, 327716, 1, 0, 393252, 1, 0, 458788, 1, 0, 655396, 0, 0, 720932, 0, 0, 786468, 0, 0, 852004, 0, 0, 917540, 0, 0, 983076, 0, 0, 1048612, 1, 0, 1114148, 1, 0, 1179684, 0, 0, 1245220, 1, 0, 1310756, 1, 0, 1376292, 1, 0, 1441828, 1, 0, 1507364, 1, 0, 1572900, 1, 0, 1638436, 1, 0, 1703972, 0, 0, 37, 0, 0, 65573, 1, 0, 131109, 1, 0, 196645, 1, 0, 262181, 1, 0, 327717, 0, 0, 393253, 0, 0, 458789, 1, 0, 655397, 0, 0, 720933, 0, 0, 786469, 0, 0, 852005, 0, 0, 917541, 0, 0, 983077, 0, 0, 1048613, 1, 0, 1114149, 1, 0, 1179685, 0, 0, 1245221, 1, 0, 1310757, 1, 0, 1376293, 1, 0, 1441829, 1, 0, 1507365, 1, 0, 1572901, 1, 0, 1638437, 1, 0, 1703973, 0, 0, 38, 0, 0, 65574, 1, 0, 131110, 1, 0, 196646, 1, 0, 262182, 1, 0, 327718, 0, 0, 393254, 0, 0, 458790, 1, 0, 655398, 0, 0, 720934, 0, 0, 786470, 0, 0, 852006, 0, 0, 917542, 0, 0, 983078, 0, 0, 1048614, 1, 0, 1114150, 1, 0, 1179686, 0, 0, 1245222, 1, 0, 1310758, 1, 0, 1376294, 1, 0, 1441830, 1, 0, 1507366, 1, 0, 1572902, 1, 0, 1638438, 1, 0, 1703974, 0, 0, 39, 0, 0, 65575, 0, 0, 131111, 0, 0, 196647, 1, 0, 262183, 1, 0, 327719, 1, 0, 393255, 0, 0, 458791, 0, 0, 589863, 0, 0, 655399, 0, 0, 720935, 0, 0, 786471, 0, 0, 852007, 0, 0, 917543, 0, 0, 983079, 0, 0, 1048615, 0, 0, 1114151, 1, 0, 1179687, 1, 0, 1245223, 1, 0, 1310759, 1, 0, 1376295, 1, 0, 1441831, 1, 0, 1507367, 1, 0, 1572903, 1, 0, 1638439, 1, 0, 1703975, 0, 0, 40, 0, 0, 65576, 0, 0, 131112, 0, 0, 196648, 0, 0, 262184, 1, 0, 327720, 1, 0, 393256, 1, 0, 458792, 1, 0, 524328, 0, 0, 589864, 0, 0, 655400, 0, 0, 720936, 0, 0, 786472, 0, 0, 852008, 0, 0, 917544, 0, 0, 983080, 0, 0, 1048616, 0, 0, 1114152, 1, 0, 1179688, 1, 0, 1245224, 1, 0, 1310760, 1, 0, 1376296, 1, 0, 1441832, 1, 0, 1507368, 1, 0, 1572904, 1, 0, 1638440, 1, 0, 1703976, 0, 0, 41, 0, 0, 65577, 0, 0, 131113, 0, 0, 196649, 0, 0, 262185, 1, 0, 327721, 1, 0, 393257, 1, 0, 458793, 1, 0, 524329, 1, 0, 589865, 0, 0, 655401, 0, 0, 720937, 0, 0, 786473, 0, 0, 852009, 0, 0, 917545, 0, 0, 983081, 0, 0, 1048617, 0, 0, 1114153, 1, 0, 1179689, 1, 0, 1245225, 1, 0, 1310761, 1, 0, 1376297, 1, 0, 1441833, 1, 0, 1507369, 1, 0, 1572905, 1, 0, 1638441, 1, 0, 1703977, 0, 0, 42, 0, 0, 65578, 0, 0, 131114, 0, 0, 196650, 0, 0, 262186, 1, 0, 327722, 1, 0, 393258, 1, 0, 458794, 1, 0, 524330, 1, 0, 589866, 0, 0, 655402, 0, 0, 720938, 0, 0, 786474, 0, 0, 852010, 0, 0, 917546, 0, 0, 983082, 0, 0, 1048618, 0, 0, 1114154, 1, 0, 1179690, 1, 0, 1245226, 1, 0, 1310762, 1, 0, 1376298, 1, 0, 1441834, 1, 0, 1507370, 1, 0, 1572906, 1, 0, 1638442, 1, 0, 1703978, 0, 0, 43, 0, 0, 65579, 0, 0, 131115, 0, 0, 196651, 0, 0, 262187, 1, 0, 327723, 1, 0, 393259, 1, 0, 458795, 1, 0, 524331, 1, 0, 589867, 0, 0, 655403, 0, 0, 720939, 0, 0, 786475, 0, 0, 852011, 0, 0, 917547, 0, 0, 983083, 0, 0, 1048619, 0, 0, 1114155, 1, 0, 1179691, 1, 0, 1245227, 1, 0, 1310763, 1, 0, 1376299, 1, 0, 1441835, 1, 0, 1507371, 1, 0, 1572907, 1, 0, 1638443, 1, 0, 1703979, 0, 0, 44, 0, 0, 65580, 0, 0, 131116, 0, 0, 196652, 1, 0, 262188, 1, 0, 327724, 1, 0, 393260, 1, 0, 458796, 1, 0, 524332, 1, 0, 589868, 0, 0, 655404, 0, 0, 720940, 0, 0, 786476, 0, 0, 852012, 0, 0, 917548, 0, 0, 983084, 0, 0, 1048620, 0, 0, 1114156, 0, 0, 1179692, 1, 0, 1245228, 0, 0, 1310764, 0, 0, 1376300, 0, 0, 1441836, 1, 0, 1507372, 1, 0, 1572908, 1, 0, 1638444, 1, 0, 1703980, 0, 0, 45, 0, 0, 65581, 1, 0, 131117, 1, 0, 196653, 1, 0, 262189, 1, 0, 327725, 1, 0, 393261, 1, 0, 458797, 1, 0, 524333, 1, 0, 589869, 0, 0, 655405, 0, 0, 720941, 0, 0, 786477, 0, 0, 852013, 0, 0, 917549, 0, 0, 983085, 0, 0, 1048621, 0, 0, 1114157, 0, 0, 1179693, 0, 0, 1245229, 0, 0, 1310765, 0, 0, 1376301, 0, 0, 1441837, 0, 0, 1507373, 1, 0, 1572909, 1, 0, 1638445, 1, 0, 1703981, 0, 0, 46, 0, 0, 65582, 1, 0, 131118, 1, 0, 196654, 1, 0, 262190, 1, 0, 327726, 1, 0, 393262, 1, 0, 458798, 1, 0, 524334, 1, 0, 589870, 0, 0, 655406, 0, 0, 720942, 0, 0, 786478, 0, 0, 852014, 0, 0, 917550, 0, 0, 983086, 0, 0, 1048622, 0, 0, 1114158, 0, 0, 1179694, 0, 0, 1245230, 0, 0, 1310766, 0, 0, 1376302, 0, 0, 1441838, 0, 0, 1507374, 0, 0, 1572910, 1, 0, 1638446, 1, 0, 1703982, 0, 0, 47, 0, 0, 65583, 0, 0, 131119, 0, 0, 196655, 0, 0, 262191, 0, 0, 327727, 0, 0, 393263, 0, 0, 458799, 0, 0, 524335, 0, 0, 589871, 0, 0, 655407, 0, 0, 720943, 0, 0, 786479, 0, 0, 852015, 0, 0, 917551, 0, 0, 983087, 0, 0, 1048623, 0, 0, 1114159, 0, 0, 1179695, 0, 0, 1245231, 0, 0, 1310767, 0, 0, 1376303, 0, 0, 1441839, 0, 0, 1507375, 0, 0, 1572911, 0, 0, 1638447, 0, 0, 1703983, 0, 0, 720899, 0, 0, 720900, 0, 0, 720901, 0, 0, 720902, 0, 0, 655367, 0, 0, 720903, 0, 0, 720904, 1, 0, 720905, 1, 0, 720907, 1, 0, 720908, 1, 0, 524301, 1, 0, 655373, 1, 0, 524302, 1, 0, 655374, 1, 0, 524303, 1, 0, 655375, 1, 0, 524304, 0, 0, 655376, 1, 0, 786448, 1, 0, 524305, 0, 0, 655377, 1, 0, 786449, 1, 0, 524306, 0, 0, 655378, 0, 0, 786450, 1, 0, 524307, 0, 0, 655379, 0, 0, 786451, 1, 0, 524308, 0, 0, 655380, 1, 0, 786452, 1, 0, 524309, 0, 0, 655381, 1, 0, 524310, 0, 0, 655382, 1, 0, 786454, 1, 0, 524311, 1, 0, 786455, 1, 0, 524312, 1, 0, 851992, 1, 0, 524295, 0, 0, 524296, 0, 0, 589832, 0, 0, 655368, 0, 0, 524297, 0, 0, 655369, 1, 0, 458762, 0, 0, 655370, 1, 0, 720906, 1, 0, 458763, 0, 0, 655371, 1, 0, 786443, 1, 0, 458764, 1, 0, 589836, 1, 0, 655372, 1, 0, 786444, 1, 0, 458765, 1, 0, 589837, 1, 0, 720909, 1, 0, 851981, 1, 0, 458766, 1, 0, 589838, 1, 0, 720910, 1, 0, 786446, 1, 0, 851982, 1, 0, 458767, 0, 0, 589839, 1, 0, 720911, 1, 0, 786447, 1, 0, 917519, 1, 0, 458768, 0, 0, 589840, 1, 0, 720912, 1, 0, 983056, 1, 0, 458769, 0, 0, 589841, 0, 0, 720913, 1, 0, 983057, 1, 0, 458770, 0, 0, 589842, 0, 0, 720914, 1, 0, 1048594, 1, 0, 458771, 0, 0, 589843, 0, 0, 720915, 1, 0, 1048595, 1, 0, 458772, 0, 0, 589844, 0, 0, 720916, 1, 0, 1048596, 1, 0, 458773, 0, 0, 589845, 1, 0, 720917, 1, 0, 786453, 1, 0, 851989, 1, 0, 1114133, 1, 0, 458774, 0, 0, 589846, 1, 0, 720918, 1, 0, 917526, 1, 0, 1114134, 1, 0, 458775, 0, 0, 589847, 1, 0, 720919, 1, 0, 983063, 1, 0, 1114135, 0, 0, 458776, 0, 0, 589848, 1, 0, 720920, 1, 0, 786456, 1, 0, 1048600, 1, 0, 1179672, 0, 0, 524313, 1, 0, 589849, 1, 0, 720921, 1, 0, 786457, 1, 0, 1048601, 1, 0, 1114137, 0, 0, 1179673, 0, 0, 524314, 1, 0, 589850, 1, 0, 720922, 1, 0, 786458, 1, 0, 1179674, 0, 0, 524315, 0, 0, 589851, 0, 0, 720923, 1, 0, 851995, 0, 0, 1179675, 0, 0, 524316, 0, 0, 589852, 0, 0, 720924, 0, 0, 917532, 0, 0, 983068, 1, 0, 1048604, 1, 0, 1114140, 0, 0, 524317, 0, 0, 589853, 0, 0, 655389, 0, 0, 720925, 0, 0, 786461, 0, 0, 851997, 0, 0, 917533, 0, 0, 983069, 0, 0, 524318, 0, 0, 589854, 0, 0, 720926, 0, 0, 786462, 0, 0, 524319, 0, 0, 589855, 0, 0, 720927, 0, 0, 786463, 0, 0, 524320, 1, 0, 589856, 0, 0, 786464, 0, 0, 524321, 1, 0, 589857, 0, 0, 786465, 0, 0, 524322, 0, 0, 589858, 0, 0, 524323, 0, 0, 589859, 0, 0, 524324, 0, 0, 589860, 0, 0, 524325, 1, 0, 589861, 0, 0, 524326, 1, 0, 589862, 0, 0, 524327, 0, 0)
+
+[node name="MapGen" type="Node2D" parent="Screens/Battle/BattleMap"]
+
+[node name="ObjectPlacement" type="Node2D" parent="Screens/Battle/BattleMap/MapGen"]
+position = Vector2(728, -424)
+
+[node name="Output" type="Sprite2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement"]
+texture_filter = 1
+position = Vector2(0, 276)
+scale = Vector2(10, 10)
+texture = SubResource("ViewportTexture_uwnis")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement"]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -135.0
+offset_right = -192.0
+offset_bottom = -108.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(10, 10)
+
+[node name="SubViewport" type="SubViewport" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+canvas_item_default_texture_repeat = 1
+size = Vector2i(48, 27)
+size_2d_override = Vector2i(480, 270)
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="Background" type="Sprite2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_3sknd")
+texture = SubResource("ViewportTexture_ngckj")
+centered = false
+
+[node name="ConnectingLines" type="Node2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport"]
+script = ExtResource("3_4pqs7")
+points_node_path = NodePath("../POIs")
+tilemap_path = NodePath("../../../../..")
+pathfinding_node = NodePath("../../../../../Pathfinding")
+
+[node name="@@28372" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/ConnectingLines"]
+points = PackedVector2Array(44, 18, 15, 15)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@28373" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/ConnectingLines"]
+points = PackedVector2Array(37, 7, 29, 6)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@28374" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/ConnectingLines"]
+points = PackedVector2Array(15, 15, 29, 6)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@28375" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/ConnectingLines"]
+points = PackedVector2Array(7, 17, 14, 15)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@28376" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/ConnectingLines"]
+points = PackedVector2Array(29, 6, 14, 15)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@28377" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/ConnectingLines"]
+points = PackedVector2Array(14, 15, 44, 18)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="POIs" type="Node2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport"]
+script = ExtResource("3_57lvp")
+bounds = Rect2(1, 1, 47, 26)
+
+[node name="SpawnTeam1" type="Polygon2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/POIs"]
+position = Vector2(44, 18)
+color = Color(1, 1, 0, 1)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="SpawnTeam2" type="Polygon2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/POIs"]
+position = Vector2(37, 7)
+scale = Vector2(2, 2)
+color = Color(1, 1, 0, 1)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="Battlement1" type="Polygon2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/POIs"]
+position = Vector2(15, 15)
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="Random1" type="Polygon2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/POIs"]
+position = Vector2(7, 17)
+color = Color(0, 0, 1, 1)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="Treasure1" type="Polygon2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/POIs"]
+position = Vector2(29, 6)
+color = Color(0, 1, 0, 1)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="Exit1" type="Polygon2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport/POIs"]
+position = Vector2(14, 15)
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="Boundaries" type="Line2D" parent="Screens/Battle/BattleMap/MapGen/ObjectPlacement/SubViewportContainer/SubViewport"]
+points = PackedVector2Array(0, 0, 0, 26, 47, 26, 47, 0, 0, 0)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Background" type="Node2D" parent="Screens/Battle/BattleMap/MapGen"]
+position = Vector2(2, -559)
+
+[node name="Output" type="Sprite2D" parent="Screens/Battle/BattleMap/MapGen/Background"]
+texture_filter = 1
+position = Vector2(240, 410)
+scale = Vector2(10, 10)
+texture = SubResource("ViewportTexture_wdpt5")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Screens/Battle/BattleMap/MapGen/Background"]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 48.0
+offset_bottom = 27.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(10, 10)
+
+[node name="SubViewport" type="SubViewport" parent="Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+canvas_item_default_texture_repeat = 1
+size = Vector2i(48, 27)
+size_2d_override = Vector2i(480, 270)
+render_target_clear_mode = 1
+render_target_update_mode = 1
+
+[node name="Background" type="Sprite2D" parent="Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_w6u06")
+texture = SubResource("NoiseTexture2D_vl5d2")
+centered = false
+
+[node name="ViewportFeedback" type="Sprite2D" parent="Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_ssx26")
+texture = SubResource("ViewportTexture_vaqt0")
+centered = false
+
+[node name="SpriteDraw" type="Node2D" parent="Screens/Battle/BattleMap"]
+script = ExtResource("4_mkwim")
+sprite_path = NodePath("../MapGen/ObjectPlacement/Output")
+tilemap_path = NodePath("..")
+
+[node name="Pathfinding" type="Node2D" parent="Screens/Battle/BattleMap"]
+script = ExtResource("5_eqfpy")
+tilemap_path = NodePath("..")
+debug_draw = true
+
+[node name="@@29040" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 608)
+texture = SubResource("PlaceholderTexture2D_4dpjf")
+
+[node name="@@29041" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1312)
+texture = SubResource("PlaceholderTexture2D_q87ll")
+
+[node name="@@29042" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 288)
+texture = SubResource("PlaceholderTexture2D_pn3ac")
+
+[node name="@@29043" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 224)
+texture = SubResource("PlaceholderTexture2D_r5aaa")
+
+[node name="@@29044" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 1632)
+texture = SubResource("PlaceholderTexture2D_52xgt")
+
+[node name="@@29045" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 992)
+texture = SubResource("PlaceholderTexture2D_6qnbn")
+
+[node name="@@29046" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 864)
+texture = SubResource("PlaceholderTexture2D_nxjxj")
+
+[node name="@@29047" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1248)
+texture = SubResource("PlaceholderTexture2D_ugf8x")
+
+[node name="@@29048" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 608)
+texture = SubResource("PlaceholderTexture2D_m4xa6")
+
+[node name="@@29049" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 1504)
+texture = SubResource("PlaceholderTexture2D_s654u")
+
+[node name="@@29050" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1312)
+texture = SubResource("PlaceholderTexture2D_id5uh")
+
+[node name="@@29051" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 544)
+texture = SubResource("PlaceholderTexture2D_ob0ou")
+
+[node name="@@29052" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1376)
+texture = SubResource("PlaceholderTexture2D_pnaem")
+
+[node name="@@29053" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 480)
+texture = SubResource("PlaceholderTexture2D_uwwq2")
+
+[node name="@@29054" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 800)
+texture = SubResource("PlaceholderTexture2D_1u7g5")
+
+[node name="@@29055" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 544)
+texture = SubResource("PlaceholderTexture2D_ufknr")
+
+[node name="@@29056" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 1056)
+texture = SubResource("PlaceholderTexture2D_67g1h")
+
+[node name="@@29057" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 800)
+texture = SubResource("PlaceholderTexture2D_wwjj3")
+
+[node name="@@29058" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1504)
+texture = SubResource("PlaceholderTexture2D_lfy1m")
+
+[node name="@@29059" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 672)
+texture = SubResource("PlaceholderTexture2D_03gum")
+
+[node name="@@29060" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 1056)
+texture = SubResource("PlaceholderTexture2D_msa1a")
+
+[node name="@@29061" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1120)
+texture = SubResource("PlaceholderTexture2D_yde3x")
+
+[node name="@@29062" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 480)
+texture = SubResource("PlaceholderTexture2D_gl1wy")
+
+[node name="@@29063" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 928)
+texture = SubResource("PlaceholderTexture2D_otcyl")
+
+[node name="@@29064" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 928)
+texture = SubResource("PlaceholderTexture2D_wqi0t")
+
+[node name="@@29065" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 928)
+texture = SubResource("PlaceholderTexture2D_w3sw6")
+
+[node name="@@29066" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 864)
+texture = SubResource("PlaceholderTexture2D_4u057")
+
+[node name="@@29067" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 928)
+texture = SubResource("PlaceholderTexture2D_sphhk")
+
+[node name="@@29068" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 992)
+texture = SubResource("PlaceholderTexture2D_0ca6c")
+
+[node name="@@29069" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 160)
+texture = SubResource("PlaceholderTexture2D_5y4sq")
+
+[node name="@@29070" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 800)
+texture = SubResource("PlaceholderTexture2D_lni7y")
+
+[node name="@@29071" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 1120)
+texture = SubResource("PlaceholderTexture2D_inus5")
+
+[node name="@@29072" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 928)
+texture = SubResource("PlaceholderTexture2D_l7knp")
+
+[node name="@@29073" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 96)
+texture = SubResource("PlaceholderTexture2D_scfo3")
+
+[node name="@@29074" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 608)
+texture = SubResource("PlaceholderTexture2D_8m3nf")
+
+[node name="@@29075" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 1056)
+texture = SubResource("PlaceholderTexture2D_yywb4")
+
+[node name="@@29076" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 1056)
+texture = SubResource("PlaceholderTexture2D_tuuke")
+
+[node name="@@29077" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(544, 1120)
+texture = SubResource("PlaceholderTexture2D_xgyva")
+
+[node name="@@29078" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(96, 224)
+texture = SubResource("PlaceholderTexture2D_llp1k")
+
+[node name="@@29079" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 544)
+texture = SubResource("PlaceholderTexture2D_ng5ph")
+
+[node name="@@29080" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 928)
+texture = SubResource("PlaceholderTexture2D_tnc8i")
+
+[node name="@@29081" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 1056)
+texture = SubResource("PlaceholderTexture2D_2qlwf")
+
+[node name="@@29082" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 416)
+texture = SubResource("PlaceholderTexture2D_yleh6")
+
+[node name="@@29083" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 416)
+texture = SubResource("PlaceholderTexture2D_y4r5v")
+
+[node name="@@29084" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1312)
+texture = SubResource("PlaceholderTexture2D_vk00v")
+
+[node name="@@29085" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 160)
+texture = SubResource("PlaceholderTexture2D_74n8i")
+
+[node name="@@29086" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 480)
+texture = SubResource("PlaceholderTexture2D_61k6e")
+
+[node name="@@29087" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 480)
+texture = SubResource("PlaceholderTexture2D_skccb")
+
+[node name="@@29088" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 1376)
+texture = SubResource("PlaceholderTexture2D_7b1ob")
+
+[node name="@@29089" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1952, 416)
+texture = SubResource("PlaceholderTexture2D_u70cj")
+
+[node name="@@29090" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2016, 416)
+texture = SubResource("PlaceholderTexture2D_x4qpe")
+
+[node name="@@29091" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1824, 352)
+texture = SubResource("PlaceholderTexture2D_fjb7j")
+
+[node name="@@29092" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1888, 1120)
+texture = SubResource("PlaceholderTexture2D_ugey5")
+
+[node name="@@29093" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 1056)
+texture = SubResource("PlaceholderTexture2D_xbgyi")
+
+[node name="@@29094" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 1312)
+texture = SubResource("PlaceholderTexture2D_r2l7f")
+
+[node name="@@29095" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 480)
+texture = SubResource("PlaceholderTexture2D_tyhuc")
+
+[node name="@@29096" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 352)
+texture = SubResource("PlaceholderTexture2D_1y2fd")
+
+[node name="@@29097" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 160)
+texture = SubResource("PlaceholderTexture2D_jondn")
+
+[node name="@@29098" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 224)
+texture = SubResource("PlaceholderTexture2D_lr7bn")
+
+[node name="@@29099" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 800)
+texture = SubResource("PlaceholderTexture2D_4dkk2")
+
+[node name="@@29100" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1568)
+texture = SubResource("PlaceholderTexture2D_ohpte")
+
+[node name="@@29101" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1952, 1056)
+texture = SubResource("PlaceholderTexture2D_74d0t")
+
+[node name="@@29102" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(288, 96)
+texture = SubResource("PlaceholderTexture2D_omgr3")
+
+[node name="@@29103" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 224)
+texture = SubResource("PlaceholderTexture2D_3cyis")
+
+[node name="@@29104" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1568)
+texture = SubResource("PlaceholderTexture2D_417ii")
+
+[node name="@@29105" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 1056)
+texture = SubResource("PlaceholderTexture2D_f8bc2")
+
+[node name="@@29106" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1120)
+texture = SubResource("PlaceholderTexture2D_51elp")
+
+[node name="@@29107" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 352)
+texture = SubResource("PlaceholderTexture2D_rukgh")
+
+[node name="@@29108" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 96)
+texture = SubResource("PlaceholderTexture2D_t1jrm")
+
+[node name="@@29109" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1568)
+texture = SubResource("PlaceholderTexture2D_haffg")
+
+[node name="@@29110" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 1184)
+texture = SubResource("PlaceholderTexture2D_c40s7")
+
+[node name="@@29111" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 288)
+texture = SubResource("PlaceholderTexture2D_qwddt")
+
+[node name="@@29112" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1184)
+texture = SubResource("PlaceholderTexture2D_ufm8y")
+
+[node name="@@29113" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 224)
+texture = SubResource("PlaceholderTexture2D_pe0eh")
+
+[node name="@@29114" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 352)
+texture = SubResource("PlaceholderTexture2D_lpomy")
+
+[node name="@@29115" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1632)
+texture = SubResource("PlaceholderTexture2D_0pagc")
+
+[node name="@@29116" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1632)
+texture = SubResource("PlaceholderTexture2D_spufj")
+
+[node name="@@29117" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1504)
+texture = SubResource("PlaceholderTexture2D_day3c")
+
+[node name="@@29118" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 416)
+texture = SubResource("PlaceholderTexture2D_6cgbp")
+
+[node name="@@29119" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 352)
+texture = SubResource("PlaceholderTexture2D_lsx8v")
+
+[node name="@@29120" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 1056)
+texture = SubResource("PlaceholderTexture2D_dc4lk")
+
+[node name="@@29121" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 480)
+texture = SubResource("PlaceholderTexture2D_lhq1p")
+
+[node name="@@29122" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1248)
+texture = SubResource("PlaceholderTexture2D_ovxdh")
+
+[node name="@@29123" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 352)
+texture = SubResource("PlaceholderTexture2D_dos83")
+
+[node name="@@29124" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1376)
+texture = SubResource("PlaceholderTexture2D_xfyhe")
+
+[node name="@@29125" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1120)
+texture = SubResource("PlaceholderTexture2D_twcna")
+
+[node name="@@29126" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 96)
+texture = SubResource("PlaceholderTexture2D_3hi5f")
+
+[node name="@@29127" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1312)
+texture = SubResource("PlaceholderTexture2D_sepna")
+
+[node name="@@29128" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 160)
+texture = SubResource("PlaceholderTexture2D_24w5y")
+
+[node name="@@29129" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 736)
+texture = SubResource("PlaceholderTexture2D_30m1h")
+
+[node name="@@29130" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2016, 480)
+texture = SubResource("PlaceholderTexture2D_7iwh8")
+
+[node name="@@29131" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1760, 1056)
+texture = SubResource("PlaceholderTexture2D_uu0jv")
+
+[node name="@@29132" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 96)
+texture = SubResource("PlaceholderTexture2D_r8j7o")
+
+[node name="@@29133" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 160)
+texture = SubResource("PlaceholderTexture2D_dincd")
+
+[node name="@@29134" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 864)
+texture = SubResource("PlaceholderTexture2D_kvv03")
+
+[node name="@@29135" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 224)
+texture = SubResource("PlaceholderTexture2D_uek4x")
+
+[node name="@@29136" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 1568)
+texture = SubResource("PlaceholderTexture2D_5hk5h")
+
+[node name="@@29137" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 992)
+texture = SubResource("PlaceholderTexture2D_f8nm5")
+
+[node name="@@29138" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 544)
+texture = SubResource("PlaceholderTexture2D_qhnkt")
+
+[node name="@@29139" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 160)
+texture = SubResource("PlaceholderTexture2D_p467v")
+
+[node name="@@29140" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 1056)
+texture = SubResource("PlaceholderTexture2D_orfb0")
+
+[node name="@@29141" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(544, 736)
+texture = SubResource("PlaceholderTexture2D_8chy4")
+
+[node name="@@29142" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 992)
+texture = SubResource("PlaceholderTexture2D_m2d5k")
+
+[node name="@@29143" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1440)
+texture = SubResource("PlaceholderTexture2D_7ex26")
+
+[node name="@@29144" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 928)
+texture = SubResource("PlaceholderTexture2D_tkgu5")
+
+[node name="@@29145" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 672)
+texture = SubResource("PlaceholderTexture2D_jxayq")
+
+[node name="@@29146" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 992)
+texture = SubResource("PlaceholderTexture2D_jf1fq")
+
+[node name="@@29147" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 1504)
+texture = SubResource("PlaceholderTexture2D_oxvdy")
+
+[node name="@@29148" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1312)
+texture = SubResource("PlaceholderTexture2D_62t02")
+
+[node name="@@29149" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 544)
+texture = SubResource("PlaceholderTexture2D_3n2k5")
+
+[node name="@@29150" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 608)
+texture = SubResource("PlaceholderTexture2D_7xpxd")
+
+[node name="@@29151" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 800)
+texture = SubResource("PlaceholderTexture2D_65y7q")
+
+[node name="@@29152" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 1056)
+texture = SubResource("PlaceholderTexture2D_ui2p1")
+
+[node name="@@29153" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 864)
+texture = SubResource("PlaceholderTexture2D_kvk21")
+
+[node name="@@29154" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 928)
+texture = SubResource("PlaceholderTexture2D_xex50")
+
+[node name="@@29155" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 1184)
+texture = SubResource("PlaceholderTexture2D_w35iq")
+
+[node name="@@29156" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 736)
+texture = SubResource("PlaceholderTexture2D_8gkg8")
+
+[node name="@@29157" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(480, 1056)
+texture = SubResource("PlaceholderTexture2D_eowml")
+
+[node name="@@29158" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 736)
+texture = SubResource("PlaceholderTexture2D_n0cmn")
+
+[node name="@@29159" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 544)
+texture = SubResource("PlaceholderTexture2D_6ltks")
+
+[node name="@@29160" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(160, 96)
+texture = SubResource("PlaceholderTexture2D_b3orp")
+
+[node name="@@29161" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 224)
+texture = SubResource("PlaceholderTexture2D_51574")
+
+[node name="@@29162" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 992)
+texture = SubResource("PlaceholderTexture2D_cogy8")
+
+[node name="@@29163" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 672)
+texture = SubResource("PlaceholderTexture2D_1b5vp")
+
+[node name="@@29164" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 672)
+texture = SubResource("PlaceholderTexture2D_jr0hi")
+
+[node name="@@29165" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 1120)
+texture = SubResource("PlaceholderTexture2D_73q5g")
+
+[node name="@@29166" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 288)
+texture = SubResource("PlaceholderTexture2D_yaaa7")
+
+[node name="@@29167" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 544)
+texture = SubResource("PlaceholderTexture2D_aftws")
+
+[node name="@@29168" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 224)
+texture = SubResource("PlaceholderTexture2D_j6xyy")
+
+[node name="@@29169" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 1568)
+texture = SubResource("PlaceholderTexture2D_px0yq")
+
+[node name="@@29170" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 864)
+texture = SubResource("PlaceholderTexture2D_pp5x0")
+
+[node name="@@29171" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 864)
+texture = SubResource("PlaceholderTexture2D_xi7on")
+
+[node name="@@29172" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1824, 992)
+texture = SubResource("PlaceholderTexture2D_w4j2j")
+
+[node name="@@29173" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 480)
+texture = SubResource("PlaceholderTexture2D_nb0vr")
+
+[node name="@@29174" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 480)
+texture = SubResource("PlaceholderTexture2D_im6bu")
+
+[node name="@@29175" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1632)
+texture = SubResource("PlaceholderTexture2D_7ourf")
+
+[node name="@@29176" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 864)
+texture = SubResource("PlaceholderTexture2D_vcyf0")
+
+[node name="@@29177" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 672)
+texture = SubResource("PlaceholderTexture2D_sxvx0")
+
+[node name="@@29178" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 800)
+texture = SubResource("PlaceholderTexture2D_2rg7r")
+
+[node name="@@29179" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 544)
+texture = SubResource("PlaceholderTexture2D_d3uhr")
+
+[node name="@@29180" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 544)
+texture = SubResource("PlaceholderTexture2D_ge8xd")
+
+[node name="@@29181" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 800)
+texture = SubResource("PlaceholderTexture2D_h77i3")
+
+[node name="@@29182" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 800)
+texture = SubResource("PlaceholderTexture2D_lbbg7")
+
+[node name="@@29183" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 800)
+texture = SubResource("PlaceholderTexture2D_uwx3h")
+
+[node name="@@29184" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(96, 96)
+texture = SubResource("PlaceholderTexture2D_3hbcy")
+
+[node name="@@29185" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 672)
+texture = SubResource("PlaceholderTexture2D_a1slx")
+
+[node name="@@29186" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 928)
+texture = SubResource("PlaceholderTexture2D_ijnrj")
+
+[node name="@@29187" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1248)
+texture = SubResource("PlaceholderTexture2D_lfqbc")
+
+[node name="@@29188" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1312)
+texture = SubResource("PlaceholderTexture2D_h7mm0")
+
+[node name="@@29189" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 288)
+texture = SubResource("PlaceholderTexture2D_fcpwj")
+
+[node name="@@29190" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 736)
+texture = SubResource("PlaceholderTexture2D_v52tu")
+
+[node name="@@29191" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 544)
+texture = SubResource("PlaceholderTexture2D_12aia")
+
+[node name="@@29192" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 672)
+texture = SubResource("PlaceholderTexture2D_5ygn2")
+
+[node name="@@29193" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1376)
+texture = SubResource("PlaceholderTexture2D_cptfd")
+
+[node name="@@29194" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 352)
+texture = SubResource("PlaceholderTexture2D_rd6xb")
+
+[node name="@@29195" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 480)
+texture = SubResource("PlaceholderTexture2D_8r572")
+
+[node name="@@29196" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1376)
+texture = SubResource("PlaceholderTexture2D_eehmd")
+
+[node name="@@29197" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 928)
+texture = SubResource("PlaceholderTexture2D_5jmcl")
+
+[node name="@@29198" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 544)
+texture = SubResource("PlaceholderTexture2D_bhqp7")
+
+[node name="@@29199" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1504)
+texture = SubResource("PlaceholderTexture2D_cos5s")
+
+[node name="@@29200" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 352)
+texture = SubResource("PlaceholderTexture2D_qgwws")
+
+[node name="@@29201" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 1120)
+texture = SubResource("PlaceholderTexture2D_aynfj")
+
+[node name="@@29202" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 736)
+texture = SubResource("PlaceholderTexture2D_v2vrt")
+
+[node name="@@29203" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1632)
+texture = SubResource("PlaceholderTexture2D_b4pq5")
+
+[node name="@@29204" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1120)
+texture = SubResource("PlaceholderTexture2D_32u0y")
+
+[node name="@@29205" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 288)
+texture = SubResource("PlaceholderTexture2D_020l7")
+
+[node name="@@29206" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1184)
+texture = SubResource("PlaceholderTexture2D_7ctg1")
+
+[node name="@@29207" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1568)
+texture = SubResource("PlaceholderTexture2D_a4n7c")
+
+[node name="@@29208" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 672)
+texture = SubResource("PlaceholderTexture2D_y2ntu")
+
+[node name="@@29209" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 288)
+texture = SubResource("PlaceholderTexture2D_tg72b")
+
+[node name="@@29210" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1120)
+texture = SubResource("PlaceholderTexture2D_6udq2")
+
+[node name="@@29211" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1376)
+texture = SubResource("PlaceholderTexture2D_i852o")
+
+[node name="@@29212" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1440)
+texture = SubResource("PlaceholderTexture2D_iebuc")
+
+[node name="@@29213" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1312)
+texture = SubResource("PlaceholderTexture2D_xikan")
+
+[node name="@@29214" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1504)
+texture = SubResource("PlaceholderTexture2D_abugg")
+
+[node name="@@29215" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1760, 416)
+texture = SubResource("PlaceholderTexture2D_ru0w0")
+
+[node name="@@29216" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1440)
+texture = SubResource("PlaceholderTexture2D_p7kve")
+
+[node name="@@29217" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1120)
+texture = SubResource("PlaceholderTexture2D_qwr42")
+
+[node name="@@29218" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1184)
+texture = SubResource("PlaceholderTexture2D_e5yr5")
+
+[node name="@@29219" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 1248)
+texture = SubResource("PlaceholderTexture2D_7nyc8")
+
+[node name="@@29220" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 544)
+texture = SubResource("PlaceholderTexture2D_mg8vy")
+
+[node name="@@29221" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1760, 672)
+texture = SubResource("PlaceholderTexture2D_k0wf2")
+
+[node name="@@29222" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 480)
+texture = SubResource("PlaceholderTexture2D_jigbo")
+
+[node name="@@29223" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 1312)
+texture = SubResource("PlaceholderTexture2D_l32mv")
+
+[node name="@@29224" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 224)
+texture = SubResource("PlaceholderTexture2D_tgb75")
+
+[node name="@@29225" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 544)
+texture = SubResource("PlaceholderTexture2D_suvuc")
+
+[node name="@@29226" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 416)
+texture = SubResource("PlaceholderTexture2D_0itbn")
+
+[node name="@@29227" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2016, 352)
+texture = SubResource("PlaceholderTexture2D_itocr")
+
+[node name="@@29228" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 224)
+texture = SubResource("PlaceholderTexture2D_gscuf")
+
+[node name="@@29229" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 288)
+texture = SubResource("PlaceholderTexture2D_faife")
+
+[node name="@@29230" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 800)
+texture = SubResource("PlaceholderTexture2D_ct1pa")
+
+[node name="@@29231" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 672)
+texture = SubResource("PlaceholderTexture2D_ys1pe")
+
+[node name="@@29232" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 800)
+texture = SubResource("PlaceholderTexture2D_gxahm")
+
+[node name="@@29233" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 288)
+texture = SubResource("PlaceholderTexture2D_38s1x")
+
+[node name="@@29234" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1248)
+texture = SubResource("PlaceholderTexture2D_wld2c")
+
+[node name="@@29235" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1120)
+texture = SubResource("PlaceholderTexture2D_ndn1a")
+
+[node name="@@29236" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(544, 800)
+texture = SubResource("PlaceholderTexture2D_py5ah")
+
+[node name="@@29237" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 928)
+texture = SubResource("PlaceholderTexture2D_7darc")
+
+[node name="@@29238" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 1184)
+texture = SubResource("PlaceholderTexture2D_e7jsd")
+
+[node name="@@29239" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 800)
+texture = SubResource("PlaceholderTexture2D_rs135")
+
+[node name="@@29240" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 992)
+texture = SubResource("PlaceholderTexture2D_efscc")
+
+[node name="@@29241" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 1120)
+texture = SubResource("PlaceholderTexture2D_aq0ck")
+
+[node name="@@29242" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 1056)
+texture = SubResource("PlaceholderTexture2D_6x36j")
+
+[node name="@@29243" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 1120)
+texture = SubResource("PlaceholderTexture2D_shs8s")
+
+[node name="@@29244" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 736)
+texture = SubResource("PlaceholderTexture2D_gj3eu")
+
+[node name="@@29245" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1760, 736)
+texture = SubResource("PlaceholderTexture2D_lf836")
+
+[node name="@@29246" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 1120)
+texture = SubResource("PlaceholderTexture2D_v6eia")
+
+[node name="@@29247" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 1056)
+texture = SubResource("PlaceholderTexture2D_gbo3k")
+
+[node name="@@29248" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 608)
+texture = SubResource("PlaceholderTexture2D_occth")
+
+[node name="@@29249" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 544)
+texture = SubResource("PlaceholderTexture2D_i53ux")
+
+[node name="@@29250" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 992)
+texture = SubResource("PlaceholderTexture2D_m2b0k")
+
+[node name="@@29251" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 224)
+texture = SubResource("PlaceholderTexture2D_dvo32")
+
+[node name="@@29252" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 1120)
+texture = SubResource("PlaceholderTexture2D_wnko8")
+
+[node name="@@29253" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 1120)
+texture = SubResource("PlaceholderTexture2D_h15fb")
+
+[node name="@@29254" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 928)
+texture = SubResource("PlaceholderTexture2D_bnr1r")
+
+[node name="@@29255" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 1184)
+texture = SubResource("PlaceholderTexture2D_l2d62")
+
+[node name="@@29256" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 928)
+texture = SubResource("PlaceholderTexture2D_ciam3")
+
+[node name="@@29257" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 1056)
+texture = SubResource("PlaceholderTexture2D_clbsf")
+
+[node name="@@29258" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 1120)
+texture = SubResource("PlaceholderTexture2D_uj76e")
+
+[node name="@@29259" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 1120)
+texture = SubResource("PlaceholderTexture2D_3bbh1")
+
+[node name="@@29260" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(224, 96)
+texture = SubResource("PlaceholderTexture2D_0sd34")
+
+[node name="@@29261" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 1184)
+texture = SubResource("PlaceholderTexture2D_bqn6d")
+
+[node name="@@29262" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 224)
+texture = SubResource("PlaceholderTexture2D_waff5")
+
+[node name="@@29263" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 928)
+texture = SubResource("PlaceholderTexture2D_7ok0n")
+
+[node name="@@29264" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1376)
+texture = SubResource("PlaceholderTexture2D_opjvl")
+
+[node name="@@29265" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 544)
+texture = SubResource("PlaceholderTexture2D_yktdq")
+
+[node name="@@29266" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 992)
+texture = SubResource("PlaceholderTexture2D_rj64h")
+
+[node name="@@29267" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 608)
+texture = SubResource("PlaceholderTexture2D_16xk1")
+
+[node name="@@29268" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 864)
+texture = SubResource("PlaceholderTexture2D_nuwfj")
+
+[node name="@@29269" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2016, 1120)
+texture = SubResource("PlaceholderTexture2D_eccf1")
+
+[node name="@@29270" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 1184)
+texture = SubResource("PlaceholderTexture2D_d5txc")
+
+[node name="@@29271" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 288)
+texture = SubResource("PlaceholderTexture2D_f83dw")
+
+[node name="@@29272" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 96)
+texture = SubResource("PlaceholderTexture2D_ei3j5")
+
+[node name="@@29273" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 288)
+texture = SubResource("PlaceholderTexture2D_qd754")
+
+[node name="@@29274" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(96, 352)
+texture = SubResource("PlaceholderTexture2D_tdku2")
+
+[node name="@@29275" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 928)
+texture = SubResource("PlaceholderTexture2D_q1yhk")
+
+[node name="@@29276" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 736)
+texture = SubResource("PlaceholderTexture2D_ehc1q")
+
+[node name="@@29277" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 224)
+texture = SubResource("PlaceholderTexture2D_m6v0n")
+
+[node name="@@29278" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 352)
+texture = SubResource("PlaceholderTexture2D_jds2j")
+
+[node name="@@29279" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1376)
+texture = SubResource("PlaceholderTexture2D_klmmp")
+
+[node name="@@29280" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1440)
+texture = SubResource("PlaceholderTexture2D_6720p")
+
+[node name="@@29281" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 288)
+texture = SubResource("PlaceholderTexture2D_1gv2p")
+
+[node name="@@29282" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1248)
+texture = SubResource("PlaceholderTexture2D_kwt0w")
+
+[node name="@@29283" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1504)
+texture = SubResource("PlaceholderTexture2D_8rfpl")
+
+[node name="@@29284" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1440)
+texture = SubResource("PlaceholderTexture2D_iodl7")
+
+[node name="@@29285" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1184)
+texture = SubResource("PlaceholderTexture2D_moknw")
+
+[node name="@@29286" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 288)
+texture = SubResource("PlaceholderTexture2D_mptk7")
+
+[node name="@@29287" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1440)
+texture = SubResource("PlaceholderTexture2D_wpcnc")
+
+[node name="@@29288" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1504)
+texture = SubResource("PlaceholderTexture2D_1gko6")
+
+[node name="@@29289" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1312)
+texture = SubResource("PlaceholderTexture2D_fhkaf")
+
+[node name="@@29290" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1056)
+texture = SubResource("PlaceholderTexture2D_nne63")
+
+[node name="@@29291" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1248)
+texture = SubResource("PlaceholderTexture2D_73mh1")
+
+[node name="@@29292" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 160)
+texture = SubResource("PlaceholderTexture2D_3ay0q")
+
+[node name="@@29293" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1376)
+texture = SubResource("PlaceholderTexture2D_bd4t3")
+
+[node name="@@29294" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 992)
+texture = SubResource("PlaceholderTexture2D_3qgrt")
+
+[node name="@@29295" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 480)
+texture = SubResource("PlaceholderTexture2D_lnn4n")
+
+[node name="@@29296" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1632)
+texture = SubResource("PlaceholderTexture2D_8k5b2")
+
+[node name="@@29297" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 352)
+texture = SubResource("PlaceholderTexture2D_qn7wr")
+
+[node name="@@29298" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1248)
+texture = SubResource("PlaceholderTexture2D_i7dy3")
+
+[node name="@@29299" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 864)
+texture = SubResource("PlaceholderTexture2D_kga6j")
+
+[node name="@@29300" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1120)
+texture = SubResource("PlaceholderTexture2D_ov2qy")
+
+[node name="@@29301" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 736)
+texture = SubResource("PlaceholderTexture2D_e7ibr")
+
+[node name="@@29302" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1120)
+texture = SubResource("PlaceholderTexture2D_pfpt2")
+
+[node name="@@29303" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1504)
+texture = SubResource("PlaceholderTexture2D_act3h")
+
+[node name="@@29304" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 800)
+texture = SubResource("PlaceholderTexture2D_ut0td")
+
+[node name="@@29305" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 736)
+texture = SubResource("PlaceholderTexture2D_3rptc")
+
+[node name="@@29306" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1632)
+texture = SubResource("PlaceholderTexture2D_qnsdo")
+
+[node name="@@29307" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 672)
+texture = SubResource("PlaceholderTexture2D_u037g")
+
+[node name="@@29308" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 288)
+texture = SubResource("PlaceholderTexture2D_uj023")
+
+[node name="@@29309" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1376)
+texture = SubResource("PlaceholderTexture2D_rdx1c")
+
+[node name="@@29310" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 800)
+texture = SubResource("PlaceholderTexture2D_0q0q8")
+
+[node name="@@29311" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 1248)
+texture = SubResource("PlaceholderTexture2D_kp02a")
+
+[node name="@@29312" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 160)
+texture = SubResource("PlaceholderTexture2D_ridmn")
+
+[node name="@@29313" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 352)
+texture = SubResource("PlaceholderTexture2D_5qj0j")
+
+[node name="@@29314" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1056)
+texture = SubResource("PlaceholderTexture2D_1n4rj")
+
+[node name="@@29315" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 736)
+texture = SubResource("PlaceholderTexture2D_cer18")
+
+[node name="@@29316" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 992)
+texture = SubResource("PlaceholderTexture2D_34fkl")
+
+[node name="@@29317" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1248)
+texture = SubResource("PlaceholderTexture2D_2nneo")
+
+[node name="@@29318" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 1120)
+texture = SubResource("PlaceholderTexture2D_0o1p2")
+
+[node name="@@29319" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1440)
+texture = SubResource("PlaceholderTexture2D_qv330")
+
+[node name="@@29320" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 800)
+texture = SubResource("PlaceholderTexture2D_gdn4p")
+
+[node name="@@29321" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1120)
+texture = SubResource("PlaceholderTexture2D_r2wxk")
+
+[node name="@@29322" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 480)
+texture = SubResource("PlaceholderTexture2D_nmrcn")
+
+[node name="@@29323" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1056)
+texture = SubResource("PlaceholderTexture2D_ffjrg")
+
+[node name="@@29324" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 1568)
+texture = SubResource("PlaceholderTexture2D_3eitx")
+
+[node name="@@29325" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(96, 288)
+texture = SubResource("PlaceholderTexture2D_y7h7q")
+
+[node name="@@29326" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 1056)
+texture = SubResource("PlaceholderTexture2D_jkmrs")
+
+[node name="@@29327" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 608)
+texture = SubResource("PlaceholderTexture2D_acl8c")
+
+[node name="@@29328" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1184)
+texture = SubResource("PlaceholderTexture2D_m1ijh")
+
+[node name="@@29329" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(224, 160)
+texture = SubResource("PlaceholderTexture2D_wbc5s")
+
+[node name="@@29330" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 1632)
+texture = SubResource("PlaceholderTexture2D_ks1ro")
+
+[node name="@@29331" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 800)
+texture = SubResource("PlaceholderTexture2D_6pnhv")
+
+[node name="@@29332" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 672)
+texture = SubResource("PlaceholderTexture2D_6mu3d")
+
+[node name="@@29333" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 416)
+texture = SubResource("PlaceholderTexture2D_s67h1")
+
+[node name="@@29334" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 416)
+texture = SubResource("PlaceholderTexture2D_hpoun")
+
+[node name="@@29335" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 608)
+texture = SubResource("PlaceholderTexture2D_4x16p")
+
+[node name="@@29336" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 416)
+texture = SubResource("PlaceholderTexture2D_ku4pb")
+
+[node name="@@29337" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 992)
+texture = SubResource("PlaceholderTexture2D_54x76")
+
+[node name="@@29338" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1568)
+texture = SubResource("PlaceholderTexture2D_wclyf")
+
+[node name="@@29339" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 544)
+texture = SubResource("PlaceholderTexture2D_elksx")
+
+[node name="@@29340" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 1120)
+texture = SubResource("PlaceholderTexture2D_lejnx")
+
+[node name="@@29341" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 480)
+texture = SubResource("PlaceholderTexture2D_is2hx")
+
+[node name="@@29342" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 480)
+texture = SubResource("PlaceholderTexture2D_5mu2a")
+
+[node name="@@29343" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1952, 352)
+texture = SubResource("PlaceholderTexture2D_pndsy")
+
+[node name="@@29344" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1504)
+texture = SubResource("PlaceholderTexture2D_dlkfq")
+
+[node name="@@29345" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1952, 1120)
+texture = SubResource("PlaceholderTexture2D_haex3")
+
+[node name="@@29346" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 96)
+texture = SubResource("PlaceholderTexture2D_dmtsv")
+
+[node name="@@29347" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 160)
+texture = SubResource("PlaceholderTexture2D_njsmn")
+
+[node name="@@29348" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 992)
+texture = SubResource("PlaceholderTexture2D_nk8js")
+
+[node name="@@29349" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1568)
+texture = SubResource("PlaceholderTexture2D_mgts7")
+
+[node name="@@29350" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 864)
+texture = SubResource("PlaceholderTexture2D_xi23y")
+
+[node name="@@29351" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 224)
+texture = SubResource("PlaceholderTexture2D_wgmi4")
+
+[node name="@@29352" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1760, 480)
+texture = SubResource("PlaceholderTexture2D_xmnm3")
+
+[node name="@@29353" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 864)
+texture = SubResource("PlaceholderTexture2D_abwrj")
+
+[node name="@@29354" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1888, 352)
+texture = SubResource("PlaceholderTexture2D_ljj0p")
+
+[node name="@@29355" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 96)
+texture = SubResource("PlaceholderTexture2D_0e78h")
+
+[node name="@@29356" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 1184)
+texture = SubResource("PlaceholderTexture2D_a0gpu")
+
+[node name="@@29357" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 288)
+texture = SubResource("PlaceholderTexture2D_tvvvi")
+
+[node name="@@29358" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 992)
+texture = SubResource("PlaceholderTexture2D_6cdb3")
+
+[node name="@@29359" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 864)
+texture = SubResource("PlaceholderTexture2D_o74u0")
+
+[node name="@@29360" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 416)
+texture = SubResource("PlaceholderTexture2D_2eqal")
+
+[node name="@@29361" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 1056)
+texture = SubResource("PlaceholderTexture2D_0mib3")
+
+[node name="@@29362" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1376, 96)
+texture = SubResource("PlaceholderTexture2D_bnw4c")
+
+[node name="@@29363" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 1056)
+texture = SubResource("PlaceholderTexture2D_utgt0")
+
+[node name="@@29364" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 1056)
+texture = SubResource("PlaceholderTexture2D_hhgnd")
+
+[node name="@@29365" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1056, 864)
+texture = SubResource("PlaceholderTexture2D_1w7vx")
+
+[node name="@@29366" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 160)
+texture = SubResource("PlaceholderTexture2D_imvrj")
+
+[node name="@@29367" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 480)
+texture = SubResource("PlaceholderTexture2D_h48oq")
+
+[node name="@@29368" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 1120)
+texture = SubResource("PlaceholderTexture2D_u6dj1")
+
+[node name="@@29369" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1184, 864)
+texture = SubResource("PlaceholderTexture2D_7pnjq")
+
+[node name="@@29370" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1184)
+texture = SubResource("PlaceholderTexture2D_w7q2x")
+
+[node name="@@29371" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 800)
+texture = SubResource("PlaceholderTexture2D_77ybf")
+
+[node name="@@29372" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 1120)
+texture = SubResource("PlaceholderTexture2D_x4u2a")
+
+[node name="@@29373" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 1440)
+texture = SubResource("PlaceholderTexture2D_jruu4")
+
+[node name="@@29374" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 544)
+texture = SubResource("PlaceholderTexture2D_tt4vi")
+
+[node name="@@29375" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 96)
+texture = SubResource("PlaceholderTexture2D_g6f6l")
+
+[node name="@@29376" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 1056)
+texture = SubResource("PlaceholderTexture2D_yfmgf")
+
+[node name="@@29377" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 864)
+texture = SubResource("PlaceholderTexture2D_i1cyr")
+
+[node name="@@29378" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 864)
+texture = SubResource("PlaceholderTexture2D_lpi47")
+
+[node name="@@29379" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 672)
+texture = SubResource("PlaceholderTexture2D_v2qwd")
+
+[node name="@@29380" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 96)
+texture = SubResource("PlaceholderTexture2D_74v3d")
+
+[node name="@@29381" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 160)
+texture = SubResource("PlaceholderTexture2D_64peo")
+
+[node name="@@29382" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 672)
+texture = SubResource("PlaceholderTexture2D_njkua")
+
+[node name="@@29383" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1376)
+texture = SubResource("PlaceholderTexture2D_vydox")
+
+[node name="@@29384" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 736)
+texture = SubResource("PlaceholderTexture2D_g6tmo")
+
+[node name="@@29385" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 736)
+texture = SubResource("PlaceholderTexture2D_oqxn0")
+
+[node name="@@29386" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 672)
+texture = SubResource("PlaceholderTexture2D_32vr0")
+
+[node name="@@29387" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 736)
+texture = SubResource("PlaceholderTexture2D_j1kvf")
+
+[node name="@@29388" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 1632)
+texture = SubResource("PlaceholderTexture2D_yqo44")
+
+[node name="@@29389" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 800)
+texture = SubResource("PlaceholderTexture2D_wj4p0")
+
+[node name="@@29390" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 736)
+texture = SubResource("PlaceholderTexture2D_0ldhj")
+
+[node name="@@29391" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1568)
+texture = SubResource("PlaceholderTexture2D_m1rsc")
+
+[node name="@@29392" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 416)
+texture = SubResource("PlaceholderTexture2D_yh8a4")
+
+[node name="@@29393" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 736)
+texture = SubResource("PlaceholderTexture2D_2g1e1")
+
+[node name="@@29394" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2848, 416)
+texture = SubResource("PlaceholderTexture2D_k3wl2")
+
+[node name="@@29395" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 608)
+texture = SubResource("PlaceholderTexture2D_kpbba")
+
+[node name="@@29396" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2912, 352)
+texture = SubResource("PlaceholderTexture2D_bk26g")
+
+[node name="@@29397" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 96)
+texture = SubResource("PlaceholderTexture2D_52bjq")
+
+[node name="@@29398" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1312, 992)
+texture = SubResource("PlaceholderTexture2D_yn28i")
+
+[node name="@@29399" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1248, 1056)
+texture = SubResource("PlaceholderTexture2D_6jfor")
+
+[node name="@@29400" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(992, 608)
+texture = SubResource("PlaceholderTexture2D_ix666")
+
+[node name="@@29401" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(800, 608)
+texture = SubResource("PlaceholderTexture2D_5niq2")
+
+[node name="@@29402" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 672)
+texture = SubResource("PlaceholderTexture2D_e8xfm")
+
+[node name="@@29403" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1440, 1120)
+texture = SubResource("PlaceholderTexture2D_46y84")
+
+[node name="@@29404" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(544, 1056)
+texture = SubResource("PlaceholderTexture2D_w4iwx")
+
+[node name="@@29405" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(672, 992)
+texture = SubResource("PlaceholderTexture2D_qmlen")
+
+[node name="@@29406" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(160, 224)
+texture = SubResource("PlaceholderTexture2D_0bnvp")
+
+[node name="@@29407" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(608, 1056)
+texture = SubResource("PlaceholderTexture2D_yl1j0")
+
+[node name="@@29408" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 1632)
+texture = SubResource("PlaceholderTexture2D_7exg8")
+
+[node name="@@29409" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 608)
+texture = SubResource("PlaceholderTexture2D_ac006")
+
+[node name="@@29410" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(96, 160)
+texture = SubResource("PlaceholderTexture2D_tle6t")
+
+[node name="@@29411" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 480)
+texture = SubResource("PlaceholderTexture2D_jdfgk")
+
+[node name="@@29412" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1184)
+texture = SubResource("PlaceholderTexture2D_0000m")
+
+[node name="@@29413" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 544)
+texture = SubResource("PlaceholderTexture2D_tb1jx")
+
+[node name="@@29414" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 352)
+texture = SubResource("PlaceholderTexture2D_c1lub")
+
+[node name="@@29415" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 288)
+texture = SubResource("PlaceholderTexture2D_thx24")
+
+[node name="@@29416" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 96)
+texture = SubResource("PlaceholderTexture2D_7jywl")
+
+[node name="@@29417" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1568, 992)
+texture = SubResource("PlaceholderTexture2D_77xqc")
+
+[node name="@@29418" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1248)
+texture = SubResource("PlaceholderTexture2D_nchw8")
+
+[node name="@@29419" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 224)
+texture = SubResource("PlaceholderTexture2D_w1e7h")
+
+[node name="@@29420" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1824, 416)
+texture = SubResource("PlaceholderTexture2D_fp63f")
+
+[node name="@@29421" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 1312)
+texture = SubResource("PlaceholderTexture2D_yr45d")
+
+[node name="@@29422" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1248)
+texture = SubResource("PlaceholderTexture2D_lhrud")
+
+[node name="@@29423" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 288)
+texture = SubResource("PlaceholderTexture2D_kq5jx")
+
+[node name="@@29424" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 96)
+texture = SubResource("PlaceholderTexture2D_g8rky")
+
+[node name="@@29425" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1632, 992)
+texture = SubResource("PlaceholderTexture2D_otikl")
+
+[node name="@@29426" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2592, 1568)
+texture = SubResource("PlaceholderTexture2D_b0jkk")
+
+[node name="@@29427" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1888, 1056)
+texture = SubResource("PlaceholderTexture2D_a7qmo")
+
+[node name="@@29428" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 672)
+texture = SubResource("PlaceholderTexture2D_ttfa0")
+
+[node name="@@29429" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1760, 992)
+texture = SubResource("PlaceholderTexture2D_5rq5w")
+
+[node name="@@29430" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 416)
+texture = SubResource("PlaceholderTexture2D_reget")
+
+[node name="@@29431" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2656, 1440)
+texture = SubResource("PlaceholderTexture2D_nr8o3")
+
+[node name="@@29432" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 480)
+texture = SubResource("PlaceholderTexture2D_ncdl2")
+
+[node name="@@29433" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2720, 416)
+texture = SubResource("PlaceholderTexture2D_nxlqy")
+
+[node name="@@29434" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 1632)
+texture = SubResource("PlaceholderTexture2D_ggtoe")
+
+[node name="@@29435" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2016, 1056)
+texture = SubResource("PlaceholderTexture2D_7byca")
+
+[node name="@@29436" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2784, 288)
+texture = SubResource("PlaceholderTexture2D_pbefj")
+
+[node name="@@29437" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2080, 480)
+texture = SubResource("PlaceholderTexture2D_vx2bd")
+
+[node name="@@29438" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 224)
+texture = SubResource("PlaceholderTexture2D_q261p")
+
+[node name="@@29439" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2528, 1632)
+texture = SubResource("PlaceholderTexture2D_kqybk")
+
+[node name="@@29440" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1504, 736)
+texture = SubResource("PlaceholderTexture2D_7xfbo")
+
+[node name="@@29441" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2144, 1120)
+texture = SubResource("PlaceholderTexture2D_8l87v")
+
+[node name="@@29442" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 160)
+texture = SubResource("PlaceholderTexture2D_p5ff5")
+
+[node name="@@29443" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1056)
+texture = SubResource("PlaceholderTexture2D_yk6qd")
+
+[node name="@@29444" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1056)
+texture = SubResource("PlaceholderTexture2D_xjfn8")
+
+[node name="@@29445" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(928, 480)
+texture = SubResource("PlaceholderTexture2D_rqqy0")
+
+[node name="@@29446" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1504)
+texture = SubResource("PlaceholderTexture2D_rgoqk")
+
+[node name="@@29447" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1120, 736)
+texture = SubResource("PlaceholderTexture2D_2hspl")
+
+[node name="@@29448" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2464, 160)
+texture = SubResource("PlaceholderTexture2D_h0efl")
+
+[node name="@@29449" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 416)
+texture = SubResource("PlaceholderTexture2D_iefja")
+
+[node name="@@29450" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 1568)
+texture = SubResource("PlaceholderTexture2D_knqfc")
+
+[node name="@@29451" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 1440)
+texture = SubResource("PlaceholderTexture2D_8i43n")
+
+[node name="@@29452" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2400, 1440)
+texture = SubResource("PlaceholderTexture2D_s3s2x")
+
+[node name="@@29453" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1824, 1056)
+texture = SubResource("PlaceholderTexture2D_mts7u")
+
+[node name="@@29454" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2336, 96)
+texture = SubResource("PlaceholderTexture2D_51uok")
+
+[node name="@@29455" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(736, 736)
+texture = SubResource("PlaceholderTexture2D_avbsb")
+
+[node name="@@29456" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(1696, 544)
+texture = SubResource("PlaceholderTexture2D_r28ws")
+
+[node name="@@29457" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(864, 608)
+texture = SubResource("PlaceholderTexture2D_mrgtv")
+
+[node name="@@29458" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2272, 1312)
+texture = SubResource("PlaceholderTexture2D_fu46y")
+
+[node name="@@29459" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2208, 352)
+texture = SubResource("PlaceholderTexture2D_uh3wt")
+
+[node name="@@29460" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(2976, 96)
+texture = SubResource("PlaceholderTexture2D_uaqoe")
+
+[node name="@@29461" type="Sprite2D" parent="Screens/Battle/BattleMap/Pathfinding"]
+position = Vector2(160, 160)
+texture = SubResource("PlaceholderTexture2D_e10nc")
+
+[node name="Entities" type="Node2D" parent="Screens/Battle"]
+
+[node name="Player" type="CharacterBody2D" parent="Screens/Battle/Entities"]
+position = Vector2(2852, 1188)
+script = ExtResource("5_7nkbs")
+
+[node name="Polygon2D" type="Polygon2D" parent="Screens/Battle/Entities/Player"]
+color = Color(1, 0, 1, 1)
+polygon = PackedVector2Array(0, -23, 23, -1, 0, 21, -22, -2)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Screens/Battle/Entities/Player"]
+polygon = PackedVector2Array(0, 20, 22, -1, 0, -23, -22, -2)
+
+[node name="Enemy" type="CharacterBody2D" parent="Screens/Battle/Entities"]
+position = Vector2(2404, 476)
+script = ExtResource("5_7nkbs")
+team = "Enemy"
+
+[node name="Polygon2D" type="Polygon2D" parent="Screens/Battle/Entities/Enemy"]
+color = Color(0, 0, 1, 1)
+polygon = PackedVector2Array(0, -23, 23, -1, 0, 21, -22, -2)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Screens/Battle/Entities/Enemy"]
+polygon = PackedVector2Array(0, 20, 22, -1, 0, -23, -22, -2)
+
+[node name="TurnManager" type="Node2D" parent="Screens/Battle"]
+script = ExtResource("8_vbswf")
+
+[node name="ActionManager" type="Node2D" parent="Screens/Battle"]
+script = ExtResource("9_hl6ej")
+
+[node name="ToDO" type="Node2D" parent="Screens/Battle"]
+
+[node name="Actions" type="Node2D" parent="Screens/Battle/ToDO"]
+
+[node name="Move" type="Node2D" parent="Screens/Battle/ToDO/Actions"]
+
+[node name="Attack" type="Node2D" parent="Screens/Battle/ToDO/Actions"]
+
+[node name="SpeedSystem" type="Node2D" parent="Screens/Battle/ToDO/Actions"]
