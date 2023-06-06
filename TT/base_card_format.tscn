@@ -1,0 +1,267 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3ug8fx0ubhsx"]
+
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_2vqdb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_llr7b"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 0.67451)
+border_color = Color(0.8, 0.8, 0.8, 0)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 3.0
+expand_margin_top = 3.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
+
+[node name="Background" type="PanelContainer"]
+offset_right = 500.0
+offset_bottom = 700.0
+
+[node name="Margins" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="CardContainer" type="VBoxContainer" parent="Margins"]
+layout_mode = 2
+
+[node name="TitleBar" type="HBoxContainer" parent="Margins/CardContainer"]
+layout_mode = 2
+
+[node name="TitleBackground" type="PanelContainer" parent="Margins/CardContainer/TitleBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="Margins/CardContainer/TitleBar/TitleBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Name"
+
+[node name="QRCode" type="TextureRect" parent="Margins/CardContainer/TitleBar"]
+layout_mode = 2
+texture = ExtResource("1_2vqdb")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="Portrait" type="TextureRect" parent="Margins/CardContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("1_2vqdb")
+stretch_mode = 6
+
+[node name="TextBackground" type="PanelContainer" parent="Margins/CardContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="TextBoxContainer" type="VBoxContainer" parent="Margins/CardContainer/TextBackground"]
+layout_mode = 2
+
+[node name="TextBox" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "The text explaining the cards effects go here. This is meant to be an entry level explanation that can give a new player an idea of how this card might be used. Any in depth explanations or advanced rulings will be kept online and accessed via the qrcode or in the rulebook."
+autowrap_mode = 3
+text_overrun_behavior = 4
+
+[node name="GemBarBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer"]
+layout_mode = 2
+
+[node name="GemBarContainer" type="HBoxContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground"]
+custom_minimum_size = Vector2(0, 65)
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Gem1" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem1"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem1/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1
+
+[node name="Gem2" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem2/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1
+
+[node name="Gem3" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem3"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem3/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1
+
+[node name="Gem4" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem4"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem4/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1
+
+[node name="Gem5" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem5"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem5/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1
+
+[node name="Gem6" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem6"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem6/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1
+
+[node name="Gem7" type="TextureRect" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_2vqdb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemLabelBackground" type="PanelContainer" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem7"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -20.0
+offset_right = 7.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_llr7b")
+
+[node name="GemLabel" type="Label" parent="Margins/CardContainer/TextBackground/TextBoxContainer/GemBarBackground/GemBarContainer/Gem7/GemLabelBackground"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "15"
+horizontal_alignment = 1

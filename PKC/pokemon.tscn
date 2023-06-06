@@ -1,0 +1,124 @@
+[gd_scene load_steps=9 format=3 uid="uid://bgbu7tlnevbo3"]
+
+[ext_resource type="Script" path="res://PKC/Pokemon.gd" id="1_c3km3"]
+[ext_resource type="Script" path="res://PKC/Commands/Move.gd" id="2_t3x2f"]
+[ext_resource type="Script" path="res://PKC/Commands/Pass.gd" id="4_v7463"]
+[ext_resource type="Script" path="res://PKC/Commands/Tackle.gd" id="5_qia4f"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vtavm"]
+radius = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_8vgnm"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="GDScript" id="GDScript_ltquw"]
+script/source = "extends Node3D
+
+enum BREAKPOINT {
+	FIRST_AVAILABLE,
+	FIRST_SUCESSFUL,
+	ALL
+}
+enum ORDER {
+	SEQUENTIAL,
+	RANDOM
+}
+enum RESOLUTION {
+	NOTHING,
+	RANDOMIZE_ORDER,
+	MOVE_TO_FRONT,
+	MOVE_TO_BACK,
+	DELETE,
+	DELETE_WHEN_DONE
+}
+
+@export var break_point : BREAKPOINT = BREAKPOINT.FIRST_SUCESSFUL
+@export var order : ORDER = ORDER.SEQUENTIAL
+@export var resolution : RESOLUTION = RESOLUTION.NOTHING
+
+func run(delta : float = 0.0):
+	for command in get_current_nodes():
+		command.run(delta)
+		resolve(command)
+
+func get_current_nodes() -> Array:
+	var children : = get_children()
+	if order == ORDER.RANDOM:
+		children.shuffle()
+	match break_point:
+		BREAKPOINT.ALL:
+			return children
+		BREAKPOINT.FIRST_SUCESSFUL:
+			for child in children:
+				if child.can_do():
+					return [child]
+			return []
+		BREAKPOINT.FIRST_AVAILABLE, _:
+			return [children[0]]
+			
+func resolve(node : Node3D):
+	match resolution:
+		RESOLUTION.MOVE_TO_FRONT:
+			move_child(node, 0)
+		RESOLUTION.MOVE_TO_BACK:
+			move_child(node, -1)
+		RESOLUTION.RANDOMIZE_ORDER:
+			move_child(node, randi() % get_child_count())
+		RESOLUTION.DELETE:				
+			node.free()
+		RESOLUTION.DELETE_WHEN_DONE:
+			if node.complete():
+				node.free()
+		RESOLUTION.NOTHING, _:
+			pass
+		
+func has_nodes() -> bool:
+	return get_child_count() > 0
+	
+func get_current_node() -> Node3D:
+	return get_current_nodes()[0]
+
+
+
+
+"
+
+[sub_resource type="Curve3D" id="Curve3D_bksjn"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -6),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[node name="PokemonA" type="CharacterBody3D"]
+process_mode = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.1, 0)
+motion_mode = 1
+script = ExtResource("1_c3km3")
+commands = [ExtResource("2_t3x2f")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_vtavm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_8vgnm")
+
+[node name="CommandList" type="Node3D" parent="."]
+script = SubResource("GDScript_ltquw")
+break_point = 0
+resolution = 5
+
+[node name="Pass" type="Node3D" parent="CommandList"]
+script = ExtResource("4_v7463")
+
+[node name="Tackle" type="Node3D" parent="CommandList"]
+script = ExtResource("5_qia4f")
+
+[node name="Move" type="Node3D" parent="CommandList"]
+script = ExtResource("2_t3x2f")
+target = Vector3(1, 0, 0)
+direction = null
+parent_path = NodePath("../..")
+path = SubResource("Curve3D_bksjn")
+cost_time = null

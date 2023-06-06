@@ -1,0 +1,148 @@
+[gd_scene load_steps=13 format=3 uid="uid://d30c17k0g8hig"]
+
+[ext_resource type="Script" path="res://Util/ModularAI/Reasoner.gd" id="1_y2miq"]
+[ext_resource type="Script" path="res://Util/ModularAI/Consideration.gd" id="2_wc214"]
+[ext_resource type="Script" path="res://Util/ModularAI/Action.gd" id="3_obb3j"]
+[ext_resource type="Script" path="res://Util/ModularAI/Option.gd" id="4_cqlyq"]
+[ext_resource type="Script" path="res://Util/ModularAI/ReasonerScore.gd" id="5_t3nqd"]
+[ext_resource type="Script" path="res://Util/ModularAI/AIRegion2D.gd" id="7_8fe0w"]
+[ext_resource type="Script" path="res://Util/ModularAI/MoveTowardsRandomPointInRegion.gd" id="7_34yqe"]
+[ext_resource type="Script" path="res://Util/ModularAI/DistanceToTarget.gd" id="9_qa2n8"]
+[ext_resource type="Script" path="res://Util/ModularAI/MoveAwayFromTarget.gd" id="9_v8ql1"]
+[ext_resource type="Script" path="res://Util/ModularAI/CursorTarget.gd" id="10_b18e3"]
+[ext_resource type="Script" path="res://Util/ModularAI/ManualTarget.gd" id="11_g0nd3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_63cgm"]
+radius = 32.0
+
+[node name="ModularAITestBed" type="Node2D"]
+
+[node name="Reasoner" type="Node2D" parent="."]
+script = ExtResource("1_y2miq")
+
+[node name="UtilityBased" type="Node2D" parent="Reasoner"]
+visible = false
+
+[node name="RulesBased" type="Node2D" parent="Reasoner"]
+
+[node name="Sequence" type="Node2D" parent="Reasoner"]
+
+[node name="Consideration" type="Node2D" parent="."]
+script = ExtResource("2_wc214")
+
+[node name="ExecutionHistory" type="Node2D" parent="Consideration"]
+
+[node name="Distance" type="Node2D" parent="Consideration"]
+visible = false
+
+[node name="Picker" type="Node2D" parent="Consideration"]
+
+[node name="Action" type="Node2D" parent="."]
+script = ExtResource("3_obb3j")
+
+[node name="Move" type="Node2D" parent="Action"]
+visible = false
+
+[node name="Attack" type="Node2D" parent="Action"]
+
+[node name="SubReasoner" type="Node2D" parent="Action"]
+
+[node name="Sensor" type="Node2D" parent="."]
+
+[node name="LocalSpace" type="Node2D" parent="Sensor"]
+
+[node name="SightedTarget" type="Node2D" parent="Sensor"]
+
+[node name="Util" type="Node2D" parent="."]
+
+[node name="WeightFunctions" type="Node2D" parent="Util"]
+
+[node name="Target" type="Node2D" parent="Util"]
+visible = false
+
+[node name="Region" type="Node2D" parent="Util"]
+visible = false
+
+[node name="Option" type="Node2D" parent="Util"]
+visible = false
+script = ExtResource("4_cqlyq")
+
+[node name="TestBody" type="CharacterBody2D" parent="."]
+position = Vector2(62.0915, -1.05273)
+motion_mode = 1
+velocity = Vector2(17.1928, -8.08578)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TestBody"]
+polygon = PackedVector2Array(0, -7, 15, 0, 0, 7, -6, 0)
+
+[node name="Polygon2D" type="Polygon2D" parent="TestBody"]
+polygon = PackedVector2Array(0, -7, 15, 0, 0, 7, -6, 0)
+
+[node name="AI" type="Node2D" parent="TestBody"]
+
+[node name="Explore" type="Node2D" parent="TestBody/AI"]
+
+[node name="RandomWalk" type="Node2D" parent="TestBody/AI/Explore"]
+
+[node name="FindPreviousTreasure" type="Node2D" parent="TestBody/AI/Explore"]
+
+[node name="Threat" type="Node2D" parent="TestBody/AI"]
+
+[node name="RunAwayFromCursor" type="Node2D" parent="TestBody/AI/Threat"]
+
+[node name="DistanceFromCursor" type="Node2D" parent="TestBody/AI/Threat/RunAwayFromCursor"]
+
+[node name="KnockAwayEnemies" type="Node2D" parent="TestBody/AI/Threat"]
+
+[node name="DistanceFromEnemies" type="Node2D" parent="TestBody/AI/Threat/KnockAwayEnemies"]
+
+[node name="Take" type="Node2D" parent="TestBody/AI"]
+
+[node name="GetTreasure" type="Node2D" parent="TestBody/AI/Take"]
+
+[node name="DistanceFromTreasure" type="Node2D" parent="TestBody/AI/Take/GetTreasure"]
+
+[node name="Reasoner" type="Node2D" parent="TestBody"]
+script = ExtResource("5_t3nqd")
+
+[node name="RandomWalkOption" type="Node2D" parent="TestBody/Reasoner"]
+script = ExtResource("4_cqlyq")
+reset_when_done = true
+score = 0.1
+base_weight = 0.1
+
+[node name="MoveTowardsRandomPointInRegion" type="Node2D" parent="TestBody/Reasoner/RandomWalkOption"]
+script = ExtResource("7_34yqe")
+parent_path = NodePath("../../..")
+
+[node name="ForwardRegion" type="Node2D" parent="TestBody/Reasoner/RandomWalkOption/MoveTowardsRandomPointInRegion"]
+position = Vector2(31, 0)
+script = ExtResource("7_8fe0w")
+shape = SubResource("CircleShape2D_63cgm")
+debug_draw = true
+
+[node name="Marker2D" type="Marker2D" parent="TestBody/Reasoner/RandomWalkOption/MoveTowardsRandomPointInRegion"]
+top_level = true
+position = Vector2(81.3071, -10.0792)
+
+[node name="RunAwayOption" type="Node2D" parent="TestBody/Reasoner"]
+script = ExtResource("4_cqlyq")
+push_on_stack_when_selected = true
+
+[node name="MoveAwayFromTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption"]
+script = ExtResource("9_v8ql1")
+parent_path = NodePath("../../..")
+
+[node name="CursorTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption/MoveAwayFromTarget"]
+script = ExtResource("10_b18e3")
+
+[node name="DistanceToTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption"]
+script = ExtResource("9_qa2n8")
+distance_threshold = 128
+
+[node name="CursorTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption/DistanceToTarget"]
+script = ExtResource("10_b18e3")
+
+[node name="ManualTarget" type="Marker2D" parent="TestBody/Reasoner/RunAwayOption/DistanceToTarget"]
+position = Vector2(10, 0)
+script = ExtResource("11_g0nd3")

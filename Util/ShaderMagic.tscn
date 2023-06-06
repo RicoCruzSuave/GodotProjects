@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://cwatrjcfmpmi1"]
+
+[ext_resource type="Shader" path="res://Util/step_color.gdshader" id="1_g8jnw"]
+[ext_resource type="Shader" path="res://Util/cave_ca.gdshader" id="2_kaiiq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3sknd"]
+shader = ExtResource("1_g8jnw")
+shader_parameter/steps = 1.0
+shader_parameter/alpha_included = false
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_maq4y"]
+noise_type = 3
+frequency = 0.379
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gcydo"]
+width = 48
+height = 27
+noise = SubResource("FastNoiseLite_maq4y")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4ohsy"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7eopq"]
+resource_local_to_scene = true
+shader = ExtResource("2_kaiiq")
+shader_parameter/enabled = true
+shader_parameter/stopped = false
+shader_parameter/death_count = 4.0
+shader_parameter/life_count = 5.0
+shader_parameter/wall_values = SubResource("ViewportTexture_4ohsy")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dpr7c"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_b4jf3"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[node name="ShaderMagic" type="Node2D"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 48.0
+offset_bottom = 27.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(10, 10)
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+canvas_item_default_texture_repeat = 1
+size = Vector2i(48, 27)
+size_2d_override = Vector2i(480, 270)
+render_target_clear_mode = 1
+render_target_update_mode = 1
+
+[node name="Background" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_3sknd")
+texture = SubResource("NoiseTexture2D_gcydo")
+centered = false
+
+[node name="ViewportFeedback" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_7eopq")
+texture = SubResource("ViewportTexture_dpr7c")
+centered = false
+
+[node name="Output" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+position = Vector2(240, 410)
+scale = Vector2(10, 10)
+texture = SubResource("ViewportTexture_b4jf3")
