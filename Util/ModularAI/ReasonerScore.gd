@@ -49,6 +49,6 @@ func think() -> void:
 		selected_option.deselect()
 		if selected_option.reset_when_done:
 			selected_option.select()
-	selected_option.update()
+	selected_option.update() 
 	
 
