@@ -1,4 +1,4 @@
-[gd_scene load_steps=484 format=3 uid="uid://dq2rvw3xksgpu"]
+[gd_scene load_steps=485 format=3 uid="uid://dq2rvw3xksgpu"]
 
 [ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_wtx80"]
 [ext_resource type="Script" path="res://Util/ConnectPoints.gd" id="2_4bee6"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://MRD/Entity.gd" id="5_7nkbs"]
 [ext_resource type="Script" path="res://Util/TileMap/SpriteDraw.gd" id="5_o5l2n"]
 [ext_resource type="Script" path="res://Util/TileMap/TileMapAStar.gd" id="6_pvxu1"]
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="8_2sbes"]
 [ext_resource type="Script" path="res://MRD/TurnManager.gd" id="8_vbswf"]
 [ext_resource type="Script" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
 
@@ -3658,65 +3659,108 @@ visible = false
 
 [node name="ActionUI" type="Control" parent="Screens/Battle/Entities/Player"]
 layout_mode = 3
-anchors_preset = 10
-anchor_right = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+metadata/_edit_use_anchors_ = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Screens/Battle/Entities/Player/ActionUI"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -26.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer"]
+[node name="LeftButton" type="TextureButton" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("8_2sbes")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control"]
+layout_mode = 0
+offset_left = -59.0
+offset_right = 95.0
+offset_bottom = 26.0
+alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 3
 theme_override_constants/margin_right = 3
 
-[node name="Label" type="Label" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/PanelContainer/MarginContainer"]
+[node name="Label" type="Label" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Attack"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer2" type="PanelContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/PanelContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer/PanelContainer2"]
 layout_mode = 2
 theme_override_constants/margin_left = 3
 theme_override_constants/margin_right = 3
 
-[node name="Label" type="Label" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/PanelContainer2/MarginContainer"]
+[node name="Label" type="Label" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer/PanelContainer2/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Move"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer3" type="PanelContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer"]
+[node name="PanelContainer3" type="PanelContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/PanelContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer/PanelContainer3"]
 layout_mode = 2
 theme_override_constants/margin_left = 3
 theme_override_constants/margin_right = 3
 
-[node name="Label" type="Label" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/PanelContainer3/MarginContainer"]
+[node name="Label" type="Label" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer/Control/HBoxContainer/PanelContainer3/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Pass"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RightButton" type="TextureButton" parent="Screens/Battle/Entities/Player/ActionUI/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("8_2sbes")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="Enemy" type="CharacterBody2D" parent="Screens/Battle/Entities"]
 position = Vector2(2908, 1628)
