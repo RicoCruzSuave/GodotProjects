@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://cwatrjcfmpmi1"]
 
-[ext_resource type="Shader" path="res://Util/step_color.gdshader" id="1_g8jnw"]
-[ext_resource type="Shader" path="res://Util/cave_ca.gdshader" id="2_kaiiq"]
+[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_g8jnw"]
+[ext_resource type="Shader" path="res://Util/GPU/cave_ca.gdshader" id="2_kaiiq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3sknd"]
 shader = ExtResource("1_g8jnw")

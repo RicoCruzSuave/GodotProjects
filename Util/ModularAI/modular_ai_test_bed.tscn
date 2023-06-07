@@ -1,16 +1,16 @@
 [gd_scene load_steps=13 format=3 uid="uid://d30c17k0g8hig"]
 
-[ext_resource type="Script" path="res://Util/ModularAI/Reasoner.gd" id="1_y2miq"]
-[ext_resource type="Script" path="res://Util/ModularAI/Consideration.gd" id="2_wc214"]
-[ext_resource type="Script" path="res://Util/ModularAI/Action.gd" id="3_obb3j"]
+[ext_resource type="Script" path="res://Util/ModularAI/Reasoners/Reasoner.gd" id="1_5poqf"]
+[ext_resource type="Script" path="res://Util/ModularAI/Considerations/Consideration.gd" id="2_huqwp"]
+[ext_resource type="Script" path="res://Util/ModularAI/Actions/Action.gd" id="3_ujtv8"]
 [ext_resource type="Script" path="res://Util/ModularAI/Option.gd" id="4_cqlyq"]
-[ext_resource type="Script" path="res://Util/ModularAI/ReasonerScore.gd" id="5_t3nqd"]
+[ext_resource type="Script" path="res://Util/ModularAI/Reasoners/ReasonerScore.gd" id="5_i47fr"]
+[ext_resource type="Script" path="res://Util/ModularAI/Actions/MoveTowardsRandomPointInRegion.gd" id="6_g7m8x"]
 [ext_resource type="Script" path="res://Util/ModularAI/AIRegion2D.gd" id="7_8fe0w"]
-[ext_resource type="Script" path="res://Util/ModularAI/MoveTowardsRandomPointInRegion.gd" id="7_34yqe"]
-[ext_resource type="Script" path="res://Util/ModularAI/DistanceToTarget.gd" id="9_qa2n8"]
-[ext_resource type="Script" path="res://Util/ModularAI/MoveAwayFromTarget.gd" id="9_v8ql1"]
-[ext_resource type="Script" path="res://Util/ModularAI/CursorTarget.gd" id="10_b18e3"]
-[ext_resource type="Script" path="res://Util/ModularAI/ManualTarget.gd" id="11_g0nd3"]
+[ext_resource type="Script" path="res://Util/ModularAI/Actions/MoveAwayFromTarget.gd" id="8_sbo5d"]
+[ext_resource type="Script" path="res://Util/ModularAI/Targets/CursorTarget.gd" id="9_ir8re"]
+[ext_resource type="Script" path="res://Util/ModularAI/Considerations/DistanceToTarget.gd" id="10_yxh74"]
+[ext_resource type="Script" path="res://Util/ModularAI/Targets/ManualTarget.gd" id="11_u54rp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_63cgm"]
 radius = 32.0
@@ -18,7 +18,7 @@ radius = 32.0
 [node name="ModularAITestBed" type="Node2D"]
 
 [node name="Reasoner" type="Node2D" parent="."]
-script = ExtResource("1_y2miq")
+script = ExtResource("1_5poqf")
 
 [node name="UtilityBased" type="Node2D" parent="Reasoner"]
 visible = false
@@ -28,7 +28,7 @@ visible = false
 [node name="Sequence" type="Node2D" parent="Reasoner"]
 
 [node name="Consideration" type="Node2D" parent="."]
-script = ExtResource("2_wc214")
+script = ExtResource("2_huqwp")
 
 [node name="ExecutionHistory" type="Node2D" parent="Consideration"]
 
@@ -38,7 +38,7 @@ visible = false
 [node name="Picker" type="Node2D" parent="Consideration"]
 
 [node name="Action" type="Node2D" parent="."]
-script = ExtResource("3_obb3j")
+script = ExtResource("3_ujtv8")
 
 [node name="Move" type="Node2D" parent="Action"]
 visible = false
@@ -103,7 +103,7 @@ polygon = PackedVector2Array(0, -7, 15, 0, 0, 7, -6, 0)
 [node name="DistanceFromTreasure" type="Node2D" parent="TestBody/AI/Take/GetTreasure"]
 
 [node name="Reasoner" type="Node2D" parent="TestBody"]
-script = ExtResource("5_t3nqd")
+script = ExtResource("5_i47fr")
 
 [node name="RandomWalkOption" type="Node2D" parent="TestBody/Reasoner"]
 script = ExtResource("4_cqlyq")
@@ -112,7 +112,7 @@ score = 0.1
 base_weight = 0.1
 
 [node name="MoveTowardsRandomPointInRegion" type="Node2D" parent="TestBody/Reasoner/RandomWalkOption"]
-script = ExtResource("7_34yqe")
+script = ExtResource("6_g7m8x")
 parent_path = NodePath("../../..")
 
 [node name="ForwardRegion" type="Node2D" parent="TestBody/Reasoner/RandomWalkOption/MoveTowardsRandomPointInRegion"]
@@ -130,19 +130,19 @@ script = ExtResource("4_cqlyq")
 push_on_stack_when_selected = true
 
 [node name="MoveAwayFromTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption"]
-script = ExtResource("9_v8ql1")
+script = ExtResource("8_sbo5d")
 parent_path = NodePath("../../..")
 
 [node name="CursorTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption/MoveAwayFromTarget"]
-script = ExtResource("10_b18e3")
+script = ExtResource("9_ir8re")
 
 [node name="DistanceToTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption"]
-script = ExtResource("9_qa2n8")
+script = ExtResource("10_yxh74")
 distance_threshold = 128
 
 [node name="CursorTarget" type="Node2D" parent="TestBody/Reasoner/RunAwayOption/DistanceToTarget"]
-script = ExtResource("10_b18e3")
+script = ExtResource("9_ir8re")
 
 [node name="ManualTarget" type="Marker2D" parent="TestBody/Reasoner/RunAwayOption/DistanceToTarget"]
 position = Vector2(10, 0)
-script = ExtResource("11_g0nd3")
+script = ExtResource("11_u54rp")

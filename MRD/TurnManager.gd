@@ -28,7 +28,7 @@ func get_current_team() -> String:
 	return teams.keys()[team_index]
 
 func get_team_details(team_name : String) -> Dictionary:
-	return teams.get(get_current_team())
+	return teams.get(team_name)
 
 func get_team_members(team_name : String) -> Array:
 	return get_team_details(team_name).get("Members")
