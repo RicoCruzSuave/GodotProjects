@@ -8,6 +8,8 @@ extends CharacterBody2D
 @onready var polygon : = $Polygon2D
 @onready var collision : = $CollisionPolygon2D
 
+var currently_focused : = false
+
 func _ready():
 	turn_manager.add_to_team(team, self)
 	polygon.color = turn_manager.get_team_colors(team)
