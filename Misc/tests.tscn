@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cgrie7tkt6apq"]
+[gd_scene load_steps=21 format=3 uid="uid://cgrie7tkt6apq"]
 
 [ext_resource type="Shader" path="res://Misc/rts_terrain.gdshader" id="1_0oarm"]
 
@@ -144,6 +144,8 @@ resource_local_to_scene = true
 shader = SubResource("Shader_vobxn")
 shader_parameter/viewport = SubResource("NoiseTexture2D_l8ktd")
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_7vud0"]
+
 [node name="tests" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -151,6 +153,7 @@ transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 1)
 current = true
 
 [node name="RTSTerrain" type="Node3D" parent="."]
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RTSTerrain"]
 mesh = SubResource("PlaneMesh_hoeru")
@@ -181,3 +184,12 @@ position = Vector2(50, 20)
 scale = Vector2(20, 20)
 color = Color(0.545098, 1, 1, 1)
 polygon = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
+
+[node name="RTSUnitsTest" type="Node3D" parent="."]
+
+[node name="TestFloor" type="MeshInstance3D" parent="RTSUnitsTest"]
+mesh = SubResource("PlaneMesh_7vud0")
+
+[node name="Units" type="Node3D" parent="RTSUnitsTest"]
+
+[node name="Spawner" type="Node3D" parent="RTSUnitsTest"]
