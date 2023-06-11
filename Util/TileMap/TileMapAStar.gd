@@ -17,6 +17,9 @@ enum TILES {
 
 var astar : = AStar2D.new()
 
+func _ready():
+	_generate_pathfinding()
+
 func _generate_pathfinding():
 	var map : TileMap 
 	if Engine.is_editor_hint():

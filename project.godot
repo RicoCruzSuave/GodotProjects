@@ -90,7 +90,7 @@ project/assembly_name="CC4.0"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/float_script_editor/plugin.cfg", "res://addons/gdfxr/plugin.cfg", "res://addons/csgtomeshinstance/plugin.cfg", "res://addons/assetplacer/plugin.cfg")
+enabled=PackedStringArray("res://addons/float_script_editor/plugin.cfg", "res://addons/gdfxr/plugin.cfg", "res://addons/csgtomeshinstance/plugin.cfg", "res://addons/assetplacer/plugin.cfg", "res://addons/xsm/plugin.cfg")
 
 [godot_idea_board]
 
