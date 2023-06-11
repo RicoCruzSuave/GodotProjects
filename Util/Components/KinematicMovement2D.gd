@@ -47,7 +47,6 @@ func move_towards(point : Vector2):
 		var projected_distance : = projected_position.distance_to(point) 
 		var projected_distance_normalized : float = min(projected_distance, smooth_threshold) / smooth_threshold
 #		projected_distance_normalized = pow(projected_distance_normalized,  10)
-		print(projected_distance_normalized)
 		var projected_speed : = projected_distance_normalized * speed
 		add_impulse(projected_direction_to_point * projected_speed)		
 	else:
