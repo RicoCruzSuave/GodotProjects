@@ -1,0 +1,163 @@
+[gd_scene load_steps=3 format=3 uid="uid://br73vw45bjrdn"]
+
+[sub_resource type="GDScript" id="GDScript_bt08i"]
+script/source = "extends Node2D
+\"\"\"
+Feast Machine test
+World node
+	-This node handles all manipulation of the world and drawing the atoms
+	
+Atoms 
+	-Atoms provide blueprints and stats for how the atom behaves
+	-Can only see the event window (provided by world node?)
+	-Operates atomically, within its own world and parameters
+\"\"\"
+
+# 4 0 6
+# 2 @ 3
+# 7 1 5
+
+@export var sim_size : = Vector2i(100, 100) 
+
+@onready var sprite : = $Sprite2D
+var cells : = []
+var image : = Image.create(sim_size.x, sim_size.y, false, Image.FORMAT_RGB8)
+
+enum DIR {
+		CENTER,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+		UP_LEFT,
+		DOWN_RIGHT,
+		UP_RIGHT,
+		DOWN_LEFT
+	}
+
+func _ready():
+	image.fill(Color.WEB_GRAY)
+	
+	var new_image_tex : = ImageTexture.create_from_image(image)
+	sprite.texture = new_image_tex
+	
+	
+	cells.resize(sim_size.x)
+	cells.fill([])
+	for array in cells:
+		array.resize(sim_size.y)
+#		array.fill(Atom.new())
+	
+func _physics_process(delta):
+	
+	for _i in 100:
+		var cell_pos : = Vector2i(randi_range(0, 98), randi_range(0, 98))
+		var current_cell = cells[cell_pos.x][cell_pos.y]
+		if not current_cell is Atom:
+			break
+		var current_context : = get_context(cell_pos)
+		var new_context : Dictionary = current_cell.act(current_context)
+		
+		for key in new_context.keys():
+			var event_pos : Vector2i = cell_pos + key
+			var new_cell : Atom = new_context[key]
+			cells[event_pos.x][event_pos.y] = new_context[key]
+			image.set_pixelv(event_pos, new_context[key].color)
+	
+	if Input.is_action_pressed(\"left_click\"):
+		add_cell()
+		
+	var new_image_tex : = ImageTexture.create_from_image(image)
+	sprite.texture = new_image_tex
+
+func get_context(pos : Vector2i) -> Dictionary:
+	var context : = {
+		Vector2i.ZERO: cells[pos.x][pos.y]
+	}
+	if is_in_bounds(pos + Vector2i.DOWN) and context[Vector2i.DOWN] is Atom:
+		context[Vector2i.DOWN] = cells[pos.x + Vector2i.DOWN.x][pos.y + Vector2i.DOWN.y]
+	return context
+	
+func add_cell():
+	var pos : = Vector2i(get_global_mouse_position())
+#	cells[pos_to_id(pos)] = Falling.new()
+#	cells.append(Falling.new(Vector2i(pos)))
+	cells[pos.x][pos.y] = Falling.new()
+
+func id_to_pos(id : int) -> Vector2i:
+	return Vector2i(id % sim_size.y, id / sim_size.y)
+	
+func pos_to_id(pos : Vector2i) -> int:
+	if is_in_bounds(pos):
+		return (pos.y * sim_size.x) + pos.x
+	return -1
+	
+func is_in_bounds(pos : Vector2i) -> bool:
+	return pos.x >= 0 and pos.y >= 0 and pos.x < sim_size.x and pos.y < sim_size.y
+	
+	
+class Atom:
+	var density : = 0.0
+	var color : = Color.DEEP_PINK
+	var pos : = Vector2i.ZERO
+	
+	enum DIR {
+		CENTER,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+		UP_LEFT,
+		DOWN_RIGHT,
+		UP_RIGHT,
+		DOWN_LEFT
+	}
+	
+	enum TYPE {
+		ANY,
+		AIR,
+		SAND
+	}
+	
+	func act(context : Dictionary) -> Dictionary:
+		return context
+		
+	func _init(pos = Vector2i.ZERO):
+		self.pos = pos
+#	func swap_cells(context : Dictionary, relative_location : Vector2i) -> void:
+#		pass
+		
+class Falling extends Atom:
+	var rules : = []
+	
+	func _init(pos = Vector2i.ZERO):
+		super._init(pos)
+		density = randf()
+		color = Color.WHITE * (1.0 - density)
+		color.a = 1.0
+		
+	func act(context : Dictionary) -> Dictionary:
+		var new_context : = context.duplicate(true)
+		match context:
+			#Falling Rule
+			{ Vector2i.ZERO, Vector2i.DOWN, ..}:
+				if context[Vector2i.DOWN].density < density:
+					new_context[Vector2i.ZERO] = context[Vector2i.DOWN]
+					new_context[Vector2i.DOWN] = context[Vector2i.ZERO]
+		return new_context
+	
+"
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s3ury"]
+size = Vector2(100, 100)
+
+[node name="feast_machine" type="Node2D"]
+script = SubResource("GDScript_bt08i")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("PlaceholderTexture2D_s3ury")
+centered = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(53, 55)
+zoom = Vector2(3.064, 3.064)

@@ -2,6 +2,7 @@
 extends AIReasoner
 class_name AIReasonerScoreBased
 
+@export var do_first_only : = true
 @export var fuzzy_factor : = Vector2.ZERO
 @export var lower_threshold : = 0.0
 @export var test : = false 
@@ -26,6 +27,7 @@ func sense() -> void:
 func think() -> void:
 	if get_child_count() <= 0:
 		return
+	
 	for child in get_children():
 		if child is AIOption:
 			var new_option : AIOption = child
@@ -33,8 +35,10 @@ func think() -> void:
 				selected_option = child
 			var selected_option_score : = selected_option.score + randf_range(fuzzy_factor.x, fuzzy_factor.y)
 			var new_option_score : = new_option.score + randf_range(fuzzy_factor.x, fuzzy_factor.y)
-			if new_option_score < lower_threshold:
+			if new_option_score <= lower_threshold:
 				continue
+			if not do_first_only:
+				new_option.update()
 			if new_option_score > selected_option_score:
 				if new_option.push_on_stack_when_selected:
 					selected_option.suspend()
@@ -49,6 +53,7 @@ func think() -> void:
 		selected_option.deselect()
 		if selected_option.reset_when_done:
 			selected_option.select()
-	selected_option.update() 
+	if do_first_only:
+		selected_option.update() 
 	
 
