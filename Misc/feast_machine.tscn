@@ -1,0 +1,555 @@
+[gd_scene load_steps=4 format=3 uid="uid://br73vw45bjrdn"]
+
+[sub_resource type="GDScript" id="GDScript_bt08i"]
+script/source = "extends Node2D
+\"\"\"
+Feast Machine test
+World node
+	-This node handles all manipulation of the world and drawing the atoms
+	
+Atoms 
+	-Atoms provide blueprints and stats for how the atom behaves
+	-Can only see the event window (provided by world node?)
+	-Operates atomically, within its own world and parameters
+\"\"\"
+
+# 4 0 6
+# 2 @ 3
+# 7 1 5
+
+@export var sim_size : = Vector2i(100, 100) 
+
+@onready var sprite : = $Sprite2D
+@onready var image : = Image.create(sim_size.x, sim_size.y, false, Image.FORMAT_RGB8)
+
+var cells : = []
+var priority_queue : = []
+var coords : = []
+var neighbors : = []
+
+var test : = Cell.new()
+var max_counter : = 1
+
+func _ready():
+	return
+	image.fill(Color.WEB_GRAY)
+	
+	var new_image_tex : = ImageTexture.create_from_image(image)
+	sprite.texture = new_image_tex
+	
+	cells.resize(sim_size.x)
+	for x in sim_size.x:
+		cells[x] = []
+	for array in cells:
+		array.resize(sim_size.y)
+	for x in sim_size.x:
+		for y in sim_size.y:
+			cells[x][y] = Atom.new()
+#
+#	neighbors.resize(sim_size.x)
+#	for x in sim_size.x:
+#		neighbors[x] = []
+#	for array in neighbors:
+#		array.resize(sim_size.y)
+#	for x in sim_size.x:
+#		for y in sim_size.y:
+#			var current_pos : = Vector2i(x,y)
+#			neighbors[x][y] = {
+#				Vector2i.ZERO: cells[x][y],
+#				Vector2i.DOWN: null if not is_in_bounds(Vector2i(x,y) + Vector2i.DOWN) else cells[x + Vector2i.DOWN.x][y + Vector2i.DOWN.y],
+#				Vector2i.DOWN + Vector2i.LEFT: null if not is_in_bounds(Vector2i(x,y) + Vector2i.DOWN + Vector2i.LEFT) else cells[x + Vector2i.DOWN.x + Vector2i.LEFT.y][y + Vector2i.DOWN.y + Vector2i.LEFT.y],
+#				Vector2i.DOWN + Vector2i.RIGHT: null if not is_in_bounds(Vector2i(x,y) + Vector2i.DOWN + Vector2i.RIGHT) else cells[x + Vector2i.DOWN.x + Vector2i.RIGHT.y][y + Vector2i.DOWN.y + Vector2i.RIGHT.y],
+#			}
+#
+		
+	for x in range(1,sim_size.x - 1):
+		for y in range(1,sim_size.y - 1):
+			coords.append(Vector2i(x,y))
+	coords.shuffle()
+	
+	for x in sim_size.x:
+		cells[x][0] = Wall.new()
+		cells[x][sim_size.y - 1] = Wall.new()
+
+	for y in sim_size.y:
+		cells[0][y] = Wall.new()
+		cells[sim_size.x - 1][y] = Wall.new()
+
+
+	for x in sim_size.x:
+		for y in sim_size.y:
+			draw_cell(Vector2i(x,y))
+			
+	
+
+func _process(delta):
+	return
+	var priority_counter : = 0
+#	priority_queue.sort_custom(func (a, b): return a.y > b.y)
+	for _i in priority_queue.size():
+		update_cell(priority_queue.pop_front())
+		priority_counter += 1
+		if priority_counter > 500:
+			break
+	
+	var counter : = 500
+	for cell_pos in coords:
+		update_cell(cell_pos)
+		counter -= 1
+		if counter <= 0:
+			break
+#	coords.shuffle()
+	texture_update()
+#	if Engine.get_frames_per_second() > 59:
+#		max_counter += 1
+		
+	if Input.is_action_pressed(\"ui_accept\"):
+		add_cell()
+		print(test.content)
+	if Input.is_key_pressed(KEY_C):
+		clear_cell()
+		var temp : = test
+		temp.content += 1
+		
+	if Input.is_key_pressed(KEY_X):
+		add_cell(1)
+#		print(max_counter)
+
+
+		
+func texture_update():
+	sprite.texture.update(image)
+		
+func update_cell(cell_pos : Vector2i):
+	var current_cell = cells[cell_pos.x][cell_pos.y]
+	var current_context : = get_context(cell_pos)
+	var new_context : Dictionary = current_cell.act(current_context)
+	if new_context == current_context:
+#		current_cell.sleeping = true
+#	if current_cell.sleeping == true:
+		return 
+	for key in new_context.keys():
+		var event_pos : Vector2i = cell_pos + key
+#		if new_context[key].type == 0:
+#			cells[event_pos.x][event_pos.y] = Atom.new()
+#		else:
+#			cells[event_pos.x][event_pos.y] = Falling.new()
+#			cells[event_pos.x][event_pos.y].temp = new_context[key].temp		
+#			cells[event_pos.x][event_pos.y].density = new_context[key].density		
+#			cells[event_pos.x][event_pos.y].type = new_context[key].type		
+		cells[event_pos.x][event_pos.y] = new_context[key]
+#		if randf() > 0.9:
+#			new_context[key].sleeping = false
+		draw_cell(event_pos)
+#		draw_cell(event_pos, new_context[key].temp, new_context[key].density, new_context[key].type)
+		if cells[event_pos.x][event_pos.y].priority:
+			priority_queue.append(event_pos)
+		
+#func draw_cell(pos : Vector2i, color : Color):
+#	image.set_pixelv(pos, color)
+
+func draw_cell(pos : Vector2i):
+	var cell : Atom = cells[pos.x][pos.y]
+	image.set_pixelv(pos, Color8(cell.temp * 16, cell.density * 32, cell.type * 128))
+	
+
+func get_context(pos : Vector2i) -> Dictionary:
+#	var context : Dictionary = neighbors[pos.x][pos.y]
+#	var new_context : = {}
+#	for key in context.keys():
+#		if context[key] != null:
+	var context : = {
+		Vector2i.ZERO: cells[pos.x][pos.y]
+	}
+#	if cells[pos.x][pos.y].type == 3:
+#		return context
+		
+#	var current_color : = image.get_pixelv(pos)
+#	var context : = {
+#		Vector2i.ZERO: {
+#			\"density\": current_color.b8 / 16,
+#			\"temp\": current_color.r8 / 16,
+#			\"type\": current_color.g8 / 128
+#		}
+#	}
+	var check_positions : = [
+		Vector2i.DOWN, 
+		Vector2i.LEFT, 
+		Vector2i.RIGHT, 
+		Vector2i.UP, 
+		Vector2i.DOWN + Vector2i.RIGHT,
+		Vector2i.DOWN + Vector2i.LEFT,
+	]
+	for check_pos in check_positions:
+#		if is_in_bounds(pos + check_pos):
+		context[check_pos] = cells[pos.x + check_pos.x][pos.y + check_pos.y]
+#	for check_pos in check_positions:
+#		if is_in_bounds(pos + check_pos):
+#			var check_color : = image.get_pixelv(pos + check_pos)
+#			context[check_pos] = {
+#				\"density\": check_color.b8 / 16,
+#				\"temp\": check_color.r8 / 16,
+#				\"type\": check_color.g8 / 128
+#			}
+	return context
+	
+func add_cell(type : = 0):
+	var base_pos : = Vector2i(get_global_mouse_position() / sprite.scale)
+	for x in [-1, 0, 1]:
+		for y in [-1, 0, 1]:
+			var pos : = base_pos + Vector2i(x,y)
+			if is_in_bounds(pos):
+				if type == 0:
+					cells[pos.x][pos.y] = Falling.new()
+				elif type == 1:
+					cells[pos.x][pos.y] = Wander.new()					
+				draw_cell(pos)
+				
+
+func clear_cell():
+	var base_pos : = Vector2i(get_global_mouse_position() / sprite.scale)
+	for x in [-1, 0, 1]:
+		for y in [-1, 0, 1]:
+			var pos : = base_pos + Vector2i(x,y)
+			if is_in_bounds(pos):
+				cells[pos.x][pos.y] = Atom.new()
+				draw_cell(pos)
+		
+	
+#func get_cell(x : int, y : int):
+#	return cells[x][y]
+#
+#func get_cellv(pos : Vector2i):
+#	return get_cell(pos.x, pos.y)
+
+func id_to_pos(id : int) -> Vector2i:
+	return Vector2i(id % sim_size.y, id / sim_size.y)
+	
+func pos_to_id(pos : Vector2i) -> int:
+	if is_in_bounds(pos):
+		return (pos.y * sim_size.x) + pos.x
+	return -1
+	
+func is_in_bounds(pos : Vector2i) -> bool:
+	return pos.x >= 0 and pos.y  >= 0 and pos.x < sim_size.x and pos.y < sim_size.y
+	
+	
+class Cell extends RefCounted:
+	var content : = 1
+	var neighbors : = [
+		
+	]
+	
+class Atom:
+	var temp : = 0
+	var density : = 0
+	var type : = TYPE.AIR
+	var color : = Color.DEEP_PINK
+	var priority : = false
+	var sleeping : = false
+	
+	enum TYPE {
+		AIR,
+		SAND,
+		WANDER,
+		WALL
+	}
+	
+	func act(context : Dictionary) -> Dictionary:
+		return context
+		
+	func _init():
+		sleeping = true
+		pass
+		
+class Wall extends Atom:
+		
+	func _init():
+		density = 16
+		temp = 16
+		type = TYPE.WALL
+		sleeping = true
+		
+class Wander extends Atom:
+	
+	func _init():
+		density = 1
+		temp = 8
+		type = TYPE.WANDER
+		priority = true
+		
+	func act(context : Dictionary) -> Dictionary:
+		var new_context : = context.duplicate(true)
+		match context:
+			{\\
+				Vector2i.DOWN, \\
+				Vector2i.LEFT, \\
+				Vector2i.RIGHT, \\
+				Vector2i.UP, \\
+			..}:
+				var dirs: = [
+					Vector2i.DOWN, 
+					Vector2i.LEFT, 
+					Vector2i.RIGHT, 
+					Vector2i.UP
+				]
+				var dir : Vector2i = dirs.pick_random()
+				if context[dir].type != TYPE.WALL:
+					new_context[Vector2i.ZERO] = context[dir]
+					new_context[dir] = context[Vector2i.ZERO]
+		return new_context
+		
+class Falling extends Atom:
+	
+	func _init():
+		density = randi_range(1, 8)
+#		temp = randi_range(1, 16)
+		temp = 8
+		type = TYPE.SAND
+		
+	func act(context : Dictionary) -> Dictionary:
+		var new_context : = context.duplicate(true)
+		match context:
+			#Falling Rule
+			{ \\
+				Vector2i.ZERO, \\
+				Vector2i.DOWN, \\
+				Vector2i.DOWN + Vector2i.RIGHT, \\
+				Vector2i.DOWN + Vector2i.LEFT, \\
+			..}:
+				if context[Vector2i.DOWN].density < density:
+					new_context[Vector2i.ZERO] = context[Vector2i.DOWN]
+					new_context[Vector2i.DOWN] = context[Vector2i.ZERO]
+#					priority = true
+					sleeping = false
+				else:
+#					if sleeping:
+#						return new_context
+					if randf() < 0.5:
+						if context[Vector2i.DOWN + Vector2i.RIGHT].density < density:
+							new_context[Vector2i.ZERO] = context[Vector2i.DOWN + Vector2i.RIGHT]
+							new_context[Vector2i.DOWN + Vector2i.RIGHT] = context[Vector2i.ZERO]
+						elif context[Vector2i.DOWN + Vector2i.LEFT].density < density:
+							new_context[Vector2i.ZERO] = context[Vector2i.DOWN + Vector2i.LEFT]
+							new_context[Vector2i.DOWN + Vector2i.LEFT] = context[Vector2i.ZERO]
+						else:
+							sleeping = true
+							priority = false
+					else:
+						if context[Vector2i.DOWN + Vector2i.LEFT].density < density:
+							new_context[Vector2i.ZERO] = context[Vector2i.DOWN + Vector2i.LEFT]
+							new_context[Vector2i.DOWN + Vector2i.LEFT] = context[Vector2i.ZERO]
+						elif context[Vector2i.DOWN + Vector2i.RIGHT].density < density:
+							new_context[Vector2i.ZERO] = context[Vector2i.DOWN + Vector2i.RIGHT]
+							new_context[Vector2i.DOWN + Vector2i.RIGHT] = context[Vector2i.ZERO]
+						else:
+							sleeping = true
+							priority = false
+					
+							
+#			{ Vector2i.ZERO, Vector2i.DOWN,..}:
+#				if context[Vector2i.DOWN].density < density:
+#					new_context[Vector2i.ZERO] = context[Vector2i.DOWN]
+#					new_context[Vector2i.DOWN] = context[Vector2i.ZERO]
+#			_:
+#				sleeping = true
+		return new_context
+	
+"
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_s3ury"]
+size = Vector2(120, 67)
+
+[sub_resource type="GDScript" id="GDScript_r4niw"]
+script/source = "extends Node2D
+
+@export_node_path(\"Sprite2D\") var sprite_path
+@onready var sprite : = get_node(sprite_path)
+
+@export var sim_size : = Vector2i(100, 100) 
+
+@onready var image : = Image.create(sim_size.x, sim_size.y, false, Image.FORMAT_RGB8)
+
+var world : = []
+var neighbors : = []
+var cells_updated : = []
+var coords : = []
+
+var max_counter : = 100
+
+enum TYPE {
+	EMPTY,
+	SAND,
+	WANDER,
+	MAX,
+}
+
+func _ready():
+	image.fill(Color.WEB_GRAY)
+	var new_image_tex : = ImageTexture.create_from_image(image)
+	sprite.texture = new_image_tex
+	
+	world.resize(sim_size.x)
+	for x in sim_size.x:
+		world[x] = []
+	for array in world:
+		array.resize(sim_size.y)
+	for x in sim_size.x:
+		for y in sim_size.y:
+			world[x][y] = Cell.new()
+			
+	neighbors.resize(sim_size.x)
+	for x in sim_size.x:
+		neighbors[x] = []
+	for array in neighbors:
+		array.resize(sim_size.y)
+	for x in sim_size.x:
+		for y in sim_size.y:
+			var current_pos : = Vector2i(x,y)
+			neighbors[x][y] = {
+				Vector2i.ZERO: world[x][y],
+				Vector2i.UP: \\
+					null if not is_in_bounds(Vector2i(x,y) + Vector2i.UP) \\
+					else world[x + Vector2i.UP.x][y + Vector2i.UP.y],
+				Vector2i.DOWN: \\
+					null if not is_in_bounds(Vector2i(x,y) + Vector2i.DOWN) \\
+					else world[x + Vector2i.DOWN.x][y + Vector2i.DOWN.y],
+				Vector2i.RIGHT: \\
+					null if not is_in_bounds(Vector2i(x,y) + Vector2i.RIGHT) \\
+					else world[x + Vector2i.RIGHT.x][y + Vector2i.RIGHT.y],
+				Vector2i.LEFT: \\
+					null if not is_in_bounds(Vector2i(x,y) + Vector2i.LEFT) \\
+					else world[x + Vector2i.LEFT.x][y + Vector2i.LEFT.y],
+				Vector2i.DOWN + Vector2i.LEFT: \\
+					null if not is_in_bounds(Vector2i(x,y) + Vector2i.DOWN + Vector2i.LEFT) \\
+					else world[x + Vector2i.DOWN.x + Vector2i.LEFT.x][y + Vector2i.DOWN.y + Vector2i.LEFT.y],
+				Vector2i.DOWN + Vector2i.RIGHT: \\
+					null if not is_in_bounds(Vector2i(x,y) + Vector2i.DOWN + Vector2i.RIGHT) \\
+					else world[x + Vector2i.DOWN.x + Vector2i.RIGHT.x][y + Vector2i.DOWN.y + Vector2i.RIGHT.y],
+			}
+	for x in sim_size.x:
+		for y in sim_size.y:
+			var current_pos : = Vector2i(x,y)
+			coords.append(current_pos)
+	coords.shuffle()
+	
+func _process(delta):
+	draw_cells()
+	calculate_cells()
+	
+func calculate_cells():
+#	if Engine.get_frames_per_second() > 50:
+#		max_counter += 1
+#		print(max_counter)
+	for _i in range(1000):
+		var cell_position : = Vector2i(
+			randi_range(0, sim_size.x - 1),
+			randi_range(0, sim_size.y - 1),
+		)
+
+#	for cell_position in coords:
+		var current_cell : Cell = world[cell_position.x][cell_position.y]
+		cells_updated.append(cell_position)
+		match current_cell.content.type:
+			TYPE.SAND:
+				var side : = [Vector2i.RIGHT, Vector2i.LEFT]
+				side.shuffle()
+				var directions : = [
+					Vector2i.DOWN, 
+					Vector2i.DOWN + side[0],
+					Vector2i.DOWN + side[1],
+				]
+				for dir in directions:
+					var dir_cell : Cell = neighbors[cell_position.x][cell_position.y][dir]
+					if dir_cell != null and current_cell.content.density > dir_cell.content.density:
+						var temp : = current_cell.content
+						current_cell.content = dir_cell.content
+						dir_cell.content = temp
+						cells_updated.append(cell_position + dir)
+						break
+			TYPE.WANDER:
+				current_cell.content.density = 8
+				var directions : = [
+#					Vector2i.UP,
+					Vector2i.DOWN, 
+					Vector2i.LEFT,
+					Vector2i.RIGHT,
+				]
+				directions.shuffle()
+				for dir in directions:
+					var dir_cell : Cell = neighbors[cell_position.x][cell_position.y][dir]
+					if dir_cell != null:
+						var temp : = current_cell.content
+						current_cell.content = dir_cell.content
+						dir_cell.content = temp
+						cells_updated.append(cell_position + dir)
+						break
+						
+			TYPE.EMPTY, TYPE.MAX, _:
+				current_cell.content.density = 0
+#	if world.size() > 0:
+#		var current_cell : Atom = world[cell_position.x][cell_position.y].content
+#		var bottom_cell : Atom = world[cell_position.x][cell_position.y + 1].content
+#		if current_cell.density > bottom_cell.density:
+#			var temp : Atom = world[cell_position.x][cell_position.y].content 
+#			world[cell_position.x][cell_position.y].content = world[cell_position.x][cell_position.y + 1].content
+#			world[cell_position.x][cell_position.y + 1].content = temp
+		
+func draw_cells():
+	for _i in cells_updated.size():
+		draw_cell(cells_updated.pop_back())
+	sprite.texture.update(image)
+	
+
+func draw_cell(pos : Vector2i, color : = Color.WHITE):
+	var cell : Cell = world[pos.x][pos.y]
+	if color != Color.WHITE:
+		image.set_pixelv(pos, color)
+	else:
+		image.set_pixelv(pos, Color8(
+			cell.content.type * 128, 
+			cell.content.density * 16, 
+			cell.content.density * 16,
+		))
+	
+func is_in_bounds(pos : Vector2i) -> bool:
+	return pos.x >= 0 and pos.y  >= 0 and pos.x < sim_size.x and pos.y < sim_size.y
+	
+class Cell extends RefCounted:
+	var content : Atom
+	
+	func _init(type : = 0):
+#		content = Atom.new(type)	
+		if randf() < 0.5:
+			content = Atom.new(1)
+		elif randf() > 0.99:
+			content = Atom.new(2)
+		else:	
+			content = Atom.new(1)	
+class Atom:
+	var type : = 0
+	var density : = randi_range(1, 16)	
+	func _init(type : = 0):
+		self.type = type
+		
+	
+"
+
+[node name="feast_machine" type="Node2D"]
+script = SubResource("GDScript_bt08i")
+sim_size = Vector2i(120, 67)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = SubResource("PlaceholderTexture2D_s3ury")
+centered = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(277, 161)
+zoom = Vector2(2, 2)
+
+[node name="ref" type="Node2D" parent="."]
+script = SubResource("GDScript_r4niw")
+sprite_path = NodePath("../Sprite2D")
+sim_size = Vector2i(120, 67)

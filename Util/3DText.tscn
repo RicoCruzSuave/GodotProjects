@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://10yqux30yuc"]
+
+[ext_resource type="Script" path="res://Util/3DText.gd" id="1_40e0t"]
+
+[sub_resource type="TextMesh" id="TextMesh_we675"]
+text = "Seteth"
+
+[node name="3DText" type="MeshInstance3D"]
+mesh = SubResource("TextMesh_we675")
+script = ExtResource("1_40e0t")
+metadata/_edit_lock_ = true
