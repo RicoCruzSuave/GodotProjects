@@ -8,6 +8,7 @@ extends CharacterBody2D
 @onready var polygon : = $Polygon2D
 @onready var collision : = $CollisionPolygon2D
 @onready var movement : = $Movement
+@onready var pathfinding : = $Pathfinding
 
 var currently_focused : = false
 
@@ -17,7 +18,6 @@ func _ready():
 
 func _input(event):
 	if Input.is_action_just_pressed("left_click"):
-		movement.path_to(get_global_mouse_position())
-		movement.move_along_path()
-	if Input.is_action_pressed("right_click"):
-		movement.move_towards(get_global_mouse_position())
+		pathfinding.path_to(get_global_mouse_position())
+	if Input.is_action_just_pressed("ui_accept"):
+		movement.move_to_next_point()
