@@ -65,9 +65,14 @@ var neighbor_offsets : = [
 	Vector2i.DOWN + Vector2i.RIGHT,
 ]
 
+var event_window : = []
+
 func _ready():
 	if disabled:
 		return
+	#Set up event window
+	event_window = grid_circle(4)
+	
 	#Background fill on image
 	image.fill(Color.WEB_GRAY)
 	var new_image_tex : = ImageTexture.create_from_image(image)
@@ -91,7 +96,7 @@ func _ready():
 		for y in sim_size.y:
 			var current_pos : = Vector2i(x,y)
 			var neighbors_dict : = {}
-			var directions_to_add : = neighbor_offsets
+			var directions_to_add : = event_window
 			for dir in directions_to_add:
 				neighbors_dict[dir] = \\
 					null if not is_in_bounds(Vector2i(x,y) + dir) \\
@@ -135,12 +140,14 @@ func _input(event):
 		add_cell(get_global_mouse_position()/sprite.scale, 2, TYPE.STONE)
 	if Input.is_key_pressed(KEY_C):
 		add_cell(get_global_mouse_position()/sprite.scale, 2)
-	if Input.is_action_just_pressed(\"up\"):
-		var bitboard : BitMap = bitboards[0]
-		bitboard.grow_mask(1, Rect2i(120/3, 67/3, 100, 100))
-	if Input.is_action_just_pressed(\"down\"):
-		var bitboard : BitMap = bitboards[0]
-		bitboard.grow_mask(-1, Rect2i(120/3, 67/3, 100, 100))
+	if Input.is_key_pressed(KEY_X):
+		add_cell(get_global_mouse_position()/sprite.scale, 2, TYPE.WANDER)
+#	if Input.is_action_just_pressed(\"up\"):
+#		var bitboard : BitMap = bitboards[0]
+#		bitboard.grow_mask(1, Rect2i(120/3, 67/3, 50, 50))
+#	if Input.is_action_just_pressed(\"down\"):
+#		var bitboard : BitMap = bitboards[0]
+#		bitboard.grow_mask(-1, Rect2i(120/3, 67/3, 50, 50))
 	
 func _process(delta):
 	if disabled:
@@ -155,6 +162,11 @@ func calculate_cells():
 		var cell_position : Vector2i = coords[coords_index]
 		coords_index = wrapi(coords_index + 1, 0, coords.size())
 		var current_cell : Cell = world[cell_position.x][cell_position.y]
+		
+		##TODO: change this to use bitboards and check against cell rules
+		#		call act on cell for basic behavior (movement)
+		#		call react on cell for specialized behavior (cell interactions)
+		
 #		cells_updated.append(cell_position)
 		match current_cell.content.type:
 			TYPE.SAND:
@@ -185,10 +197,10 @@ func calculate_cells():
 						swap_cells(cell_position, cell_position + dir)
 						#Density sharing
 						if current_cell.content is Wander:
-							current_cell.content.act()
+							current_cell.content.act(neighbors[cell_position.x][cell_position.y])
 							var dir_atom : Wander = dir_cell.content
-							if dir_atom.light < current_cell.content.light:
-								dir_atom.light = current_cell.content.light - 1.0
+#							if dir_atom.light < current_cell.content.light:
+#								dir_atom.light = current_cell.content.light - 1.0
 #								dir_atom.light = randf() * current_cell.content.light
 						break
 			TYPE.STONE:
@@ -274,13 +286,8 @@ func add_cell(pos : Vector2i, radius : = 0, type : = TYPE.EMPTY):
 		_:
 			new_atom = Atom.new()
 			
-	if radius != 0:
-		for x in range(-radius, radius):
-			for y in range(-radius, radius):
-				if is_in_bounds(pos + Vector2i(x,y)):
-						world[pos.x + x][pos.y + y].content = new_atom
-	else:
-		world[pos.x][pos.y].content = new_atom
+	for p in grid_circle(radius):
+		world[pos.x + p.x][pos.y + p.y].content = new_atom
 		
 func swap_cells(pos1 : Vector2i, pos2 : Vector2i):
 	var cell1 : Cell = world[pos1.x][pos1.y]
@@ -300,6 +307,17 @@ func swap_cells(pos1 : Vector2i, pos2 : Vector2i):
 #		if neighbor != null and neighbor.content.type == TYPE.STONE:
 #			neighbor.content.sleeping = false
 	
+func grid_circle(radius : int) -> Array:
+	var array : = []
+	for y in range(-radius, radius + 1):
+		var dx : float = sqrt(radius*radius - y*y)
+		var left_bound : int = ceil(-dx)
+		var right_bound : int = floor(dx)
+		for x in range(left_bound, right_bound + 1):
+			array.append(Vector2i(x,y))
+			
+	return array
+	
 func is_in_bounds(pos : Vector2i) -> bool:
 	return pos.x >= 0 and pos.y  >= 0 and pos.x < sim_size.x and pos.y < sim_size.y
 	
@@ -318,12 +336,17 @@ class Wander extends Atom:
 		type = 2
 		density = 1
 		
-	func act():
-		if randf() > 0.9999:
-			light = 100.0
+	func act(neighbors : Dictionary):
+		if randf() > 0.999:
+			light = randf() * 100
 		else:
-			light -= 5.0
-			
+			light -= 25.0
+		for cell in neighbors.values():
+			if cell != null:
+				if cell.content.type == type and cell.content.light < light:
+					if randf() > 0.8:
+						cell.content.light = light - 10.0
+								
 class Stone extends Atom:
 	var sleeping : = false
 	var inertia : = 0.9
