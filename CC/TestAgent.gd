@@ -27,6 +27,7 @@ var knowledge : Dictionary = {
 }
 
 func _process(delta):
+	return
 	#Use sensor to detect things around you then update sensor
 	var results : Dictionary = sensor.detect()
 	sensor.update()
