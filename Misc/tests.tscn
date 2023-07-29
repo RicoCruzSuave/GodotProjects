@@ -163,9 +163,11 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="SubViewport" type="SubViewport" parent="RTSTerrain/SubViewportContainer"]
+handle_input_locally = false
 canvas_item_default_texture_filter = 0
 canvas_item_default_texture_repeat = 1
 size = Vector2i(128, 128)
+render_target_update_mode = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="RTSTerrain/SubViewportContainer/SubViewport"]
 texture = SubResource("NoiseTexture2D_l8ktd")
