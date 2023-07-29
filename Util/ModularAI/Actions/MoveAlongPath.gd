@@ -8,13 +8,15 @@ extends AIAction
 
 @export var threshold : = 8.0
 var time_cost : = 1.0
+var skipped : = false
 var object 
 var end_point 
+
 
 func setup(object : Object, end_point : Vector2):
 	self.object = object
 	self.end_point = end_point
-	time_cost = pathfinding.guess_path_size(end_point)
+#	time_cost = pathfinding.guess_path_size(end_point)
 
 #Called to start/stop execution
 func select() -> void:
@@ -31,4 +33,4 @@ func update() -> void:
 	movement.move_to(pathfinding.get_current_path_point())
 	
 func is_done() -> bool:
-	return object.global_position.distance_to(end_point) < threshold
+	return skipped or object.global_position.distance_to(end_point) < threshold

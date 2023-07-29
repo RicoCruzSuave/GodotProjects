@@ -15,14 +15,11 @@ extends Node2D
 
 var target_point
 
-
 func _physics_process(delta):
 #	target_point = pathfinding.get_current_path_point()
-	
 	if target_point != null:
-		if not global_position.distance_to(target_point) < arrive_threshold:
-			move_towards(target_point)
-		
+#		if not global_position.distance_to(target_point) < arrive_threshold:
+		move_towards(target_point)
 	
 	if body.velocity != Vector2.ZERO:
 		body.velocity *= 1.0 - friction
@@ -32,18 +29,18 @@ func _physics_process(delta):
 func add_impulse(impulse : Vector2):
 	body.velocity += impulse
 
-func move_towards(point : Vector2):
+func move_towards(point : Vector2, speed_scale : = 1.0):
 	var direction_to_point : = global_position.direction_to(point)
 	if arrive_smoothly:
-		var projected_position : = body.global_position + body.velocity / 10.0
+		var projected_position : = body.global_position + (body.velocity / 60.0)
 		var projected_direction_to_point : = projected_position.direction_to(point)
 		var projected_distance : = projected_position.distance_to(point) 
 		var projected_distance_normalized : float = min(projected_distance, smooth_threshold) / smooth_threshold
 #		projected_distance_normalized = pow(projected_distance_normalized,  10)
 		var projected_speed : = projected_distance_normalized * speed
-		add_impulse(projected_direction_to_point * projected_speed)		
+		add_impulse(projected_direction_to_point * projected_speed * speed_scale)		
 	else:
-		add_impulse(direction_to_point * speed)
+		add_impulse(direction_to_point * speed * speed_scale)
 
 func move_to(point : Vector2):
 	target_point = point
