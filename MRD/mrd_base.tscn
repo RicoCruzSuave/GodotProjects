@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://dq2rvw3xksgpu"]
+[gd_scene load_steps=34 format=3 uid="uid://dq2rvw3xksgpu"]
 
 [ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_wtx80"]
 [ext_resource type="Script" path="res://Util/ConnectPoints.gd" id="2_4bee6"]
@@ -12,6 +12,8 @@
 [ext_resource type="Script" path="res://MRD/TurnManager.gd" id="8_vbswf"]
 [ext_resource type="Script" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
 [ext_resource type="Script" path="res://Util/Components/Pathfinding2D.gd" id="9_rpso3"]
+[ext_resource type="Script" path="res://Util/Components/CameraFollow2D.gd" id="10_6gmml"]
+[ext_resource type="Script" path="res://Util/Components/Health.gd" id="10_c0kbv"]
 [ext_resource type="Script" path="res://Util/ModularAI/Actions/MoveAlongPath.gd" id="10_ffk6r"]
 
 [sub_resource type="GDScript" id="GDScript_12ta3"]
@@ -258,7 +260,7 @@ script = SubResource("GDScript_12ta3")
 
 [node name="Camera2D" type="Camera2D" parent="Screens"]
 position = Vector2(2468, 1188)
-zoom = Vector2(0.653, 0.653)
+zoom = Vector2(0.451, 0.451)
 
 [node name="Title" type="Node2D" parent="Screens"]
 
@@ -459,6 +461,15 @@ arrive_smoothly = true
 script = ExtResource("9_rpso3")
 pathfinding_node_path = NodePath("../../../BattleMap/Pathfinding")
 
+[node name="Health" type="Node2D" parent="Screens/Battle/Entities/Player"]
+script = ExtResource("10_c0kbv")
+current_health = 10.0
+parent_path = NodePath("..")
+
+[node name="CameraFollow" type="Node2D" parent="Screens/Battle/Entities/Player"]
+script = ExtResource("10_6gmml")
+camera_path = NodePath("../../../../Camera2D")
+
 [node name="Actions" type="Node2D" parent="Screens/Battle/Entities/Player"]
 
 [node name="Attack" type="Node2D" parent="Screens/Battle/Entities/Player/Actions"]
@@ -611,9 +622,20 @@ body_path = NodePath("..")
 arrive_threshold = 8.0
 arrive_smoothly = true
 
+[node name="Health" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
+position = Vector2(-256, -760)
+script = ExtResource("10_c0kbv")
+current_health = 10.0
+parent_path = NodePath("..")
+
 [node name="Pathfinding" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
 script = ExtResource("9_rpso3")
 pathfinding_node_path = NodePath("../../../BattleMap/Pathfinding")
+
+[node name="CameraFollow" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
+position = Vector2(-256, -760)
+script = ExtResource("10_6gmml")
+camera_path = NodePath("../../../../Camera2D")
 
 [node name="Actions" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
 
