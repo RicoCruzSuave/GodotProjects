@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://i6f62k4ygwl0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_47ehl"]
+size = Vector2(64, 64)
+
+[node name="AbilityBase" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_47ehl")
+
+[node name="Trigger" type="Node2D" parent="."]
+
+[node name="Immediate" type="Node2D" parent="Trigger"]
+
+[node name="Timer" type="Node2D" parent="Trigger"]
+
+[node name="CollisionShape" type="Node2D" parent="Trigger"]
+
+[node name="Targets" type="Node2D" parent="."]
+
+[node name="Order" type="Node2D" parent="Targets"]
+
+[node name="First" type="Node2D" parent="Targets/Order"]
+
+[node name="HighestHealth" type="Node2D" parent="Targets/Order"]
+
+[node name="All" type="Node2D" parent="Targets/Order"]
+
+[node name="Position" type="Node2D" parent="Targets"]
+
+[node name="Resolution" type="Node2D" parent="."]
+
+[node name="Damage" type="Node2D" parent="Resolution"]
+
+[node name="SpawnOtherEffects" type="Node2D" parent="Resolution"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://dq2rvw3xksgpu"]
+[gd_scene load_steps=35 format=3 uid="uid://dq2rvw3xksgpu"]
 
 [ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_wtx80"]
 [ext_resource type="Script" path="res://Util/ConnectPoints.gd" id="2_4bee6"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" path="res://Util/Components/CameraFollow2D.gd" id="10_6gmml"]
 [ext_resource type="Script" path="res://Util/Components/Health.gd" id="10_c0kbv"]
 [ext_resource type="Script" path="res://Util/ModularAI/Actions/MoveAlongPath.gd" id="10_ffk6r"]
+[ext_resource type="Script" path="res://Util/ModularAI/Actions/AbilityContainer.gd" id="12_7vkrm"]
 
 [sub_resource type="GDScript" id="GDScript_12ta3"]
 script/source = "extends Node2D
@@ -470,9 +471,15 @@ parent_path = NodePath("..")
 script = ExtResource("10_6gmml")
 camera_path = NodePath("../../../../Camera2D")
 
+[node name="Attacks" type="Node2D" parent="Screens/Battle/Entities/Player"]
+
 [node name="Actions" type="Node2D" parent="Screens/Battle/Entities/Player"]
 
 [node name="Attack" type="Node2D" parent="Screens/Battle/Entities/Player/Actions"]
+
+[node name="AttackContainer" type="Node2D" parent="Screens/Battle/Entities/Player/Actions/Attack"]
+script = ExtResource("12_7vkrm")
+effect_parent_path = NodePath("../../../Attacks")
 
 [node name="Move" type="Node2D" parent="Screens/Battle/Entities/Player/Actions"]
 
