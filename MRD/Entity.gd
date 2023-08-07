@@ -39,3 +39,4 @@ func _input(event):
 
 func damage(amount : float):
 	health.damage(amount)
+	modulate = Color.GREEN

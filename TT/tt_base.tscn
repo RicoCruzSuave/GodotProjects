@@ -365,6 +365,9 @@ width = 1200
 height = 700
 noise = SubResource("FastNoiseLite_4dsja")
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_2yrih"]
+viewport_path = NodePath("Screens/MapPlanning/Sprite2D2/SubViewport")
+
 [sub_resource type="Shader" id="Shader_geja7"]
 code = "shader_type canvas_item;
 
@@ -378,7 +381,7 @@ void fragment() {
 //	COLOR.g = round(tex.r * steps) / steps;
 //	COLOR.b = round(tex.r * steps) / steps;
 	COLOR.gb = color.gb;
-	COLOR.a = COLOR.r - .5;
+	COLOR.a = COLOR.r - .8;
 //	COLOR.gb = vec2(0.0);
 	if (alpha_included) {
 		COLOR.a = floor(tex.r * steps) / steps;
@@ -415,7 +418,7 @@ void fragment() {
 //	COLOR.g = round(tex.r * steps) / steps;
 //	COLOR.b = round(tex.r * steps) / steps;
 	COLOR.gb = color.gb;
-	COLOR.a = COLOR.r - .5;
+	COLOR.a = COLOR.r - .8;
 //	COLOR.gb = vec2(0.0);
 	if (alpha_included) {
 		COLOR.a = floor(tex.r * steps) / steps;
@@ -452,7 +455,7 @@ void fragment() {
 //	COLOR.g = round(tex.r * steps) / steps;
 //	COLOR.b = round(tex.r * steps) / steps;
 	COLOR.gb = color.gb;
-	COLOR.a = COLOR.r - .5;
+	COLOR.a = COLOR.r - .8;
 //	COLOR.gb = vec2(0.0);
 	if (alpha_included) {
 		COLOR.a = floor(tex.r * steps) / steps;
@@ -490,7 +493,7 @@ void fragment() {
 //	COLOR.g = round(tex.r * steps) / steps;
 //	COLOR.b = round(tex.r * steps) / steps;
 	COLOR.gb = color.gb;
-	COLOR.a = COLOR.r - .5;
+	COLOR.a = COLOR.r - .8;
 //	COLOR.gb = vec2(0.0);
 	if (alpha_included) {
 		COLOR.a = floor(tex.r * steps) / steps;
@@ -513,9 +516,6 @@ fractal_weighted_strength = 1.0
 width = 1200
 height = 700
 noise = SubResource("FastNoiseLite_oi5rb")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_2yrih"]
-viewport_path = NodePath("Screens/MapPlanning/Sprite2D2/SubViewport")
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_p5wvb"]
 
@@ -2794,6 +2794,28 @@ position = Vector2(0, 747)
 texture = SubResource("NoiseTexture2D_2ollv")
 centered = false
 
+[node name="Water" type="Sprite2D" parent="Screens/MapPlanning"]
+position = Vector2(0, 747)
+texture = SubResource("ViewportTexture_2yrih")
+centered = false
+
+[node name="SubViewport" type="SubViewport" parent="Screens/MapPlanning/Water"]
+transparent_bg = true
+size = Vector2i(1200, 700)
+
+[node name="ColorRect" type="ColorRect" parent="Screens/MapPlanning/Water/SubViewport"]
+offset_left = 564.0
+offset_right = 604.0
+offset_bottom = 699.0
+color = Color(0, 1, 1, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="Screens/MapPlanning/Water/SubViewport"]
+offset_left = -13.0
+offset_top = 319.0
+offset_right = 1203.0
+offset_bottom = 361.0
+color = Color(0, 1, 1, 1)
+
 [node name="FactionMap1" type="Sprite2D" parent="Screens/MapPlanning"]
 material = SubResource("ShaderMaterial_ptclm")
 position = Vector2(0, 747)
@@ -2817,28 +2839,6 @@ material = SubResource("ShaderMaterial_0rs1f")
 position = Vector2(0, 747)
 texture = SubResource("NoiseTexture2D_ar3uj")
 centered = false
-
-[node name="Water" type="Sprite2D" parent="Screens/MapPlanning"]
-position = Vector2(0, 747)
-texture = SubResource("ViewportTexture_2yrih")
-centered = false
-
-[node name="SubViewport" type="SubViewport" parent="Screens/MapPlanning/Water"]
-transparent_bg = true
-size = Vector2i(1200, 700)
-
-[node name="ColorRect" type="ColorRect" parent="Screens/MapPlanning/Water/SubViewport"]
-offset_left = 564.0
-offset_right = 604.0
-offset_bottom = 699.0
-color = Color(0, 1, 1, 1)
-
-[node name="ColorRect2" type="ColorRect" parent="Screens/MapPlanning/Water/SubViewport"]
-offset_left = 3.0
-offset_top = 309.0
-offset_right = 1200.0
-offset_bottom = 385.0
-color = Color(0, 1, 1, 1)
 
 [node name="CameraRig" type="Node3D" parent="."]
 script = ExtResource("1_8o0bd")
