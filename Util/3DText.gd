@@ -8,15 +8,16 @@ class_name Text3D
 	set = display_text
 
 func _init():
-	display_text()
+	if Engine.is_editor_hint():
+		display_text()
 
 func _ready():
 	display_text()
 
 func display_text(_val = false):
 	mesh = TextMesh.new()
-	if Engine.is_editor_hint():
-		mesh.text = get_parent().name
-	else:
-		mesh.text = parent.name
+#	if Engine.is_editor_hint():
+	mesh.text = get_parent().name
+#	else:
+#		mesh.text = parent.name
 #	name = mesh.text
