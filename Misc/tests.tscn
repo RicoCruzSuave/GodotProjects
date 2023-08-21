@@ -1,6 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://cgrie7tkt6apq"]
+[gd_scene load_steps=30 format=3 uid="uid://cgrie7tkt6apq"]
 
 [ext_resource type="Shader" path="res://Misc/rts_terrain.gdshader" id="1_0oarm"]
+[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="2_0o2rp"]
+[ext_resource type="Script" path="res://Util/ConnectingPoints2D.gd" id="2_pvp3l"]
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="4_22h8s"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rwsv0"]
 viewport_path = NodePath("RTSTerrain/SubViewport")
@@ -146,41 +149,66 @@ shader_parameter/viewport = SubResource("NoiseTexture2D_l8ktd")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7vud0"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gmpai"]
+shader = ExtResource("2_0o2rp")
+shader_parameter/steps = 1.0
+shader_parameter/alpha_included = false
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_uv4d1"]
+frequency = 0.0279
+fractal_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mbcpe"]
+width = 128
+height = 128
+noise = SubResource("FastNoiseLite_uv4d1")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_v3t1t"]
+size = Vector2(128, 128)
+
+[sub_resource type="Gradient" id="Gradient_83a3y"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6hn14"]
+gradient = SubResource("Gradient_83a3y")
+width = 116
+
 [node name="tests" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 1)
 current = true
 
-[node name="RTSTerrain" type="Node3D" parent="."]
+[node name="ModifyableTerrain" type="Node3D" parent="."]
 visible = false
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RTSTerrain"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ModifyableTerrain"]
 mesh = SubResource("PlaneMesh_hoeru")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="RTSTerrain"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="ModifyableTerrain"]
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="SubViewport" type="SubViewport" parent="RTSTerrain/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="ModifyableTerrain/SubViewportContainer"]
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 canvas_item_default_texture_repeat = 1
 size = Vector2i(128, 128)
 render_target_update_mode = 4
 
-[node name="Sprite2D" type="Sprite2D" parent="RTSTerrain/SubViewportContainer/SubViewport"]
+[node name="Sprite2D" type="Sprite2D" parent="ModifyableTerrain/SubViewportContainer/SubViewport"]
 texture = SubResource("NoiseTexture2D_l8ktd")
 centered = false
 
-[node name="TileMap" type="TileMap" parent="RTSTerrain/SubViewportContainer/SubViewport"]
+[node name="TileMap" type="TileMap" parent="ModifyableTerrain/SubViewportContainer/SubViewport"]
 position = Vector2(7.62939e-06, 0)
 scale = Vector2(0.1, 0.1)
 tile_set = SubResource("TileSet_fibo7")
 format = 2
 layer_0/tile_data = PackedInt32Array(196618, 196609, 0, 196617, 196609, 0, 196616, 196609, 0, 262151, 196609, 0, 327687, 196609, 0, 327686, 196609, 0, 393222, 196609, 0, 458758, 196609, 0, 524294, 196609, 0, 589830, 196609, 0, 655366, 196609, 0, 720902, 196609, 0, 786438, 196609, 0, 851975, 196609, 0, 917511, 196609, 0, 983048, 196609, 0, 983049, 196609, 0, 1048585, 196609, 0, 1048586, 196609, 0, 1114122, 196609, 0, 196619, 196609, 0, 196620, 196609, 0, 196621, 196609, 0, 196622, 196609, 0, 196623, 196609, 0, 196624, 196609, 0, 262160, 196609, 0, 262161, 196609, 0, 327697, 196609, 0, 393233, 196609, 0, 393234, 196609, 0, 458770, 0, 0, 393225, 131072, 0, 393226, 131072, 0, 458762, 131072, 0, 458761, 131072, 0, 393230, 65536, 0, 393231, 65536, 0, 393232, 65536, 0, 458768, 65536, 0, 458767, 65536, 0, 458766, 65536, 0, 720906, 65536, 0, 786442, 65536, 0, 851978, 65536, 0, 917514, 131072, 0, 327707, 2, 0, 327708, 2, 0, 327709, 2, 0, 327710, 2, 0, 327711, 2, 0, 327712, 2, 0, 327713, 2, 0, 327714, 2, 0, 393243, 2, 0, 458779, 2, 0, 458780, 131074, 0, 393244, 131074, 0, 458781, 131074, 0, 393245, 131074, 0, 786463, 2, 0, 458782, 131074, 0, 393246, 131074, 0, 786464, 2, 0, 720928, 2, 0, 655392, 2, 0, 589856, 2, 0, 524319, 131074, 0, 458783, 131074, 0, 393247, 131074, 0, 720927, 196610, 0, 655391, 196610, 0, 589855, 2, 0, 393248, 131074, 0, 458785, 131074, 0, 524321, 131074, 0, 524320, 131074, 0, 458784, 131074, 0, 393249, 131074, 0, 393250, 2, 0, 458786, 2, 0, 524322, 2, 0, 589858, 2, 0, 655394, 2, 0, 720930, 2, 0, 786466, 2, 0, 786465, 2, 0, 720929, 2, 0, 655393, 2, 0, 589857, 2, 0, 327706, 65538, 0, 393242, 65538, 0, 458778, 65538, 0, 327715, 65538, 0, 393251, 65538, 0, 458787, 65538, 0, 524323, 65538, 0, 589859, 65538, 0, 655395, 65538, 0, 720931, 65538, 0, 786467, 65538, 0, 262171, 65538, 0, 262172, 65538, 0, 262173, 65538, 0, 262174, 65538, 0, 262175, 65538, 0, 262176, 65538, 0, 262177, 65538, 0, 262178, 65538, 0, 655370, 65536, 0, 458771, 0, 0, 458772, 0, 0, 327689, 65536, 0, 458765, 65536, 0, 393229, 65536, 0, 327693, 65536, 0, 262157, 65536, 0, 262156, 65536, 0, 262155, 65536, 0, 262154, 65536, 0, 262153, 65536, 0, 262152, 65536, 0, 327688, 65536, 0, 393224, 65536, 0, 393223, 65536, 0, 458759, 65536, 0, 524295, 65536, 0, 589831, 65536, 0, 655367, 65536, 0, 720903, 65536, 0, 786439, 65536, 0, 786440, 65536, 0, 720904, 65536, 0, 655368, 65536, 0, 589832, 65536, 0, 524296, 65536, 0, 458760, 65536, 0, 524297, 65536, 0, 589833, 65536, 0, 655369, 65536, 0, 720905, 65536, 0, 786441, 65536, 0, 851977, 65536, 0, 851976, 65536, 0, 917512, 65536, 0, 917513, 65536, 0, 589834, 65536, 0, 524298, 65536, 0, 458763, 65536, 0, 393227, 65536, 0, 327691, 65536, 0, 327690, 65536, 0, 327692, 65536, 0, 393228, 65536, 0, 458764, 65536, 0, 983050, 65536, 0, 458769, 65536, 0, 262158, 65536, 0, 327694, 65536, 0, 327695, 65536, 0, 262159, 65536, 0, 327696, 65536, 0)
 
-[node name="Polygon2D" type="Polygon2D" parent="RTSTerrain/SubViewportContainer/SubViewport"]
+[node name="Polygon2D" type="Polygon2D" parent="ModifyableTerrain/SubViewportContainer/SubViewport"]
 material = SubResource("ShaderMaterial_3yq70")
 position = Vector2(50, 20)
 scale = Vector2(20, 20)
@@ -195,3 +223,191 @@ mesh = SubResource("PlaneMesh_7vud0")
 [node name="Units" type="Node3D" parent="RTSUnitsTest"]
 
 [node name="Spawner" type="Node3D" parent="RTSUnitsTest"]
+
+[node name="OpenMaps" type="Node2D" parent="."]
+position = Vector2(128, 0)
+
+[node name="Background" type="Sprite2D" parent="OpenMaps"]
+material = SubResource("ShaderMaterial_gmpai")
+texture = SubResource("NoiseTexture2D_mbcpe")
+centered = false
+
+[node name="Pathes" type="Node2D" parent="OpenMaps"]
+z_index = 1
+script = ExtResource("2_pvp3l")
+points_node_path = NodePath("../Locations")
+
+[node name="@@498275" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(10, 11, 33, 121)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498276" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(10, 11, 70, 4)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498277" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(70, 4, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498278" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(70, 4, 114, 23)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498279" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(70, 4, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498280" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(70, 4, 122, 63)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498281" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(114, 23, 122, 63)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498282" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(114, 23, 122, 63)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498283" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(122, 63, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498284" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(122, 63, 115, 112)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498285" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(122, 63, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498286" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(122, 63, 10, 11)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498287" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(115, 112, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498288" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(115, 112, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498289" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(33, 121, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498290" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(33, 121, 10, 11)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498291" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(33, 121, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498292" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(33, 121, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498293" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(33, 121, 50, 78)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498294" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(50, 78, 10, 11)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498295" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(50, 78, 10, 11)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="@@498296" type="Line2D" parent="OpenMaps/Pathes"]
+points = PackedVector2Array(50, 78, 10, 11)
+width = 1.5
+default_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="Locations" type="Node2D" parent="OpenMaps"]
+
+[node name="Marker2D" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(10, 11)
+
+[node name="Marker2D3" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(70, 4)
+
+[node name="Marker2D4" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(114, 23)
+
+[node name="Marker2D5" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(122, 63)
+
+[node name="Marker2D6" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(115, 112)
+
+[node name="Marker2D7" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(33, 121)
+
+[node name="Marker2D8" type="Marker2D" parent="OpenMaps/Locations"]
+position = Vector2(50, 78)
+
+[node name="Trains" type="Node2D" parent="OpenMaps"]
+z_index = 1
+y_sort_enabled = true
+
+[node name="Screen" type="Node2D" parent="OpenMaps/Trains"]
+position = Vector2(128, 0)
+
+[node name="Background" type="Sprite2D" parent="OpenMaps/Trains/Screen"]
+texture = SubResource("PlaceholderTexture2D_v3t1t")
+centered = false
+
+[node name="TopFloor" type="Sprite2D" parent="OpenMaps/Trains/Screen"]
+position = Vector2(6, 4)
+scale = Vector2(1, 26)
+texture = SubResource("GradientTexture1D_6hn14")
+centered = false
+
+[node name="ThirdFloor" type="Sprite2D" parent="OpenMaps/Trains/Screen"]
+position = Vector2(6, 36)
+scale = Vector2(1, 26)
+texture = SubResource("GradientTexture1D_6hn14")
+centered = false
+
+[node name="SecondFloor" type="Sprite2D" parent="OpenMaps/Trains/Screen"]
+position = Vector2(6, 68)
+scale = Vector2(1, 26)
+texture = SubResource("GradientTexture1D_6hn14")
+centered = false
+
+[node name="FirstFloor" type="Sprite2D" parent="OpenMaps/Trains/Screen"]
+position = Vector2(6, 99)
+scale = Vector2(1, 26)
+texture = SubResource("GradientTexture1D_6hn14")
+centered = false
+
+[node name="Train" type="Node2D" parent="OpenMaps/Trains"]
+position = Vector2(57, 50)
+
+[node name="Sprite2D" type="Sprite2D" parent="OpenMaps/Trains/Train"]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("4_22h8s")
