@@ -454,7 +454,6 @@ polygon = PackedVector2Array(0, -23, 23, -1, 0, 21, -22, -2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Screens/Battle/Entities/Player"]
 polygon = PackedVector2Array(0, 20, 22, -1, 0, -23, -22, -2)
-disabled = true
 
 [node name="Movement" type="Node2D" parent="Screens/Battle/Entities/Player"]
 script = ExtResource("8_472cl")

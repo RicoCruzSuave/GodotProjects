@@ -1,0 +1,71 @@
+[gd_scene load_steps=10 format=3 uid="uid://gdmgerwqxeob"]
+
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_8vn38"]
+[ext_resource type="Script" path="res://TB/slide_3d.gd" id="1_ta4f2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sh7pe"]
+albedo_texture = ExtResource("1_8vn38")
+uv1_scale = Vector3(3, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_04fs8"]
+material = SubResource("StandardMaterial3D_sh7pe")
+
+[sub_resource type="TextMesh" id="TextMesh_uwk78"]
+text = "-Explanation Text goes Here"
+depth = 0.025
+
+[sub_resource type="TextMesh" id="TextMesh_gmxh7"]
+text = "-And Here"
+depth = 0.025
+
+[sub_resource type="TextMesh" id="TextMesh_vodgw"]
+text = "-Test"
+depth = 0.025
+
+[sub_resource type="TextMesh" id="TextMesh_u386o"]
+text = "-Several Lines"
+depth = 0.025
+
+[sub_resource type="TextMesh" id="TextMesh_6v0uh"]
+text = "-Are Needed"
+depth = 0.025
+
+[node name="Slide3D" type="Node3D"]
+script = ExtResource("1_ta4f2")
+text = "-Explanation Text goes Here
+-And Here
+-Test
+-Several Lines
+-Are Needed"
+text_spacing = 0.2
+text_mesh_depth = 25
+
+[node name="Display" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Display" type="MeshInstance3D" parent="Display"]
+transform = Transform3D(3.556, 0, 0, 0, 2, 0, 0, 0, 0.112, 0, 0, 0)
+mesh = SubResource("BoxMesh_04fs8")
+metadata/_edit_lock_ = true
+
+[node name="Text" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="@MeshInstance3D@326126" type="MeshInstance3D" parent="Text"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("TextMesh_uwk78")
+
+[node name="@MeshInstance3D@326127" type="MeshInstance3D" parent="Text"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+mesh = SubResource("TextMesh_gmxh7")
+
+[node name="@MeshInstance3D@326128" type="MeshInstance3D" parent="Text"]
+mesh = SubResource("TextMesh_vodgw")
+
+[node name="@MeshInstance3D@326129" type="MeshInstance3D" parent="Text"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+mesh = SubResource("TextMesh_u386o")
+
+[node name="@MeshInstance3D@326130" type="MeshInstance3D" parent="Text"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+mesh = SubResource("TextMesh_6v0uh")

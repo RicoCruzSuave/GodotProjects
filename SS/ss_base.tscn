@@ -158,7 +158,7 @@ extends Node2D
 		return cell_data.duplicate()
 "
 
-[sub_resource type="Resource" id="Resource_82x8r"]
+[sub_resource type="Resource" id="Resource_lgpa0"]
 script = ExtResource("14_gdcmx")
 color = Color(1, 0.0784314, 0.576471, 1)
 move_directions = 3
@@ -564,7 +564,7 @@ cell_data = SubResource("Resource_6yx68")
 
 [node name="Sand" type="Node2D" parent="Screens/SimTest/Sand/TileMap/CA/Cells"]
 script = SubResource("GDScript_50n1l")
-cell_data = SubResource("Resource_82x8r")
+cell_data = SubResource("Resource_lgpa0")
 
 [node name="Reasoner" type="Node2D" parent="Screens/SimTest/Sand/TileMap/CA/Cells/Sand"]
 script = ExtResource("15_nyqjl")

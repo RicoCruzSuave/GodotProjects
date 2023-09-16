@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://blo40kqmwxeug"]
+
+[ext_resource type="Script" path="res://TB/ranking_table_3d.gd" id="1_53j8a"]
+[ext_resource type="Material" uid="uid://bwe7gwvqhfm48" path="res://TB/Assets/text_material.tres" id="3_1e34c"]
+[ext_resource type="Material" uid="uid://bju5wks3ommcx" path="res://TB/Assets/cylinder_half_material_off.tres" id="4_en01c"]
+[ext_resource type="PackedScene" uid="uid://bo4p63qytw7t8" path="res://TB/title_bar.tscn" id="4_oij88"]
+
+[node name="RankingTable" type="Node3D"]
+script = ExtResource("1_53j8a")
+title_text_font_size = 24
+text_material = ExtResource("3_1e34c")
+cylinder_material = ExtResource("4_en01c")
+
+[node name="TitleBar" parent="." instance=ExtResource("4_oij88")]
+
+[node name="Entries" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)

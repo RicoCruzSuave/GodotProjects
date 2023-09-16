@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://i6f62k4ygwl0"]
+[gd_scene load_steps=7 format=3 uid="uid://i6f62k4ygwl0"]
 
 [sub_resource type="GDScript" id="GDScript_sr8o7"]
 script/source = "extends Node2D
@@ -21,7 +21,7 @@ func _ready():
 	top_level = true
 	global_position = get_parent().global_position
 
-func _physics_process(delta):
+func _process(delta):
 	if is_triggered():
 		$DebugDraw/Polygon2D.color = Color.BLUE
 		var targets : = get_targets()
@@ -36,10 +36,10 @@ func is_triggered() -> bool:
 	return true
 	
 func get_targets() -> Array:
+	##Change this to read targets given by node
 	var results : = []
 	for child in targets_node.get_children():
 		if child is Area2D:
-			print(child.get_overlapping_bodies())
 			for body in child.get_overlapping_bodies():
 				var target : = AITarget2D.new()
 				target.entity = body
@@ -59,7 +59,8 @@ func resolve(targets : Array, target_delay : = 0.0) -> void:
 	for target in targets:
 		for effect in resolution.get_children():
 			effect.activate(target.get_entity(), target.get_pos())
-			await get_tree().create_timer(target_delay).timeout
+			if target_delay != 0.0:
+				await get_tree().create_timer(target_delay).timeout
 "
 
 [sub_resource type="GDScript" id="GDScript_oik13"]
@@ -81,8 +82,22 @@ script/source = "extends Node2D
 func order(targets : Array) -> Array:
 	var results : = []
 	for target in targets:
-		if target is CharacterBody2D:
+		if target.get_entity() is CharacterBody2D:
 			results.append(target)
+	return results
+"
+
+[sub_resource type="GDScript" id="GDScript_3iqpm"]
+script/source = "extends Node2D
+
+var already_hit : = []
+
+func order(targets : Array) -> Array:
+	var results : = []
+	for target in targets:
+		if not already_hit.has(target.get_entity()):
+			results.append(target)
+			already_hit.append(target.get_entity())
 	return results
 "
 
@@ -90,7 +105,7 @@ func order(targets : Array) -> Array:
 script/source = "extends Node2D
 
 func activate(entity : Object, pos : Vector2):
-	if entity.has_meta(\"damage\"):
+	if entity.has_method(\"damage\"):
 		entity.damage(1.0)
 		print_debug(entity.name + \" hit\")
 "
@@ -110,7 +125,6 @@ polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
 script = SubResource("GDScript_oik13")
 
 [node name="Timer" type="Timer" parent="Triggers/Timer"]
-wait_time = 3.0
 one_shot = true
 
 [node name="Targets" type="Node2D" parent="."]
@@ -124,6 +138,9 @@ shape = SubResource("RectangleShape2D_47ehl")
 
 [node name="EntitiesOnly" type="Node2D" parent="Order"]
 script = SubResource("GDScript_sx85y")
+
+[node name="OnlyOnce" type="Node2D" parent="Order"]
+script = SubResource("GDScript_3iqpm")
 
 [node name="Resolution" type="Node2D" parent="."]
 

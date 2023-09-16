@@ -25,6 +25,9 @@ func _process(delta):
 	camera_follow.focused = currently_focused
 
 func _input(event):
+	
+	if Input.is_action_just_pressed("ui_accept"):
+		print(health.current_health)
 	if currently_focused:
 		if Input.is_action_just_pressed("left_click"):
 	#		pathfinding.path_to(get_global_mouse_position())
@@ -39,4 +42,3 @@ func _input(event):
 
 func damage(amount : float):
 	health.damage(amount)
-	modulate = Color.GREEN
