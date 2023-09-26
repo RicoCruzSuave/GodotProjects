@@ -1,0 +1,78 @@
+[gd_scene load_steps=7 format=3 uid="uid://cpcd5g7ou8a8c"]
+
+[ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_1qkxb"]
+[ext_resource type="Texture2D" uid="uid://ciqqevfgyim6y" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/item_spear.png" id="2_3nyp3"]
+[ext_resource type="Texture2D" uid="uid://fdqimg168syy" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_handRed.png" id="3_t85a8"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ed0ow"]
+radius = 18.0
+height = 58.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_25cf0"]
+size = Vector2(5, 112)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7r0ca"]
+size = Vector2(16, 26)
+
+[node name="BasicUnit" type="CharacterBody2D"]
+
+[node name="Body" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_1qkxb")
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_ed0ow")
+
+[node name="PinJoint2D" type="PinJoint2D" parent="."]
+node_a = NodePath("..")
+node_b = NodePath("../Equipment")
+softness = 3.0
+
+[node name="Equipment" type="RigidBody2D" parent="."]
+position = Vector2(17, -2)
+rotation = 0.523599
+mass = 0.01
+gravity_scale = 0.0
+
+[node name="ItemSpear" type="Sprite2D" parent="Equipment"]
+texture_filter = 1
+texture = ExtResource("2_3nyp3")
+
+[node name="SpearCollision" type="CollisionShape2D" parent="Equipment"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_25cf0")
+
+[node name="SpearHitbox" type="CollisionShape2D" parent="Equipment"]
+position = Vector2(0, -43)
+shape = SubResource("RectangleShape2D_7r0ca")
+disabled = true
+
+[node name="Hand1" type="Sprite2D" parent="Equipment"]
+texture_filter = 1
+position = Vector2(0, 35)
+texture = ExtResource("3_t85a8")
+
+[node name="Hand2" type="Sprite2D" parent="Equipment"]
+texture_filter = 1
+position = Vector2(1, -4)
+texture = ExtResource("3_t85a8")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -35.0
+offset_top = -58.0
+offset_right = 37.0
+offset_bottom = -37.0
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "TEST"
+horizontal_alignment = 1
+vertical_alignment = 1

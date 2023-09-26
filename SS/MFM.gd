@@ -62,14 +62,20 @@ func _process(delta):
 func _input(event):
 	if Input.is_action_just_pressed("left_click"):
 		var event_pos : = get_global_mouse_position() / sim_scale
-		if Rect2(global_position, sim_size).has_point(event_pos):
-			world[event_pos.x][event_pos.y].content = AtomSand.new()
-			cells_changed.append(event_pos)
+		var radius : = 4
+		for x in range(-radius, radius):
+			for y in range(-radius, radius):
+				if Rect2(global_position, sim_size).has_point(event_pos + Vector2(x,y)):
+					world[event_pos.x + x][event_pos.y + y].content = AtomSand.new()
+					cells_changed.append(event_pos)
 	if Input.is_action_just_pressed("right_click"):
 		var event_pos : = get_global_mouse_position() / sim_scale
-		if Rect2(global_position, sim_size).has_point(event_pos):
-			world[event_pos.x][event_pos.y].content = null
-			cells_changed.append(event_pos)
+		var radius : = 4
+		for x in range(-radius, radius):
+			for y in range(-radius, radius):
+				if Rect2(global_position, sim_size).has_point(event_pos + Vector2(x,y)):
+					world[event_pos.x + x][event_pos.y + y].content = null
+					cells_changed.append(event_pos)
 
 #Initialization methods
 		
@@ -116,13 +122,17 @@ func _build_neighbors():
 			neighbors[x][y] = neighbors_dict
 			
 func _build_order():
+	#Ordered Y
+	#for y in sim_size.y:
+		#var temp_order : = []
+		#for x in sim_size.x:
+			#temp_order.append(Vector2i(x,sim_size.y - (y + 1)))
+		#temp_order.shuffle()
+		#order.append_array(temp_order)
 	for y in sim_size.y:
-		var temp_order : = []
 		for x in sim_size.x:
-			temp_order.append(Vector2i(x,sim_size.y - (y + 1)))
-		temp_order.shuffle()
-		order.append_array(temp_order)
-	#order.shuffle()
+			order.append(Vector2i(x,y))
+	order.shuffle()
 
 func _build_image():
 	image = Image.create(sim_size.x, sim_size.y, false, Image.FORMAT_RGB8)
