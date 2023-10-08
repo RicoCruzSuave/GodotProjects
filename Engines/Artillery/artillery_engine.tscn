@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://cknp70u8atak4"]
+
+[ext_resource type="Material" uid="uid://oyv4romd1hae" path="res://dichrom_shader.tres" id="1_n3ca6"]
+[ext_resource type="Texture2D" uid="uid://hgaecaky3c1v" path="res://Engines/Artillery/Assets/little_wiz_guy.png" id="2_3v8f0"]
+[ext_resource type="Shader" path="res://Util/GPU/white_pixel_sdf.gdshader" id="2_qs7c2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_y8qgl"]
+noise_type = 3
+seed = 11
+frequency = 0.003
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h4k1i"]
+normalize = false
+noise = SubResource("FastNoiseLite_y8qgl")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_01a3o"]
+resource_local_to_scene = true
+shader = ExtResource("2_qs7c2")
+shader_parameter/check_dist = 10
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wfeiw"]
+size = Vector2(512, 512)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_puv62"]
+radius = 4.0
+
+[node name="ArtilleryEngine" type="Node2D"]
+
+[node name="Node" type="Node" parent="."]
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Terrain"]
+texture_filter = 1
+material = ExtResource("1_n3ca6")
+texture = SubResource("NoiseTexture2D_h4k1i")
+centered = false
+
+[node name="Sprite2D2" type="Sprite2D" parent="Terrain/Sprite2D"]
+material = SubResource("ShaderMaterial_01a3o")
+texture = SubResource("PlaceholderTexture2D_wfeiw")
+centered = false
+
+[node name="TurnManager" type="Node2D" parent="."]
+
+[node name="TeamManager" type="Node2D" parent="."]
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Players" type="Node2D" parent="Entities"]
+
+[node name="RigidBody2D" type="RigidBody2D" parent="Entities/Players"]
+position = Vector2(73, 324)
+
+[node name="Sprite2D" type="Sprite2D" parent="Entities/Players/RigidBody2D"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_3v8f0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entities/Players/RigidBody2D"]
+shape = SubResource("CircleShape2D_puv62")
+
+[node name="AI" type="Node2D" parent="Entities"]

@@ -2,7 +2,7 @@ extends Node2D
 
 @export var max_health : = 10.0
 @export var min_health : = 1.0
-@export var current_health : = max_health
+@onready var current_health : = max_health
 
 @export_node_path("Node") var parent_path
 @onready var parent : Object = get_node(parent_path)

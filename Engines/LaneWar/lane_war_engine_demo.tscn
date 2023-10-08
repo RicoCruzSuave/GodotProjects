@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cosnnthdcwwpu"]
+[gd_scene load_steps=19 format=3 uid="uid://cosnnthdcwwpu"]
 
 [ext_resource type="Texture2D" uid="uid://c4w83an8vjyao" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_castle.png" id="1_83ebt"]
 [ext_resource type="Texture2D" uid="uid://b8iec0o4vwan5" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/background_treeLarge.png" id="1_yv531"]
@@ -22,6 +22,9 @@ gradient = SubResource("Gradient_madrh")
 width = 1200
 height = 700
 fill_from = Vector2(0.676991, 0.493047)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tqh4o"]
+size = Vector2(60, 180)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_hl871"]
 vertices = PackedVector2Array(2, 517, 1197, 516, 1197, 701, -1, 696)
@@ -445,9 +448,34 @@ texture = ExtResource("12_8knw8")
 position = Vector2(-59, 607)
 
 [node name="BasicUnit" parent="Units/LeftSpawner" instance=ExtResource("13_iwh2b")]
+attack = 2.0
+movement_speed = 2.0
+movement_target_path = NodePath("../../RightSpawner")
 
 [node name="RightSpawner" type="Node2D" parent="Units"]
 position = Vector2(1277, 607)
+
+[node name="BasicUnit2" parent="Units/RightSpawner" instance=ExtResource("13_iwh2b")]
+scale = Vector2(-1, 1)
+movement_target_path = NodePath("../../LeftSpawner")
+
+[node name="Bases" type="Node2D" parent="."]
+
+[node name="LeftBase" type="Node2D" parent="Bases"]
+position = Vector2(32, 606)
+
+[node name="Hurtbox" type="Area2D" parent="Bases/LeftBase"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bases/LeftBase/Hurtbox"]
+shape = SubResource("RectangleShape2D_tqh4o")
+
+[node name="RightBase" type="Node2D" parent="Bases"]
+position = Vector2(1168, 606)
+
+[node name="Hurtbox" type="Area2D" parent="Bases/RightBase"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bases/RightBase/Hurtbox"]
+shape = SubResource("RectangleShape2D_tqh4o")
 
 [node name="Pathfinding" type="Node2D" parent="."]
 
