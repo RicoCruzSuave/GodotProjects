@@ -2,12 +2,16 @@ extends CharacterBody2D
 class_name LDUnit
 
 @export var attack : = 1.0
+@export var attack_speed : = 1.0
 @export var movement_speed : = 1.0
 @export var health : = 10.0
 @export var movement_target_path : NodePath
+@export var team_name : = "Left"
 
 @onready var health_bar : = $Control/VBoxContainer/ProgressBar
 @onready var health_component : = $HealthComponent
+
+@onready var team_component : = $TeamComponent
 
 @onready var body_collision : = $BodyCollision
 @onready var equipment : = $Equipment
@@ -27,12 +31,21 @@ enum STATES {
 var current_state : = STATES.WAITING
 var current_target : LDUnit
 
+var disabled : = true
+
 func _ready():
 	health_component.connect("dead", change_state.bind(STATES.DEAD))
+	attack_timer.wait_time = 1.0/attack_speed
+	team_component.team_name = team_name
 
-func _process(delta):
+func _physics_process(delta):
+	var friction : = 0.01
+	if disabled:
+		return
+	
 	match current_state:
 		STATES.WAITING:
+			friction = 0.1
 			if attack_timer.is_stopped() and check_for_fight():
 				change_state(STATES.ATTACKING)
 			elif not check_for_fight():
@@ -41,7 +54,6 @@ func _process(delta):
 			if check_for_fight():
 				change_state(STATES.ATTACKING)
 			velocity += global_position.direction_to(movement_target.global_position) * movement_speed
-			move_and_slide()
 		STATES.ATTACKING:
 			if attack_timer.is_stopped():
 				current_target.damage(attack)
@@ -53,10 +65,13 @@ func _process(delta):
 			set_process(false)
 			body_collision.disabled = true
 			
+	move_and_slide()
+	velocity *= 1.0 - friction 
+			
 func check_for_fight():
 	#If there is not a fight and there should be one, start it
 	for body in fight_area.get_overlapping_bodies():
-		if body is LDUnit:
+		if body is LDUnit and not team_component.is_on_same_team(body):
 			#return start_fight(self, body)
 			current_target = body
 			return true

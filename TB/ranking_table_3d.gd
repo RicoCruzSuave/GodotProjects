@@ -7,26 +7,30 @@ extends Node3D
 @export var text_material : Material 
 @export var cylinder_material : Material 
 @export var aligned_to_top : = false
-@export var reset_text : = false :
-	set(new_text) : _set_text()
-
+#@export var reset_text : = false :
+	#set(new_text) : _set_text()
 
 @export var light_on : = false :
-	set(_bool) :
-		light_on = _light_on(_bool)
+	set(is_light_on) :
+		for child in entries_node.get_children():
+			child.turned_on = is_light_on
+		light_on = is_light_on
 
 @onready var title_bar : = $TitleBar
 @onready var entries_node : = $Entries
 var entry_bar_scene : = preload("res://TB/entry_bar.tscn")
 var title_bar_scene : = preload("res://TB/title_bar.tscn")
-
+#
 func _ready():
-	_set_text()
-	title_bar.get_node("Title").mesh = 	title_bar.get_node("Title").mesh.duplicate()
-	_set_text()
+	#title_bar.get_node("Title").mesh = 	title_bar.get_node("Title").mesh.duplicate()
+	call_deferred("_set_text")
 	
 func _set_text():
+	if not is_inside_tree():
+		return
 	#Reset text nodes
+	if entries_node == null:
+		return
 	for child in entries_node.get_children():
 		child.free()
 	#Add title bar
@@ -95,10 +99,5 @@ func _set_text():
 		entries_node.add_child(new_entry_bar)
 		new_entry_bar.owner = get_tree().edited_scene_root
 		i += 1
+	light_on = true
 
-func _light_on(_bool : bool):
-	if get_tree() == null:
-		return _bool
-	for child in entries_node.get_children():
-		child.turned_on = _bool
-	return not _bool

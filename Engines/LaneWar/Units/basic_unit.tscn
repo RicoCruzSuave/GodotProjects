@@ -1,18 +1,18 @@
-[gd_scene load_steps=11 format=3 uid="uid://cpcd5g7ou8a8c"]
+[gd_scene load_steps=12 format=3 uid="uid://cpcd5g7ou8a8c"]
 
 [ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_1qkxb"]
 [ext_resource type="Script" path="res://Engines/LaneWar/Units/basic_unit.gd" id="1_daaqp"]
 [ext_resource type="Texture2D" uid="uid://ciqqevfgyim6y" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/item_spear.png" id="2_3nyp3"]
 [ext_resource type="Script" path="res://Util/Components/Health.gd" id="3_hh1ws"]
 [ext_resource type="Texture2D" uid="uid://fdqimg168syy" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_handRed.png" id="3_t85a8"]
+[ext_resource type="Script" path="res://Util/Components/TeamComponent.gd" id="4_sseam"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ed0ow"]
 radius = 18.0
 height = 58.0
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_37uws"]
-a = Vector2(90, -150)
-b = Vector2(90, 150)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wvwg5"]
+size = Vector2(90, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_25cf0"]
 size = Vector2(5, 112)
@@ -44,13 +44,17 @@ softness = 3.0
 script = ExtResource("3_hh1ws")
 parent_path = NodePath("..")
 
+[node name="TeamComponent" type="Node2D" parent="."]
+script = ExtResource("4_sseam")
+
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="FightArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FightArea"]
-shape = SubResource("SegmentShape2D_37uws")
+position = Vector2(46, 0)
+shape = SubResource("RectangleShape2D_wvwg5")
 
 [node name="Equipment" type="RigidBody2D" parent="."]
 position = Vector2(17, -2)

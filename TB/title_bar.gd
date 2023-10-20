@@ -32,6 +32,8 @@ func _set_on(_bool : bool):
 	return _bool
 
 func _set_text(title : String):
+	if get_tree() == null:
+		return title
 	if Engine.is_editor_hint():
 		$Title.mesh.text = title
 	return title

@@ -17,7 +17,8 @@ func _ready():
 func display_text(_val = false):
 	mesh = TextMesh.new()
 #	if Engine.is_editor_hint():
-	mesh.text = get_parent().name
+	if get_parent() != null:
+		mesh.text = get_parent().name
 #	else:
 #		mesh.text = parent.name
 #	name = mesh.text

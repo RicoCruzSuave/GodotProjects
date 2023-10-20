@@ -6,10 +6,10 @@ extends Node3D
 		turned_on = _set_on(_bool)
 	
 func _set_on(_bool : bool):
+	if not is_inside_tree():
+		return false
 	var cylinder_material : Material = $Picture/cylinder_half.mesh.surface_get_material(0)
 	var picture_material : Material = $Picture/Mesh.mesh.surface_get_material(0)
-	if get_tree() == null:
-		return false
 	var tween : = get_tree().create_tween()
 	tween.set_trans(Tween.TRANS_ELASTIC)
 	tween.set_ease(Tween.EASE_IN_OUT)
