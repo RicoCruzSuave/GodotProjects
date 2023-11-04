@@ -1,6 +1,7 @@
 extends Node2D
 class_name Command2D
 
+var running : = false
 var prepared : = false
 var completed : = false
 
@@ -8,8 +9,10 @@ func prepare():
 	prepared = true
 
 func run(variant : Variant): 
-#	if not can_do(variant):
-#		return 
+	if not can_do(variant):
+		return 
+	if not running:
+		running = true
 	if not prepared:
 		prepare()
 	
@@ -24,8 +27,10 @@ func can_do(variant : Variant) -> bool:
 	return true
 
 func is_completed() -> bool:
+	running = false
 	return completed
 
 func reset() -> void:
+	running = false
 	prepared = false
 	completed = false	

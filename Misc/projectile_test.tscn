@@ -1,11 +1,17 @@
-[gd_scene load_steps=13 format=3 uid="uid://d2vaf2s7fg3u1"]
+[gd_scene load_steps=15 format=3 uid="uid://d2vaf2s7fg3u1"]
 
+[ext_resource type="Script" path="res://Util/Managers/TeamManager.gd" id="1_kfjuw"]
 [ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_lk1by"]
 [ext_resource type="Texture2D" uid="uid://dv5wju4rg4ni1" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundYellow.png" id="2_b7e2c"]
 [ext_resource type="Script" path="res://Util/CommandsUI.gd" id="3_0wwxe"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_qaeqd"]
-radius = 25.0
+[sub_resource type="GDScript" id="GDScript_kko83"]
+script/source = "extends Node2D
+
+##Provides logic for executing actions
+
+##TODO: Needs reference to team manager, actions list, and a button hookup
+"
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
 width = 100
@@ -14,26 +20,42 @@ height = 20
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5208o"]
 size = Vector2(100, 20)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_qaeqd"]
 radius = 25.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4ijq5"]
 size = Vector2(100, 20)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
+radius = 25.0
+
 [sub_resource type="GDScript" id="GDScript_otvvk"]
 script/source = "extends Command2D
+class_name ProjectileCommand2D
 
 @export var draw_res : = 10
+@export_node_path(\"Node2D\") var team_manager_path
 
+@onready var team_manager : = get_node(team_manager_path)
+@onready var projectile :  = $RigidBody2D
+
+var origin_entity 
 var start_pos : = Vector2(300, 650)
 var target_pos : Vector2
 
 var drawing_enabled : = false
 
+###Inputs: start_pos, target_pos, speed, radius
+
+func _ready():
+	team_manager.connect(\"member_switch\", set.bind(\"start_pos\", team_manager.get_active_member().global_position))
+	
 func prepare():
+	running = true
 	drawing_enabled = true
 	
 func _process(delta):
+	start_pos = team_manager.get_active_member().global_position
 	if drawing_enabled:
 		queue_redraw()
 	
@@ -52,17 +74,29 @@ func _draw():
 		current_pos += direction * incremental_dist
 
 func _unhandled_input(event):
-	if Input.is_action_just_pressed(\"left_click\"):
-		target_pos = get_global_mouse_position()
-		drawing_enabled = false
-		prepared = true
-		run(target_pos)
+	if running:
+		if Input.is_action_just_pressed(\"left_click\"):
+			target_pos = get_global_mouse_position()
+			drawing_enabled = false
+			prepared = true
+			run(target_pos)
 		
 func run(variant : Variant):
 	super.run(variant)
-	print(\"run\")
+	
+	var dir_to_target : = start_pos.direction_to(target_pos)
+	var dist : float = team_manager.get_active_member().get_node(\"CollisionShape2D\").shape.radius
+	
+	var new_ball : RigidBody2D = projectile.duplicate()
+	add_child(new_ball)
+	new_ball.sleeping = false
+	
+	new_ball.global_position = start_pos + (dir_to_target * (dist * 1.1))
+	new_ball.apply_central_impulse(dir_to_target * 1000)
+	
 	completed = true
 	if is_completed():
+		team_manager.next_team()
 		reset()
 "
 
@@ -83,64 +117,82 @@ metadata/_snap_enabled = true
 
 [node name="ProjectileTest" type="Node2D"]
 
-[node name="LeftPlayer" type="Node2D" parent="."]
+[node name="ActionManager" type="Node2D" parent="."]
+script = SubResource("GDScript_kko83")
+
+[node name="TeamManager" type="Node2D" parent="."]
+script = ExtResource("1_kfjuw")
+teams_array = Array[NodePath]([NodePath("../LeftSide/LeftTeam"), NodePath("../RightSide/RightTeam")])
+
+[node name="LeftSide" type="Node2D" parent="."]
 position = Vector2(300, 650)
 
-[node name="Team" type="Node2D" parent="LeftPlayer"]
+[node name="Raft" type="Node2D" parent="LeftSide"]
 
-[node name="TestBody" type="RigidBody2D" parent="LeftPlayer/Team"]
-position = Vector2(0, -33)
+[node name="Base" type="StaticBody2D" parent="LeftSide/Raft"]
+
+[node name="Sprite2D" type="Sprite2D" parent="LeftSide/Raft/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/Raft/Base"]
+shape = SubResource("RectangleShape2D_5208o")
+
+[node name="LeftTeam" type="Node2D" parent="LeftSide"]
+
+[node name="TestBody" type="RigidBody2D" parent="LeftSide/LeftTeam"]
+position = Vector2(0, -44)
 mass = 10.0
 
-[node name="Sprite2D" type="Sprite2D" parent="LeftPlayer/Team/TestBody"]
+[node name="Sprite2D" type="Sprite2D" parent="LeftSide/LeftTeam/TestBody"]
 texture = ExtResource("1_lk1by")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftPlayer/Team/TestBody"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/LeftTeam/TestBody"]
 shape = SubResource("CircleShape2D_qaeqd")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
-[node name="Raft" type="Node2D" parent="LeftPlayer"]
-
-[node name="Base" type="StaticBody2D" parent="LeftPlayer/Raft"]
-
-[node name="Sprite2D" type="Sprite2D" parent="LeftPlayer/Raft/Base"]
-texture = SubResource("NoiseTexture2D_bouuv")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftPlayer/Raft/Base"]
-shape = SubResource("RectangleShape2D_5208o")
-
-[node name="RightPlayer" type="Node2D" parent="."]
+[node name="RightSide" type="Node2D" parent="."]
 position = Vector2(900, 650)
 
-[node name="Team" type="Node2D" parent="RightPlayer"]
+[node name="Raft" type="Node2D" parent="RightSide"]
 
-[node name="TestBody" type="RigidBody2D" parent="RightPlayer/Team"]
-position = Vector2(0, -33)
+[node name="Base" type="StaticBody2D" parent="RightSide/Raft"]
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/Raft/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/Raft/Base"]
+shape = SubResource("RectangleShape2D_4ijq5")
+
+[node name="Base2" type="StaticBody2D" parent="RightSide/Raft"]
+position = Vector2(63, -53)
+rotation = -1.21649
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/Raft/Base2"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/Raft/Base2"]
+shape = SubResource("RectangleShape2D_4ijq5")
+
+[node name="RightTeam" type="Node2D" parent="RightSide"]
+
+[node name="TestBody" type="RigidBody2D" parent="RightSide/RightTeam"]
+position = Vector2(-1, -43)
 mass = 10.0
 linear_damp = 3.0
 
-[node name="Sprite2D" type="Sprite2D" parent="RightPlayer/Team/TestBody"]
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/RightTeam/TestBody"]
 scale = Vector2(-1, 1)
 texture = ExtResource("2_b7e2c")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightPlayer/Team/TestBody"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/RightTeam/TestBody"]
 shape = SubResource("CircleShape2D_6flcf")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
-
-[node name="Raft" type="Node2D" parent="RightPlayer"]
-
-[node name="Base" type="StaticBody2D" parent="RightPlayer/Raft"]
-
-[node name="Sprite2D" type="Sprite2D" parent="RightPlayer/Raft/Base"]
-texture = SubResource("NoiseTexture2D_bouuv")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightPlayer/Raft/Base"]
-shape = SubResource("RectangleShape2D_4ijq5")
 
 [node name="Projectiles" type="Node2D" parent="."]
 
 [node name="BallBase" type="Node2D" parent="Projectiles"]
 script = SubResource("GDScript_otvvk")
+team_manager_path = NodePath("../../TeamManager")
 
 [node name="RigidBody2D" type="RigidBody2D" parent="Projectiles/BallBase"]
 position = Vector2(310, 342)
@@ -170,7 +222,7 @@ grow_horizontal = 2
 [node name="ActionBar" type="HFlowContainer" parent="UI"]
 layout_mode = 2
 offset_right = 1200.0
-offset_bottom = 178.0
+offset_bottom = 50.0
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 alignment = 1
