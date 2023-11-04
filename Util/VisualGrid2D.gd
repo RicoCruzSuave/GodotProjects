@@ -1,5 +1,6 @@
 @tool
 extends Node2D
+class_name VisualGrid2D
 
 @export var run_tool : = false :
 	set(_bool) : build()
@@ -22,10 +23,6 @@ func build():
 	clear_children()
 	draw_background()
 	draw_spots()
-	highlight_spot(Vector2i(1,1))
-	highlight_spot(Vector2i(1,7))
-	highlight_spot(Vector2i(7,4))
-	highlight_spot(Vector2i(4,4))
 			
 func draw_background():
 	var background_sprite : = Sprite2D.new()
@@ -73,7 +70,7 @@ func draw_spots():
 				spot_sprite.position.y += separation.y / 2
 			spot_sprite.name = "Spot"
 
-func highlight_spot(coords : Vector2i, color : = highlight_color):
+func highlight_spot(coords : Vector2i, color : = highlight_color, group_name : = ""):
 	var highlight_position : Vector2 = get_spot_position(coords)
 	if highlight_position == null:
 		return
@@ -88,6 +85,8 @@ func highlight_spot(coords : Vector2i, color : = highlight_color):
 	var highlight_sprite : = Sprite2D.new()
 	highlights_node.add_child(highlight_sprite)
 	highlight_sprite.owner = get_tree().edited_scene_root
+	if group_name != "":
+		highlight_sprite.add_to_group("hl_" + group_name)
 	
 	var image : = Image.create(spot_size.x, spot_size.y, false, Image.FORMAT_RGBA8)
 	image.fill(Color(color, 0.5))
@@ -115,11 +114,12 @@ func get_spot_position(coords : Vector2i, local_pos : = true):
 	else:
 		return spot_node.global_position
 		
-func clear_highlights():
+func clear_highlights(group_name : = ""):
 	if get_node("Highlights") != null:
 		var highlights_node : = get_node("Highlights")
 		for child in highlights_node.get_children():
-			child.free()
+			if group_name == "" || child.is_in_group("hl_" + group_name):
+				child.free()
 
 func clear_children():
 	for child in get_children():
