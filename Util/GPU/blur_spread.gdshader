@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 uniform sampler2D feedbackTex;
+uniform float blur_factor = 5.5;
 
 void vertex() {
 	// Called for every vertex the material is visible on.
@@ -15,7 +16,7 @@ void fragment() {
 	vec4 up = texture(feedbackTex, UV + vec2(0.0, -TEXTURE_PIXEL_SIZE.y));
 	vec4 down = texture(feedbackTex, UV + vec2(0.0, TEXTURE_PIXEL_SIZE.y));
 	
-	COLOR = (center + left + right + up + down) / 6.5;
+	COLOR = (center + left + right + up + down) / blur_factor;
 	
 }
 

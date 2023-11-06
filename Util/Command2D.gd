@@ -5,6 +5,10 @@ var running : = false
 var prepared : = false
 var completed : = false
 
+signal prepare_done
+signal command_done
+signal command_reset
+
 func prepare():
 	prepared = true
 
@@ -34,3 +38,4 @@ func reset() -> void:
 	running = false
 	prepared = false
 	completed = false	
+	emit_signal("command_reset")

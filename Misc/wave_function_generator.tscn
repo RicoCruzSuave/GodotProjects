@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://1e1us2ibcy8r"]
+
+[node name="WaveFunctionGenerator" type="Node2D"]
+
+[node name="Input" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Input"]
+
+[node name="Output" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Output"]
+format = 2

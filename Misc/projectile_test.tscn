@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d2vaf2s7fg3u1"]
+[gd_scene load_steps=16 format=3 uid="uid://d2vaf2s7fg3u1"]
 
 [ext_resource type="Script" path="res://Util/Managers/TeamManager.gd" id="1_kfjuw"]
 [ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_lk1by"]
@@ -7,10 +7,60 @@
 
 [sub_resource type="GDScript" id="GDScript_kko83"]
 script/source = "extends Node2D
-
 ##Provides logic for executing actions
 
+@export_node_path(\"Node2D\") var team_manager_path
+@export_node_path(\"Node2D\") var actions_list_path
+@export_node_path(\"ProgressBar\") var timer_ui_path
+
+@onready var team_manager : = get_node(team_manager_path)
+@onready var actions_list : = get_node(actions_list_path)
+@onready var timer_ui : ProgressBar = get_node(timer_ui_path)
+
 ##TODO: Needs reference to team manager, actions list, and a button hookup
+
+var timer : = Timer.new()
+var planning_phase : = false
+var actions : = []
+var action_index : = 0
+
+func _ready():
+	timer.autostart = true
+	add_child(timer)
+	
+	#timer.connect(\"timeout\", team_manager.next_team)
+	#Engine.time_scale = 0.3
+	#set_real_time(5)
+	timer.connect(\"timeout\", switch_phase)
+	switch_phase()
+	
+	for child in actions_list.get_children():
+		actions.append(child)
+	
+func _process(delta):
+	timer_ui.value = timer.time_left / timer.wait_time
+	
+func _input(event):
+	if planning_phase:
+		if Input.is_action_just_pressed(\"ui_accept\"):
+			timer.stop()
+			timer.emit_signal(\"timeout\")
+			timer.start()
+	
+func switch_phase():
+	planning_phase = !planning_phase
+	if planning_phase:
+		Engine.time_scale = 0.001
+		set_real_time(15)
+	else:
+		Engine.time_scale = 0.5
+		set_real_time(1.0)
+		team_manager.next_team()
+	
+func set_real_time(time : float):
+	timer.wait_time = time * Engine.time_scale
+	timer.start()
+	
 "
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
@@ -35,69 +85,99 @@ class_name ProjectileCommand2D
 
 @export var draw_res : = 10
 @export_node_path(\"Node2D\") var team_manager_path
+@export_node_path(\"Node2D\") var projectile_path
 
 @onready var team_manager : = get_node(team_manager_path)
-@onready var projectile :  = $RigidBody2D
+@onready var projectile : = get_node(projectile_path)
 
-var origin_entity 
 var start_pos : = Vector2(300, 650)
 var target_pos : Vector2
-
 var drawing_enabled : = false
-
-###Inputs: start_pos, target_pos, speed, radius
-
-func _ready():
-	team_manager.connect(\"member_switch\", set.bind(\"start_pos\", team_manager.get_active_member().global_position))
 	
 func prepare():
 	running = true
 	drawing_enabled = true
 	
 func _process(delta):
-	start_pos = team_manager.get_active_member().global_position
-	if drawing_enabled:
-		queue_redraw()
+	if running:
+		start_pos = team_manager.get_active_member().global_position
+		target_pos = get_global_mouse_position()
+		if drawing_enabled:
+			queue_redraw()
 	
 func _draw():
-	var current_pos : = start_pos 
-	var total_dist : = start_pos.distance_to(get_global_mouse_position())
-	var direction : = start_pos.direction_to(get_global_mouse_position())
-	for i in range(draw_res):
-		var incremental_dist : = (total_dist / draw_res)
-		draw_line(
-			current_pos, 
-			current_pos + (direction * incremental_dist), 
-			Color.MEDIUM_VIOLET_RED, 
-			2.0
-		)
-		current_pos += direction * incremental_dist
+	if start_pos != null and target_pos != null:
+		var current_pos : = start_pos 
+		var total_dist : = start_pos.distance_to(target_pos)
+		var direction : = start_pos.direction_to(target_pos)
+		for i in range(draw_res):
+			var incremental_dist : = (total_dist / draw_res)
+			draw_line(
+				current_pos, 
+				current_pos + (direction * incremental_dist), 
+				Color.MEDIUM_VIOLET_RED, 
+				2.0
+			)
+			current_pos += direction * incremental_dist
 
 func _unhandled_input(event):
 	if running:
 		if Input.is_action_just_pressed(\"left_click\"):
-			target_pos = get_global_mouse_position()
 			drawing_enabled = false
 			prepared = true
-			run(target_pos)
-		
+			run([
+				team_manager.get_active_member().global_position, 
+				get_global_mouse_position(), 
+				1000, 
+				36
+			])
+
+## Inputs: start_pos, target_pos, speed, radius
 func run(variant : Variant):
 	super.run(variant)
+	var start_pos : Vector2 = variant[0]
+	var target_pos : Vector2= variant[1]
+	var speed : float = variant[2]
+	var radius : float = variant[3]
+	
 	
 	var dir_to_target : = start_pos.direction_to(target_pos)
-	var dist : float = team_manager.get_active_member().get_node(\"CollisionShape2D\").shape.radius
 	
-	var new_ball : RigidBody2D = projectile.duplicate()
+	var new_ball : Node2D = projectile.duplicate()
 	add_child(new_ball)
-	new_ball.sleeping = false
+	new_ball.set_process(true)
+	if new_ball is RigidBody2D:
+		new_ball.sleeping = false
 	
-	new_ball.global_position = start_pos + (dir_to_target * (dist * 1.1))
-	new_ball.apply_central_impulse(dir_to_target * 1000)
+	new_ball.global_position = start_pos + (dir_to_target * radius)
+	new_ball.apply_central_impulse(dir_to_target * speed)
 	
 	completed = true
 	if is_completed():
-		team_manager.next_team()
+		emit_signal(\"command_done\")
 		reset()
+"
+
+[sub_resource type="GDScript" id="GDScript_gs4hj"]
+script/source = "extends RigidBody2D
+
+@export var size : = 10.0
+@export var decay_rate : = 5.0
+
+func _ready():
+	set_process(false)
+
+func _process(delta):
+	
+	if not $VisibleOnScreenEnabler2D.is_on_screen():
+		free()
+		
+	size -= delta * decay_rate
+	if size <= 0.0:
+		free()
+	#mass = size * 10.0
+	$CollisionShape2D.shape.radius = size
+	$Sprite2D.scale = Vector2(size/10.0, size/10.0)
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rwfrv"]
@@ -119,6 +199,9 @@ metadata/_snap_enabled = true
 
 [node name="ActionManager" type="Node2D" parent="."]
 script = SubResource("GDScript_kko83")
+team_manager_path = NodePath("../TeamManager")
+actions_list_path = NodePath("../Projectiles")
+timer_ui_path = NodePath("../UI/VBoxContainer/CenterContainer/ProgressBar")
 
 [node name="TeamManager" type="Node2D" parent="."]
 script = ExtResource("1_kfjuw")
@@ -141,7 +224,8 @@ shape = SubResource("RectangleShape2D_5208o")
 
 [node name="TestBody" type="RigidBody2D" parent="LeftSide/LeftTeam"]
 position = Vector2(0, -44)
-mass = 10.0
+mass = 100.0
+linear_damp = 3.0
 
 [node name="Sprite2D" type="Sprite2D" parent="LeftSide/LeftTeam/TestBody"]
 texture = ExtResource("1_lk1by")
@@ -177,7 +261,7 @@ shape = SubResource("RectangleShape2D_4ijq5")
 
 [node name="TestBody" type="RigidBody2D" parent="RightSide/RightTeam"]
 position = Vector2(-1, -43)
-mass = 10.0
+mass = 100.0
 linear_damp = 3.0
 
 [node name="Sprite2D" type="Sprite2D" parent="RightSide/RightTeam/TestBody"]
@@ -193,19 +277,25 @@ debug_color = Color(0, 0.6, 0.701961, 0.419608)
 [node name="BallBase" type="Node2D" parent="Projectiles"]
 script = SubResource("GDScript_otvvk")
 team_manager_path = NodePath("../../TeamManager")
+projectile_path = NodePath("Ball")
 
-[node name="RigidBody2D" type="RigidBody2D" parent="Projectiles/BallBase"]
+[node name="Ball" type="RigidBody2D" parent="Projectiles/BallBase"]
+process_mode = 4
 position = Vector2(310, 342)
-mass = 100.0
+mass = 10.0
 sleeping = true
 freeze_mode = 1
+max_contacts_reported = 1
+contact_monitor = true
+script = SubResource("GDScript_gs4hj")
+decay_rate = 1.5
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Projectiles/BallBase/RigidBody2D"]
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Projectiles/BallBase/Ball"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Projectiles/BallBase/RigidBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Projectiles/BallBase/Ball"]
 shape = SubResource("CircleShape2D_rwfrv")
 
-[node name="Sprite2D" type="Sprite2D" parent="Projectiles/BallBase/RigidBody2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Projectiles/BallBase/Ball"]
 texture_filter = 1
 texture = SubResource("GradientTexture2D_vjx8b")
 
@@ -213,58 +303,72 @@ texture = SubResource("GradientTexture2D_vjx8b")
 
 [node name="ArrowBase" type="Node2D" parent="Projectiles"]
 
+[node name="Terrain" type="Node2D" parent="."]
+
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
 
-[node name="ActionBar" type="HFlowContainer" parent="UI"]
-layout_mode = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 0
 offset_right = 1200.0
-offset_bottom = 50.0
+offset_bottom = 81.0
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.0
+
+[node name="ActionBar" type="HFlowContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 alignment = 1
 script = ExtResource("3_0wwxe")
-commands_nodepath = NodePath("../../Projectiles")
+commands_nodepath = NodePath("../../../Projectiles")
 
-[node name="Button" type="Button" parent="UI/ActionBar"]
+[node name="Button" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 text = "Ball Base"
 
-[node name="Button2" type="Button" parent="UI/ActionBar"]
+[node name="Button2" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 text = "Ball Base"
 
-[node name="Button3" type="Button" parent="UI/ActionBar"]
+[node name="Button3" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 text = "Ball Base"
 
-[node name="Button4" type="Button" parent="UI/ActionBar"]
+[node name="Button4" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 text = "Ball Base"
 
-[node name="Button5" type="Button" parent="UI/ActionBar"]
+[node name="Button5" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 text = "Ball Base"
 
-[node name="Button6" type="Button" parent="UI/ActionBar"]
+[node name="Button6" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

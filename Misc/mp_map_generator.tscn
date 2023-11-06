@@ -1,14 +1,16 @@
-[gd_scene load_steps=12 format=3 uid="uid://cf2dcvg6c0r60"]
+[gd_scene load_steps=14 format=3 uid="uid://cf2dcvg6c0r60"]
 
 [ext_resource type="Shader" path="res://Util/GPU/blur_spread.gdshader" id="1_evegt"]
+[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="2_1qrm6"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_203g4"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_pplu7"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yxwly"]
 resource_local_to_scene = true
 shader = ExtResource("1_evegt")
-shader_parameter/feedbackTex = SubResource("ViewportTexture_203g4")
+shader_parameter/blur_factor = 5.25
+shader_parameter/feedbackTex = SubResource("ViewportTexture_pplu7")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kx6yi"]
 
@@ -70,6 +72,7 @@ uniform vec4 color_value : source_color;
 uniform vec3 gravity;
 
 uniform sampler2D feedbackTex;
+uniform bool paused;
 
 vec4 rotate_hue(vec4 current_color, float hue_rot_angle){
 	float hue_rot_c = cos(hue_rot_angle);
@@ -376,11 +379,12 @@ void process() {
 	//TRANSFORM[3].xyz += final_velocity * DELTA;
 	
 	////
+	vec2 original_location = TRANSFORM[3].xy;
 	vec2 current_angle = vec2(sin(dynamic_params.angle), cos(dynamic_params.angle));
 	vec2 left_angle = vec2(sin(dynamic_params.angle - spread), cos(dynamic_params.angle - spread));
 	vec2 right_angle = vec2(sin(dynamic_params.angle + spread), cos(dynamic_params.angle + spread));
 	vec2 pixel_size = 1.0 / vec2(textureSize(feedbackTex, 0));
-	float check_length = 2.0;
+	float check_length = 3.0;
 	
 	vec2 position_uv = TRANSFORM[3].xy / vec2(textureSize(feedbackTex, 0));
 	vec4 forward = texture(feedbackTex, position_uv + (check_length * pixel_size * current_angle));
@@ -396,9 +400,16 @@ void process() {
 	}
 	TRANSFORM[3].z = 0.0;
 	//TRANSFORM[3].xyz += final_velocity * DELTA;
-	if (position_uv.x < 0.0 || position_uv.x > 1.0 || position_uv.y < 0.0 || position_uv.y > 1.0) {
-		TRANSFORM[3].xy += EMISSION_TRANSFORM[3].xy - TRANSFORM[3].xy;
-		dynamic_params.angle += spread;
+	if (position_uv.x < 0.0 || position_uv.x > 1.0) {
+		TRANSFORM[3].x = float(int(TRANSFORM[3].x) % textureSize(feedbackTex, 0).x) + 1.0;
+		//TRANSFORM[3].xy += EMISSION_TRANSFORM[3].xy - TRANSFORM[3].xy;
+		//dynamic_params.angle += spread;
+	} else if (position_uv.y < 0.0 || position_uv.y > 1.0) {
+		TRANSFORM[3].y = float(int(TRANSFORM[3].y) % textureSize(feedbackTex, 0).y) + 1.0;		
+	}
+	
+	if (paused) {
+		TRANSFORM[3].xy = original_location;
 	}
 	////
 	
@@ -411,7 +422,6 @@ void process() {
 	
 	CUSTOM.x = base_angle * degree_to_rad;
     COLOR = params.color;
-	COLOR.r = 0.5;
 	//COLOR.gb = vec2(1.0) - forward.gb;
 	TRANSFORM[0] = vec4(cos(CUSTOM.x), -sin(CUSTOM.x), 0.0, 0.0);
 	TRANSFORM[1] = vec4(sin(CUSTOM.x), cos(CUSTOM.x), 0.0, 0.0);
@@ -433,14 +443,14 @@ void process() {
 
 "
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_dy8n2"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_muy8k"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3o60h"]
 resource_local_to_scene = true
 shader = SubResource("Shader_00huy")
 shader_parameter/direction = Vector3(1, 1, 1)
-shader_parameter/spread = 1.204
+shader_parameter/spread = 1.359
 shader_parameter/flatness = 0.0
 shader_parameter/inherit_emitter_velocity_ratio = 0.0
 shader_parameter/initial_linear_velocity_min = 3.0
@@ -478,14 +488,21 @@ shader_parameter/velocity_pivot = Vector3(0, 0, 0)
 shader_parameter/emission_sphere_radius = 5.0
 shader_parameter/color_value = Color(1, 1, 1, 1)
 shader_parameter/gravity = Vector3(0, 0, 0)
-shader_parameter/feedbackTex = SubResource("ViewportTexture_dy8n2")
+shader_parameter/paused = true
+shader_parameter/feedbackTex = SubResource("ViewportTexture_muy8k")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_lcl32"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mo0cw"]
+shader = ExtResource("2_1qrm6")
+shader_parameter/steps = 2.0
+shader_parameter/alpha_included = false
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_t6h1a"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [node name="MpMapGenerator" type="Node2D"]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+visible = false
 texture_filter = 1
 offset_right = 50.0
 offset_bottom = 50.0
@@ -493,9 +510,11 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(50, 50)
 size_2d_override_stretch = true
 render_target_clear_mode = 2
+render_target_update_mode = 0
 
 [node name="Blur" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
 visible = false
@@ -509,17 +528,18 @@ texture = SubResource("NoiseTexture2D_fyx1i")
 centered = false
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="SubViewportContainer/SubViewport"]
+visible = false
 position = Vector2(25, 25)
 emitting = false
-amount = 1000
+amount = 2500
 process_material = SubResource("ShaderMaterial_3o60h")
-lifetime = 3.0
-one_shot = true
+lifetime = 271.74
 explosiveness = 1.0
 
 [node name="Polygon2D" type="Polygon2D" parent="SubViewportContainer/SubViewport"]
+visible = false
 color = Color(0, 1, 1, 1)
-polygon = PackedVector2Array(4, 0, 0, 0, 0, 9, 0, 50, 2, 50, 48, 50, 48, 0, 4, 0, 4, 1, 45, 1, 45, 49, 1, 49, 1, 1, 4, 1)
+polygon = PackedVector2Array(4, 0, 0, 0, 0, 9, 0, 50, 2, 50, 48, 50, 48, 0, 4, 0, 4, 1, 47, 1, 46, 49, 1, 49, 1, 1, 4, 1)
 
 [node name="Polygon2D2" type="Polygon2D" parent="SubViewportContainer/SubViewport"]
 visible = false
@@ -543,8 +563,10 @@ color = Color(1, 0, 1, 1)
 polygon = PackedVector2Array(-1, 0, 0, 0, 0, 1, -1, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture_filter = 1
+material = SubResource("ShaderMaterial_mo0cw")
 position = Vector2(350, 0)
 scale = Vector2(10, 10)
-texture = SubResource("ViewportTexture_lcl32")
+texture = SubResource("ViewportTexture_t6h1a")
 centered = false
