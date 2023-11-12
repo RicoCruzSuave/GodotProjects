@@ -1,8 +1,10 @@
 extends FlowContainer
 
 @export_node_path("Node2D") var commands_nodepath
+@export_node_path("Node2D") var action_manager_nodepath
 
 @onready var commands_node : = get_node(commands_nodepath)
+@onready var action_manager : = get_node(action_manager_nodepath)
 
 func _ready():
 	for child in get_children():
@@ -17,4 +19,5 @@ func add_button(node : Object, method : String):
 	new_button.name = node.name
 	add_child(new_button)
 	
-	new_button.connect("pressed", node.call.bind(method))
+	new_button.connect("pressed", action_manager.call_command.bind(node.name))
+	#new_button.connect("pressed", node.call.bind(method))

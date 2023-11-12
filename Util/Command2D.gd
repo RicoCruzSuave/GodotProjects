@@ -9,29 +9,30 @@ signal prepare_done
 signal command_done
 signal command_reset
 
-func prepare():
-	prepared = true
-
-func run(variant : Variant): 
-	if not can_do(variant):
+func prepare(variant : Variant = null):
+	if not can_do():
 		return 
 	if not running:
 		running = true
-	if not prepared:
-		prepare()
+	prepared = true
 	
-func undo(variant : Variant): 
+func run(): 
+	if not prepared:
+		return
+	
+func undo(): 
 	pass
 
-func can_do(variant : Variant) -> bool:
-	for child in get_children():
-		if child is Condition:
-			if child.check(variant) == false:
-				return false
+func can_do() -> bool:
 	return true
+#func can_do(variant : Variant) -> bool:
+	#for child in get_children():
+		#if child is Condition:
+			#if child.check(variant) == false:
+				#return false
+	#return true
 
 func is_completed() -> bool:
-	running = false
 	return completed
 
 func reset() -> void:
