@@ -14,12 +14,6 @@ func prepare(variant : Variant = null):
 	$AimingSequence/AimTarget.target = variant[1] 
 	$AimingSequence/AimTarget.radius = variant[3]
 	#Wait for resolution
-	print($AimingSequence.get_number_of_nodes())
-	for _i in $AimingSequence.get_number_of_nodes():
-		var node : Node2D = $AimingSequence.get_current_node(true)
-		node.drawing_enabled = true
-		await node.aiming_finished
-		node.drawing_enabled = false
 	#for node in $AimingSequence.get_nodes():
 		#node.drawing_enabled = true
 		#await node.aiming_finished
