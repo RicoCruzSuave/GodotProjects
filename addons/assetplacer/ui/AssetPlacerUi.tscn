@@ -1,18 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://ocxipybus2b7"]
+[gd_scene load_steps=13 format=3 uid="uid://ocxipybus2b7"]
 
-[ext_resource type="Script" path="res://addons/assetplacer/ui/AssetPlacerUi.cs" id="1_mrwxe"]
 [ext_resource type="Theme" uid="uid://cdejano5l8vrj" path="res://addons/assetplacer/ui/NormalButton.tres" id="2_4g484"]
 [ext_resource type="Theme" uid="uid://b21iaei3olt8o" path="res://addons/assetplacer/ui/SelectedButton.tres" id="3_fk7el"]
 [ext_resource type="PackedScene" uid="uid://b4i54pft0an" path="res://addons/assetplacer/ui/AssetPlacerButton.tscn" id="4_njn6w"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/SaveAssetLibraryDialog.cs" id="5_3qhrn"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/RightClickPopup.cs" id="5_ppeht"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/SpawnParentSelectionUi.cs" id="5_w8thp"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/SpawnParentSelectionButton.cs" id="6_5ote7"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/AssetDropPanel.cs" id="6_43del"]
 [ext_resource type="PackedScene" uid="uid://4cb3fnwhss80" path="res://addons/assetplacer/ui/HelpDialog.tscn" id="7_4kydg"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/SnappingUi.cs" id="7_15sxk"]
 [ext_resource type="PackedScene" uid="uid://hwjjgutgbwkt" path="res://addons/assetplacer/ui/AboutDialog.tscn" id="7_ubwky"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/PlacementUi.cs" id="8_0wcyv"]
 [ext_resource type="Script" path="res://addons/assetplacer/ui/EditorLineEdit.gd" id="12_y6nck"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kvgly"]
@@ -49,7 +41,7 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-script = ExtResource("1_mrwxe")
+script = null
 dropPanel = NodePath("HBoxContainer/VBoxContainer2/PanelContainer/VBoxContainer/Panel")
 assetGrid = NodePath("HBoxContainer/VBoxContainer2/PanelContainer/VBoxContainer/Panel/ScrollContainer/HFlowContainer")
 assetButtonRightClickPopup = NodePath("AssetButtonRightClickPopup")
@@ -86,15 +78,15 @@ size = Vector2i(600, 400)
 ok_button_text = "Save"
 access = 1
 filters = PackedStringArray("*.tres")
-script = ExtResource("5_3qhrn")
+script = null
 
 [node name="AssetButtonRightClickPopup" type="PopupMenu" parent="."]
 size = Vector2i(100, 8)
-script = ExtResource("5_ppeht")
+script = null
 
 [node name="TabRightClickPopup" type="PopupMenu" parent="."]
 size = Vector2i(100, 8)
-script = ExtResource("5_ppeht")
+script = null
 
 [node name="AboutDialog" parent="." instance=ExtResource("7_ubwky")]
 
@@ -151,7 +143,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_tm7nb")
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 0
-script = ExtResource("5_w8thp")
+script = null
 spawnNodeSelector = NodePath("SpawnNodeSelector")
 selectedAsSpawnNodeButton = NodePath("SelectedAsSpawnNodeButton")
 
@@ -170,7 +162,7 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_w7pr5")
 theme_override_styles/focus = SubResource("StyleBoxFlat_w7pr5")
 text = "<Node>"
 clip_text = true
-script = ExtResource("6_5ote7")
+script = null
 
 [node name="SelectedAsSpawnNodeButton" type="Button" parent="HBoxContainer/ScrollContainer/VBoxContainer/SpanParentSelectionUi"]
 layout_mode = 2
@@ -214,7 +206,7 @@ popup/item_1/id = 1
 [node name="PlacementModeUi" type="PanelContainer" parent="HBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"Panel"
-script = ExtResource("8_0wcyv")
+script = null
 placementModeOptionButton = NodePath("../HBoxContainer/OptionButton")
 planeOptionButton = NodePath("VBoxContainer/PlanePlacementModeContainer/VBoxContainer/OptionButton")
 planePositionLineEdit = NodePath("VBoxContainer/PlanePlacementModeContainer/VBoxContainer2/PlanePosLineEdit")
@@ -344,7 +336,7 @@ text = "Snapping"
 [node name="SnappingContainer" type="PanelContainer" parent="HBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"Panel"
-script = ExtResource("7_15sxk")
+script = null
 translateSnapCheckbox = NodePath("VBoxContainer/TranslateSnapContainer/VBoxContainer/HBoxContainer/TranslateSnapCheckbox")
 translateSnapStepEdit = NodePath("VBoxContainer/TranslateSnapContainer/VBoxContainer/TranslateSnapLineEdit")
 translateShiftSnapStepEdit = NodePath("VBoxContainer/TranslateSnapContainer/VBoxContainer2/TranslateShiftSnapLineEdit")
@@ -559,7 +551,7 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"TabContainer"
-script = ExtResource("6_43del")
+script = null
 
 [node name="Label3" type="Label" parent="HBoxContainer/VBoxContainer2/PanelContainer/VBoxContainer/Panel"]
 modulate = Color(0.564706, 0.564706, 0.564706, 0.478431)

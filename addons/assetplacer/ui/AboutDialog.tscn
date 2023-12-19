@@ -1,11 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://hwjjgutgbwkt"]
-
-[ext_resource type="Script" path="res://addons/assetplacer/ui/AboutDialog.cs" id="1_faw6c"]
+[gd_scene format=3 uid="uid://hwjjgutgbwkt"]
 
 [node name="AboutDialog" type="AcceptDialog"]
 title = "About"
 size = Vector2i(500, 466)
-script = ExtResource("1_faw6c")
+script = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = 8.0

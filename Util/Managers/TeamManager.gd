@@ -28,7 +28,7 @@ func next_team() -> void:
 		teams.size(),
 	)
 	emit_signal("team_switch")
-	emit_signal("member_switch")
+	emit_signal("member_switch", get_active_member())
 
 func next_member() -> void:
 	current_member_index = wrapi(
@@ -36,7 +36,7 @@ func next_member() -> void:
 		0,
 		teams[current_team_index].size(),
 	)
-	emit_signal("member_switch")
+	emit_signal("member_switch", get_active_member())
 
 func get_active_member():
 	return teams[current_team_index][current_member_index]

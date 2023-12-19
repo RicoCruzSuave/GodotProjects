@@ -1,17 +1,19 @@
-[gd_scene load_steps=27 format=3 uid="uid://d2vaf2s7fg3u1"]
+[gd_scene load_steps=33 format=3 uid="uid://d2vaf2s7fg3u1"]
 
 [ext_resource type="Script" path="res://Util/Managers/TeamManager.gd" id="1_kfjuw"]
 [ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_lk1by"]
 [ext_resource type="Script" path="res://Misc/ActionManager.gd" id="1_wy085"]
 [ext_resource type="Texture2D" uid="uid://dv5wju4rg4ni1" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundYellow.png" id="2_b7e2c"]
 [ext_resource type="Script" path="res://Util/CommandsUI.gd" id="3_0wwxe"]
+[ext_resource type="Script" path="res://Misc/test_player.gd" id="3_awsh3"]
 [ext_resource type="Script" path="res://Util/ProjectileCommand2D.gd" id="4_gl43m"]
 [ext_resource type="Script" path="res://Misc/Beam.gd" id="5_0elrb"]
 [ext_resource type="Script" path="res://Misc/ProjectileBall.tres.gd" id="6_q6g3u"]
 [ext_resource type="Script" path="res://Misc/Arrow.gd" id="7_5jr0h"]
 [ext_resource type="Script" path="res://Misc/ProjectileBeam.tres.gd" id="7_sr7a3"]
 [ext_resource type="Script" path="res://Misc/ProjectileArrrow.tres.gd" id="9_sxn5t"]
-[ext_resource type="Script" path="res://Util/Sequence.gd" id="10_ylugb"]
+[ext_resource type="Script" path="res://Util/Handler.gd" id="10_1ujfh"]
+[ext_resource type="Script" path="res://Misc/AimingGuide.gd" id="10_vkexb"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
 width = 100
@@ -23,11 +25,52 @@ size = Vector2(100, 20)
 [sub_resource type="CircleShape2D" id="CircleShape2D_qaeqd"]
 radius = 25.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ijq5"]
-size = Vector2(100, 20)
+[sub_resource type="GDScript" id="GDScript_j8bkj"]
+script/source = "extends Node2D
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
-radius = 25.0
+func get_options() -> Dictionary:
+	return  {
+		\"origin\" : Target2D.new(),
+		\"target\" : Target2D.new(),
+		\"power\": 1.0,
+		\"angle\": 0.0,
+	}
+
+func get_command(options : Dictionary) -> RigidBody2D:
+	#Throw error if options arent there
+	if not options.has(\"origin\") or \\
+	not options.has(\"target\") or \\
+	not options.has(\"power\") or \\
+	not options.has(\"angle\"):
+		print_debug(options)
+		return null
+	#Create new object
+	var new_projectile : = $Ball.duplicate()
+	#Get each option
+	var origin : Target2D = options[\"origin\"]
+	var target : Target2D = options[\"target\"]
+	var power : float = options[\"power\"]
+	var angle : float = options[\"angle\"]
+	#Determine position and angle
+	var start_pos : Vector2 = origin.get_pos()
+	var target_pos : Vector2 = target.get_pos()
+	var dir_to_target : Vector2 = start_pos.direction_to(target_pos)
+	#If the target is pointing to an entity, offset it a bit
+	if origin.has_entity():
+		var origin_object : Object = origin.get_entity()
+		##TODO: change how we get the radius here, its ugly
+		var offset : Vector2 = \\
+			origin_object.get_node(\"CollisionShape2D\").shape.radius \\
+			+ new_projectile.get_node(\"CollisionShape2D\").shape.radius \\
+			* dir_to_target
+		new_projectile.global_position = start_pos + offset
+	#Unsleep and shoot projectile
+	new_projectile.sleeping = false
+	new_projectile.apply_central_impulse(dir_to_target * power * new_projectile.speed_scalar)
+	#Return the new projectile to be added 
+	##TODO: change to command?
+	return new_projectile
+"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rwfrv"]
 
@@ -44,111 +87,86 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.8, 0.4)
 metadata/_snap_enabled = true
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ijq5"]
+size = Vector2(100, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
+radius = 25.0
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p07o5"]
 
-[sub_resource type="GDScript" id="GDScript_n8yir"]
-script/source = "extends Node2D
-
-var origin = null : get = get_origin
-var target = null : get = get_target
-var start_pos
-var end_pos 
-var drawing_enabled : = false
-var draw_resolution : = 10
-
-signal aiming_finished
+[sub_resource type="GDScript" id="GDScript_8ivm4"]
+script/source = "@tool
+extends ChainHandler
 
 
-func _process(delta):
-	if drawing_enabled:
-		queue_redraw()
+## Handler
 
-func _input(event):
-	if drawing_enabled:
-		if Input.is_action_just_pressed(\"left_click\"):
-			start_pos = origin
-			end_pos = target
-			emit_signal(\"aiming_finished\")
-
-func _draw():
-	if drawing_enabled:
-		if origin != null and target != null:
-			var current_pos : Vector2 = origin
-			var target_pos : Vector2 = target
-			
-			var total_dist : float = current_pos.distance_to(target_pos)
-			var direction : Vector2 = current_pos.direction_to(target_pos)
-			for i in range(draw_resolution):
-				var incremental_dist : = (total_dist / draw_resolution)
-				draw_line(
-					current_pos, 
-					current_pos + (direction * incremental_dist), 
-					Color.MEDIUM_VIOLET_RED, 
-					2.0
-				)
-				current_pos += direction * incremental_dist
-
-func reset():
-	start_pos = null
-	end_pos = null
-	drawing_enabled = false
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"origin\"] = self
+	return current_data
 	
-func get_origin():
-	if origin is Callable:
-		return origin.call()
-	else:
-		return origin
-		
-func get_target():
-	if target is Callable:
-		return target.call()
-	else:
-		return target
-		
+func is_completed() -> bool:
+	return true
 "
 
-[sub_resource type="GDScript" id="GDScript_x4o2s"]
-script/source = "extends Node2D
+[sub_resource type="GDScript" id="GDScript_ey86m"]
+script/source = "@tool
+extends ChainHandler
 
-var radius = null : get = get_radius
-var target = null : get = get_target
-var target_pos  
-var drawing_enabled : = false
-var draw_resolution : = 10
 
-signal aiming_finished
+## Handler
 
-func _process(delta):
-	if drawing_enabled:
-		queue_redraw()
-
-func _input(event):
-	if drawing_enabled:
-		if Input.is_action_just_pressed(\"left_click\"):
-			target_pos = target
-			emit_signal(\"aiming_finished\")
-
-func _draw():
-	if drawing_enabled:
-		draw_circle(target, radius, Color(Color.RED, 0.5))
-		
-func reset():
-	radius = null
-	target_pos = null
-	drawing_enabled = false
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"energy\"] = 10.0
+	return current_data
 	
-func get_radius():
-	if radius is Callable:
-		return radius.call()
-	else:
-		return radius
+func is_completed() -> bool:
+	return true
+"
+
+[sub_resource type="GDScript" id="GDScript_l82l8"]
+script/source = "@tool
+extends ChainHandler
+
+var completed : = false
+
+## Handler
 		
-func get_target():
-	if target is Callable:
-		return target.call()
-	else:
-		return target
 		
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"target\"] = get_global_mouse_position()
+	if Input.is_action_pressed(\"ui_accept\"):
+		completed = true
+	print(completed)
+	return current_data
+		
+func is_completed() -> bool:
+	return completed
+"
+
+[sub_resource type="GDScript" id="GDScript_ggwmx"]
+script/source = "@tool
+extends ChainHandler
+
+var completed : = false
+
+## Handler
+		
+		
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"angle\"] = global_position.direction_to(get_global_mouse_position())
+	if Input.is_action_pressed(\"ui_accept\"):
+		completed = true
+		print(completed)
+	return current_data
+		
+func is_completed() -> bool:
+	return completed
 "
 
 [sub_resource type="Gradient" id="Gradient_1equo"]
@@ -166,6 +184,8 @@ metadata/_snap_enabled = true
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r362s"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a5cam"]
+
 [node name="ProjectileTest" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -175,7 +195,7 @@ zoom = Vector2(0.5, 0.5)
 [node name="ActionManager" type="Node2D" parent="."]
 script = ExtResource("1_wy085")
 team_manager_path = NodePath("../TeamManager")
-actions_list_path = NodePath("../Projectiles")
+actions_list_path = NodePath("../LeftSide/LeftTeam/TestBody/Projectiles")
 timer_ui_path = NodePath("../UI/VBoxContainer/CenterContainer/ProgressBar")
 
 [node name="TeamManager" type="Node2D" parent="."]
@@ -201,6 +221,10 @@ shape = SubResource("RectangleShape2D_5208o")
 position = Vector2(0, -44)
 mass = 100.0
 linear_damp = 3.0
+script = ExtResource("3_awsh3")
+
+[node name="CommandList" type="Node2D" parent="LeftSide/LeftTeam/TestBody"]
+position = Vector2(0, 44)
 
 [node name="Sprite2D" type="Sprite2D" parent="LeftSide/LeftTeam/TestBody"]
 texture = ExtResource("1_lk1by")
@@ -208,6 +232,34 @@ texture = ExtResource("1_lk1by")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/LeftTeam/TestBody"]
 shape = SubResource("CircleShape2D_qaeqd")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="AimingGuide" type="Node2D" parent="LeftSide/LeftTeam/TestBody"]
+position = Vector2(-300, -606)
+script = ExtResource("10_vkexb")
+
+[node name="Projectiles" type="Node2D" parent="LeftSide/LeftTeam/TestBody"]
+position = Vector2(-300, -606)
+
+[node name="Ball" type="Node2D" parent="LeftSide/LeftTeam/TestBody/Projectiles"]
+script = SubResource("GDScript_j8bkj")
+
+[node name="Ball" type="RigidBody2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball"]
+position = Vector2(310, 342)
+mass = 10.0
+sleeping = true
+freeze_mode = 1
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("6_q6g3u")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball/Ball"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball/Ball"]
+shape = SubResource("CircleShape2D_rwfrv")
+
+[node name="Sprite2D" type="Sprite2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball/Ball"]
+texture_filter = 1
+texture = SubResource("GradientTexture2D_vjx8b")
 
 [node name="RightSide" type="Node2D" parent="."]
 position = Vector2(900, 650)
@@ -247,14 +299,21 @@ texture = ExtResource("2_b7e2c")
 shape = SubResource("CircleShape2D_6flcf")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
-[node name="Projectiles" type="Node2D" parent="."]
+[node name="OldProjectiles" type="Node2D" parent="."]
 
-[node name="Ball" type="Node2D" parent="Projectiles"]
+[node name="Ball" type="Node2D" parent="OldProjectiles"]
 script = ExtResource("4_gl43m")
 projectile_path = NodePath("Ball")
 
-[node name="Ball" type="RigidBody2D" parent="Projectiles/Ball"]
-process_mode = 4
+[node name="Conditions" type="Node2D" parent="OldProjectiles/Ball"]
+
+[node name="HasOrigin" type="Node2D" parent="OldProjectiles/Ball/Conditions"]
+
+[node name="HasEnergy" type="Node2D" parent="OldProjectiles/Ball/Conditions"]
+
+[node name="HasAngle" type="Node2D" parent="OldProjectiles/Ball/Conditions"]
+
+[node name="Ball" type="RigidBody2D" parent="OldProjectiles/Ball"]
 position = Vector2(310, 342)
 mass = 10.0
 sleeping = true
@@ -262,58 +321,72 @@ freeze_mode = 1
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("6_q6g3u")
-decay_rate = 1.5
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="Projectiles/Ball/Ball"]
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="OldProjectiles/Ball/Ball"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Projectiles/Ball/Ball"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Ball/Ball"]
 shape = SubResource("CircleShape2D_rwfrv")
 
-[node name="Sprite2D" type="Sprite2D" parent="Projectiles/Ball/Ball"]
+[node name="Sprite2D" type="Sprite2D" parent="OldProjectiles/Ball/Ball"]
 texture_filter = 1
 texture = SubResource("GradientTexture2D_vjx8b")
 
-[node name="Beam" type="Node2D" parent="Projectiles"]
+[node name="Beam" type="Node2D" parent="OldProjectiles"]
 script = ExtResource("5_0elrb")
 projectile_path = NodePath("Beam")
 
-[node name="Beam" type="Node2D" parent="Projectiles/Beam"]
-process_mode = 4
+[node name="Beam" type="Node2D" parent="OldProjectiles/Beam"]
 position = Vector2(495, 297)
 script = ExtResource("7_sr7a3")
 duration = 0.5
 
-[node name="Line2D" type="Line2D" parent="Projectiles/Beam/Beam"]
+[node name="Line2D" type="Line2D" parent="OldProjectiles/Beam/Beam"]
 
-[node name="Timer" type="Timer" parent="Projectiles/Beam/Beam"]
+[node name="Timer" type="Timer" parent="OldProjectiles/Beam/Beam"]
 one_shot = true
 
-[node name="RayCast2D" type="RayCast2D" parent="Projectiles/Beam/Beam"]
+[node name="RayCast2D" type="RayCast2D" parent="OldProjectiles/Beam/Beam"]
 
-[node name="Area2D" type="Area2D" parent="Projectiles/Beam/Beam"]
+[node name="Area2D" type="Area2D" parent="OldProjectiles/Beam/Beam"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Projectiles/Beam/Beam/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Beam/Beam/Area2D"]
 shape = SubResource("RectangleShape2D_p07o5")
 
-[node name="Arrow" type="Node2D" parent="Projectiles"]
+[node name="Arrow" type="Node2D" parent="OldProjectiles"]
 script = ExtResource("7_5jr0h")
+projectile_path = null
 
-[node name="Conditions" type="Node2D" parent="Projectiles/Arrow"]
+[node name="Inputs" type="Node2D" parent="OldProjectiles/Arrow"]
 
-[node name="HasEnoughStamina" type="Node2D" parent="Projectiles/Arrow/Conditions"]
+[node name="Target" type="Node2D" parent="OldProjectiles/Arrow/Inputs"]
 
-[node name="AimingSequence" type="Node2D" parent="Projectiles/Arrow"]
-script = ExtResource("10_ylugb")
-resolution = 3
+[node name="Angle" type="Node2D" parent="OldProjectiles/Arrow/Inputs"]
 
-[node name="AimLine" type="Node2D" parent="Projectiles/Arrow/AimingSequence"]
-script = SubResource("GDScript_n8yir")
+[node name="Conditions" type="Node2D" parent="OldProjectiles/Arrow"]
+script = ExtResource("10_1ujfh")
 
-[node name="AimTarget" type="Node2D" parent="Projectiles/Arrow/AimingSequence"]
-script = SubResource("GDScript_x4o2s")
+[node name="Origin" type="Node2D" parent="OldProjectiles/Arrow/Conditions"]
+script = ExtResource("10_1ujfh")
 
-[node name="Projectile" type="RigidBody2D" parent="Projectiles/Arrow"]
-process_mode = 4
+[node name="TargetEntity" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Origin"]
+script = SubResource("GDScript_8ivm4")
+
+[node name="Energy" type="Node2D" parent="OldProjectiles/Arrow/Conditions"]
+script = SubResource("GDScript_ey86m")
+
+[node name="TargetEntityProperty" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Energy"]
+
+[node name="Target" type="Node2D" parent="OldProjectiles/Arrow/Conditions"]
+script = ExtResource("10_1ujfh")
+handler_order = 0
+
+[node name="TargetStatic" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Target"]
+script = SubResource("GDScript_l82l8")
+
+[node name="TargetAngle" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Target"]
+script = SubResource("GDScript_ggwmx")
+
+[node name="Projectile" type="RigidBody2D" parent="OldProjectiles/Arrow"]
 position = Vector2(656, 249)
 mass = 10.0
 gravity_scale = 0.0
@@ -324,17 +397,30 @@ script = ExtResource("9_sxn5t")
 turning_radius = 1.571
 speed = 200.0
 
-[node name="Sprite2D" type="Sprite2D" parent="Projectiles/Arrow/Projectile"]
+[node name="Sprite2D" type="Sprite2D" parent="OldProjectiles/Arrow/Projectile"]
 texture_filter = 1
 texture = SubResource("GradientTexture2D_1yarx")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Projectiles/Arrow/Projectile"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Arrow/Projectile"]
 shape = SubResource("CircleShape2D_r362s")
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Projectiles/Arrow/Projectile"]
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="OldProjectiles/Arrow/Projectile"]
 
-[node name="RayCast2D" type="RayCast2D" parent="Projectiles/Arrow/Projectile"]
+[node name="RayCast2D" type="RayCast2D" parent="OldProjectiles/Arrow/Projectile"]
 target_position = Vector2(0, -25)
+
+[node name="Ground" type="Node2D" parent="OldProjectiles"]
+
+[node name="Inputs" type="Node2D" parent="OldProjectiles/Ground"]
+
+[node name="Target" type="Node2D" parent="OldProjectiles/Ground/Inputs"]
+
+[node name="Size" type="Node2D" parent="OldProjectiles/Ground/Inputs"]
+
+[node name="Ground" type="StaticBody2D" parent="OldProjectiles/Ground"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Ground/Ground"]
+shape = SubResource("RectangleShape2D_a5cam")
 
 [node name="Terrain" type="Node2D" parent="."]
 
@@ -364,8 +450,7 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 alignment = 1
 script = ExtResource("3_0wwxe")
-commands_nodepath = NodePath("../../../Projectiles")
-action_manager_nodepath = NodePath("../../../ActionManager")
+team_manager_nodepath = NodePath("../../../TeamManager")
 
 [node name="Button" type="Button" parent="UI/VBoxContainer/ActionBar"]
 layout_mode = 2

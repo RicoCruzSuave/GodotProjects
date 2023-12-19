@@ -35,12 +35,12 @@ func _ready():
 func _process(delta):
 	timer_ui.value = timer.time_left / timer.wait_time
 	
-func _input(event):
-	if planning_phase:
-		if Input.is_action_just_pressed("ui_accept"):
-			timer.stop()
-			timer.emit_signal("timeout")
-			timer.start()
+#func _input(event):
+	#if planning_phase:
+		#if Input.is_action_just_pressed("ui_accept"):
+			#timer.stop()
+			#timer.emit_signal("timeout")
+			#timer.start()
 			
 func call_command(command_name : String):
 	var speed : = 1000

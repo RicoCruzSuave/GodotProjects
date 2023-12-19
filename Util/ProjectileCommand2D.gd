@@ -2,32 +2,40 @@ extends Command2D
 class_name ProjectileCommand2D
 
 @export_node_path("Node2D") var projectile_path : = NodePath("Projectile")
-
 @onready var projectile : = get_node(projectile_path)
 
 var start_pos = null : get = get_start_pos
 var target_pos = null : get = get_target_pos
-var speed 
-var radius 
+var origin : Target2D 
+var target : Target2D
+var energy 
 
-var full_reset : = true	
 
 
-## Inputs: start_pos, target_pos, speed, radius
-func prepare(variant : Variant = null):
-	if variant:
-		start_pos = variant[0] 
-		target_pos = variant[1] 
-		speed = variant[2] 
-		radius = variant[3] 
-		
-	if not can_do():
-		return
+func prepare():
+	#if not can_do():
+		#return
 	prepared = true
-	
+
+
+func set_vars(start, end, energy):
+	origin = Target2D.new(start)
+	target = Target2D.new(end)
+	energy = energy
+
+func _ready():
+	set_process(false)
+		
+##If not prepared, prepare()
+##If not running, run()
+##If completed, reset()
 func _process(delta):
+	if not prepared:
+		prepare()
 	if running:
 		run()
+	if is_completed():
+		complete()
 	
 
 func _unhandled_input(event):
@@ -40,57 +48,45 @@ func run():
 	if not prepared:
 		return
 	
-	##TODO: Check conditions
-	
 	var new_projectile : Node2D = projectile.duplicate()
-	
-	setup_projectile(new_projectile)
-	
+	new_projectile.setup()
+	#setup_projectile(new_projectile)
 	add_child(new_projectile)
-	new_projectile.process_mode = Node.PROCESS_MODE_ALWAYS
-	
-	var dir_to_target : Vector2 = start_pos.direction_to(target_pos)
-	new_projectile.global_position = start_pos + (dir_to_target * radius)
-	
-	complete()
-	
 
 func setup_projectile(object : Object):
+	
+	var dir_to_target : Vector2 = start_pos.direction_to(target_pos)
+	var offset : Vector2 = origin.get_node("CollisionShape2D").shape.radius + object.shape.radius
+	object.global_position = start_pos + offset
+	
 	if object is RigidBody2D:
-		var dir_to_target : Vector2 = start_pos.direction_to(target_pos)
 		object.sleeping = false
-		object.apply_central_impulse(dir_to_target * speed)
+		object.apply_central_impulse(dir_to_target * energy * object.speed_scalar)
+
+func start():
+	set_process(true)
 
 func resume():
 	running = true
+	set_process(true)
 	
 func stop():
 	running = false
+	set_process(false)
 
 func complete():
 	completed = true
-	if is_completed():
-		emit_signal("command_done")
-		stop()
-
-func can_do():
-	if start_pos == null:
-		return false
-	if target_pos == null:
-		return false
-	if speed == null:
-		return false
-	if radius == null:
-		return false
-	return true
+	emit_signal("command_done")
+	stop()
+	reset()	
 	
 func reset():
-	super.reset()
-	if full_reset:
-		start_pos = null
-		target_pos = null
-		speed = null
-		radius = null
+	prepared = false
+	running = false
+	completed = false
+	origin = null
+	target = null
+	energy = null
 	
 func get_start_pos():
 	if start_pos is Callable:

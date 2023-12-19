@@ -30,6 +30,7 @@ size = Vector2(60, 180)
 vertices = PackedVector2Array(2, 517, 1197, 516, 1197, 701, -1, 696)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-1, 696, 1197, 701, 1197, 516, 2, 517)])
+source_geometry_group_name = &"navigation_polygon_source_group"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eecp4"]
 bg_color = Color(0.219608, 0.219608, 0.219608, 0.564706)

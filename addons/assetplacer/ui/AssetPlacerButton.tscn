@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b4i54pft0an"]
+[gd_scene load_steps=4 format=3 uid="uid://b4i54pft0an"]
 
 [ext_resource type="Theme" uid="uid://cdejano5l8vrj" path="res://addons/assetplacer/ui/NormalButton.tres" id="1_h2oc1"]
-[ext_resource type="Script" path="res://addons/assetplacer/ui/AssetPlacerButton.cs" id="2_gs4jv"]
 [ext_resource type="Texture2D" uid="uid://g0og5n4vtaib" path="res://addons/assetplacer/ui/icon.svg" id="3_03ree"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kvm3u"]
@@ -20,7 +19,7 @@ grow_vertical = 2
 theme = ExtResource("1_h2oc1")
 icon_alignment = 1
 expand_icon = true
-script = ExtResource("2_gs4jv")
+script = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
