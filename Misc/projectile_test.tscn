@@ -1,10 +1,9 @@
-[gd_scene load_steps=33 format=3 uid="uid://d2vaf2s7fg3u1"]
+[gd_scene load_steps=32 format=3 uid="uid://d2vaf2s7fg3u1"]
 
 [ext_resource type="Script" path="res://Util/Managers/TeamManager.gd" id="1_kfjuw"]
 [ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_lk1by"]
 [ext_resource type="Script" path="res://Misc/ActionManager.gd" id="1_wy085"]
 [ext_resource type="Texture2D" uid="uid://dv5wju4rg4ni1" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundYellow.png" id="2_b7e2c"]
-[ext_resource type="Script" path="res://Util/CommandsUI.gd" id="3_0wwxe"]
 [ext_resource type="Script" path="res://Misc/test_player.gd" id="3_awsh3"]
 [ext_resource type="Script" path="res://Util/ProjectileCommand2D.gd" id="4_gl43m"]
 [ext_resource type="Script" path="res://Misc/Beam.gd" id="5_0elrb"]
@@ -14,13 +13,6 @@
 [ext_resource type="Script" path="res://Misc/ProjectileArrrow.tres.gd" id="9_sxn5t"]
 [ext_resource type="Script" path="res://Util/Handler.gd" id="10_1ujfh"]
 [ext_resource type="Script" path="res://Misc/AimingGuide.gd" id="10_vkexb"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
-width = 100
-height = 20
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5208o"]
-size = Vector2(100, 20)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qaeqd"]
 radius = 25.0
@@ -87,11 +79,18 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.8, 0.4)
 metadata/_snap_enabled = true
 
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
+width = 100
+height = 20
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4ijq5"]
 size = Vector2(100, 20)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
 radius = 25.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5208o"]
+size = Vector2(100, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p07o5"]
 
@@ -190,7 +189,6 @@ metadata/_snap_enabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(603, 358)
-zoom = Vector2(0.5, 0.5)
 
 [node name="ActionManager" type="Node2D" parent="."]
 script = ExtResource("1_wy085")
@@ -207,19 +205,11 @@ position = Vector2(300, 650)
 
 [node name="Raft" type="Node2D" parent="LeftSide"]
 
-[node name="Base" type="StaticBody2D" parent="LeftSide/Raft"]
-
-[node name="Sprite2D" type="Sprite2D" parent="LeftSide/Raft/Base"]
-texture = SubResource("NoiseTexture2D_bouuv")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/Raft/Base"]
-shape = SubResource("RectangleShape2D_5208o")
-
 [node name="LeftTeam" type="Node2D" parent="LeftSide"]
 
 [node name="TestBody" type="RigidBody2D" parent="LeftSide/LeftTeam"]
 position = Vector2(0, -44)
-mass = 100.0
+mass = 25.0
 linear_damp = 3.0
 script = ExtResource("3_awsh3")
 
@@ -267,6 +257,7 @@ position = Vector2(900, 650)
 [node name="Raft" type="Node2D" parent="RightSide"]
 
 [node name="Base" type="StaticBody2D" parent="RightSide/Raft"]
+collision_layer = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="RightSide/Raft/Base"]
 texture = SubResource("NoiseTexture2D_bouuv")
@@ -277,6 +268,7 @@ shape = SubResource("RectangleShape2D_4ijq5")
 [node name="Base2" type="StaticBody2D" parent="RightSide/Raft"]
 position = Vector2(63, -53)
 rotation = -1.21649
+collision_layer = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="RightSide/Raft/Base2"]
 texture = SubResource("NoiseTexture2D_bouuv")
@@ -298,6 +290,16 @@ texture = ExtResource("2_b7e2c")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/RightTeam/TestBody"]
 shape = SubResource("CircleShape2D_6flcf")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="Base" type="StaticBody2D" parent="RightSide"]
+position = Vector2(-600, 0)
+collision_layer = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/Base"]
+shape = SubResource("RectangleShape2D_5208o")
 
 [node name="OldProjectiles" type="Node2D" parent="."]
 
@@ -444,52 +446,26 @@ layout_mode = 2
 max_value = 1.0
 step = 0.0
 
-[node name="ActionBar" type="HFlowContainer" parent="UI/VBoxContainer"]
+[node name="HFlowContainer" type="HFlowContainer" parent="UI/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-alignment = 1
-script = ExtResource("3_0wwxe")
-team_manager_nodepath = NodePath("../../../TeamManager")
 
-[node name="Button" type="Button" parent="UI/VBoxContainer/ActionBar"]
+[node name="Fire Arrow" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Ball Base"
+text = "Fire Arrow"
 
-[node name="Button2" type="Button" parent="UI/VBoxContainer/ActionBar"]
+[node name="Lightning Beam" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Ball Base"
+text = "Lightning Beam
+"
 
-[node name="Button3" type="Button" parent="UI/VBoxContainer/ActionBar"]
+[node name="Mudball" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Ball Base"
+text = "Mudball"
 
-[node name="Button4" type="Button" parent="UI/VBoxContainer/ActionBar"]
+[node name="Black hole" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Ball Base"
-
-[node name="Button5" type="Button" parent="UI/VBoxContainer/ActionBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Ball Base"
-
-[node name="Button6" type="Button" parent="UI/VBoxContainer/ActionBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Ball Base"
+text = "Black Hole"

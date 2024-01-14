@@ -59,6 +59,7 @@ func call_command(command_name : String):
 		team_manager.connect("team_switch", command.reset, CONNECT_ONE_SHOT)
 	
 func switch_phase():
+	return
 	planning_phase = !planning_phase
 	if planning_phase:
 		Engine.time_scale = 0.0001

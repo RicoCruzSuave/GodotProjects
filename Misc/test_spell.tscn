@@ -1,0 +1,136 @@
+[gd_scene load_steps=12 format=3 uid="uid://caygwmrdx14l6"]
+
+[ext_resource type="Script" path="res://Misc/TestSpell.gd" id="1_0vrfi"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ebv0k"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="Gradient" id="Gradient_ni0kv"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.558824, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uqtev"]
+gradient = SubResource("Gradient_ni0kv")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jdjjh"]
+particle_flag_disable_z = true
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 120.0
+initial_velocity_max = 120.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_uqtev")
+
+[sub_resource type="Gradient" id="Gradient_5u7v3"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5tlno"]
+gradient = SubResource("Gradient_5u7v3")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.6, 0.4)
+metadata/_snap_enabled = true
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vvb0d"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bt6tc"]
+radius = 100.0
+
+[sub_resource type="GDScript" id="GDScript_m4q5a"]
+script/source = "extends Node2D
+
+@export var power : = 1.0
+
+func activate(energy : float, targets : Array):
+	if energy <= 0.0:
+		return
+	for object in targets:
+		if object is RigidBody2D:
+			var dir : = global_position.direction_to(object.global_position)
+			var dist : = global_position.distance_to(object.global_position)
+			object.apply_central_impulse(dir * energy * 10000 * power)
+"
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_a10hy"]
+friction = 0.0
+bounce = 1.0
+
+[node name="TestSpell" type="RigidBody2D"]
+collision_mask = 3
+physics_material_override = SubResource("PhysicsMaterial_ebv0k")
+gravity_scale = 0.0
+lock_rotation = true
+continuous_cd = 1
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("1_0vrfi")
+initial_energy = 20.0
+energy_usage = 1
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 360
+process_material = SubResource("ParticleProcessMaterial_jdjjh")
+fract_delta = false
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = SubResource("GradientTexture2D_5tlno")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vvb0d")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(240, 0)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="EffectArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EffectArea"]
+shape = SubResource("CircleShape2D_bt6tc")
+
+[node name="EffectTriggers" type="Node2D" parent="."]
+
+[node name="Collision" type="Node2D" parent="EffectTriggers"]
+
+[node name="Lifetime" type="Node2D" parent="EffectTriggers"]
+
+[node name="Threshold" type="Node2D" parent="EffectTriggers"]
+
+[node name="Effects" type="Node2D" parent="."]
+
+[node name="Explode" type="Node2D" parent="Effects"]
+script = SubResource("GDScript_m4q5a")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Path" type="Line2D" parent="Visuals"]
+top_level = true
+width = 3.0
+
+[node name="Test" type="RigidBody2D" parent="Visuals/Path"]
+collision_layer = 4
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_a10hy")
+gravity_scale = 0.0
+lock_rotation = true
+continuous_cd = 1
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Visuals/Path/Test"]
+shape = SubResource("CircleShape2D_vvb0d")
+
+[node name="Label" type="Label" parent="Visuals"]
+offset_left = -56.0
+offset_top = -12.0
+offset_right = -16.0
+offset_bottom = 11.0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1

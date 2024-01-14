@@ -1,0 +1,237 @@
+[gd_scene load_steps=15 format=3 uid="uid://brxdslody1wwf"]
+
+[sub_resource type="Gradient" id="Gradient_d4p60"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_x8a2q"]
+gradient = SubResource("Gradient_d4p60")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_30pmh"]
+texture = SubResource("GradientTexture2D_x8a2q")
+0:0/0 = 0
+
+[sub_resource type="Gradient" id="Gradient_m01wv"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tms2h"]
+gradient = SubResource("Gradient_m01wv")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lhb30"]
+texture = SubResource("GradientTexture2D_tms2h")
+0:0/0 = 0
+
+[sub_resource type="Gradient" id="Gradient_ljefs"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_dn2et"]
+gradient = SubResource("Gradient_ljefs")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_03cm5"]
+texture = SubResource("GradientTexture2D_dn2et")
+0:0/0 = 0
+
+[sub_resource type="Gradient" id="Gradient_a1auk"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 0, 0, 0.2, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ou5cb"]
+gradient = SubResource("Gradient_a1auk")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0mrdv"]
+texture = SubResource("GradientTexture2D_ou5cb")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ruoc3"]
+sources/0 = SubResource("TileSetAtlasSource_30pmh")
+sources/1 = SubResource("TileSetAtlasSource_lhb30")
+sources/2 = SubResource("TileSetAtlasSource_03cm5")
+sources/3 = SubResource("TileSetAtlasSource_0mrdv")
+
+[sub_resource type="GDScript" id="GDScript_0ax2j"]
+script/source = "extends TileMap
+
+@export var world_size : = Vector2i(100, 100)
+@export var radius : = 1
+@export var square_radius : = true
+
+var cells : = []
+var world : = []
+var event_window : = []
+var neighbors : = []
+var order : = []
+var order_index : = 0
+
+func _ready():
+	_build_world()
+	_build_event_window()
+	_build_neighbors()
+	_build_order()
+
+func _build_world():
+	world.resize(world_size.x)
+	for x in world_size.x:
+		world[x] = []
+		world[x].resize(world_size.y)
+		for y in world_size.y:
+			var new_space : = Space.new()
+			new_space.content = Cell.new()
+			new_space.content.id = 3
+			world[x][y] = new_space
+			#world[x][y] = Space.new()
+			
+func _build_event_window():
+	event_window = [Vector2i.ZERO]
+	for x in radius + 1:
+		for y in radius + 1:
+			if x == 0 and y == 0:
+				continue
+				
+			if not square_radius and x + y > radius:
+				continue
+				
+			if not event_window.has(Vector2i(x,y)):
+				event_window.append(Vector2i(x,y))
+			if not event_window.has(Vector2i(-x,y)):
+				event_window.append(Vector2i(-x,y))
+			if not event_window.has(Vector2i(x,-y)):
+				event_window.append(Vector2i(x,-y))
+			if not event_window.has(Vector2i(-x,-y)):
+				event_window.append(Vector2i(-x,-y))
+
+func _build_neighbors():
+	neighbors.resize(world_size.x)
+	for x in world_size.x:
+		neighbors[x] = []
+		neighbors[x].resize(world_size.y)
+		for y in world_size.y:
+			var directions_to_add : = event_window
+			var neighbors_dict : = {}
+			var current_pos : = Vector2i(x,y)
+			for dir in directions_to_add:
+				neighbors_dict[dir] = \\
+					null if not is_in_bounds(current_pos + dir) \\
+					else world[x + dir.x][y + dir.y]
+			neighbors[x][y] = neighbors_dict
+
+func _build_order():
+	for x in world_size.x:
+		for y in world_size.y:
+			order.append(Vector2i(x,y))
+	order.shuffle()
+
+func update_cell():
+	for _i in range(order.size()):
+		var cell : Vector2i = order[order_index]
+		if world[cell.x][cell.y].content != null:
+			var instructions : Array = world[cell.x][cell.y].content.get_instructions()
+			if neighbors[cell.x][cell.y][Vector2i.LEFT] != null and neighbors[cell.x][cell.y][Vector2i.LEFT].content != null:
+				if instructions[0] != 7: 
+					neighbors[cell.x][cell.y][Vector2i.LEFT].content.id = instructions[0]
+					draw_cell(cell + Vector2i.LEFT)
+			if neighbors[cell.x][cell.y][Vector2i.UP] != null and neighbors[cell.x][cell.y][Vector2i.UP].content != null:
+				if instructions[1] != 7: 
+					neighbors[cell.x][cell.y][Vector2i.UP].content.id = instructions[1]
+					draw_cell(cell + Vector2i.UP)
+			if neighbors[cell.x][cell.y][Vector2i.RIGHT] != null and neighbors[cell.x][cell.y][Vector2i.RIGHT].content != null:
+				if instructions[2] != 7: 
+					neighbors[cell.x][cell.y][Vector2i.RIGHT].content.id = instructions[2]
+					draw_cell(cell + Vector2i.RIGHT)
+			
+			if instructions[3] != 7: 				
+				world[cell.x][cell.y].content.id = instructions[3]
+			draw_cell(cell)
+				
+		order_index = wrapi(order_index + 1, 0, order.size())
+
+func draw_cell(cell : Vector2i):			
+	set_cell(0, cell, world[cell.x][cell.y].content.id, Vector2i.ZERO)
+
+func _input(event):
+	if Input.is_action_just_pressed(\"left_click\"):
+		var coords : = local_to_map(to_local(get_global_mouse_position()))
+		if is_in_bounds(coords):
+			world[coords.x][coords.y].content = Cell.new()
+			world[coords.x][coords.y].content.id = randi_range(0,3)
+			draw_cell(coords)
+		
+	if Input.is_action_just_pressed(\"right_click\"):
+		var coords : = local_to_map(to_local(get_global_mouse_position()))
+		if is_in_bounds(coords):
+			draw_cell(coords)
+			
+	if Input.is_action_just_pressed(\"ui_accept\"):
+		update_cell()
+		
+	if Input.is_action_just_pressed(\"ui_down\"):
+		for x in world_size.x:
+			for y in world_size.y:
+				world[x][y].content.id = randi_range(0,3)
+				draw_cell(Vector2i(x,y))
+
+#Util
+func is_in_bounds(pos : Vector2i) -> bool:
+	return pos.x >= 0 and pos.y  >= 0 and pos.x < world_size.x and pos.y < world_size.y
+
+class Space extends RefCounted:
+	var content 
+	
+class Cell:
+	#0-3 -> instructions
+	#4-7 -> type 7=dead 
+
+	#[L, U, R, D]
+	var genome : = [
+		[0, 7, 7, 7], #Turn Left
+		[7, 7, 1, 7], #Turn right
+		[7, 2, 7, 7], #Go up
+		[7, 7, 7, 7], #Dont move
+	]
+	var id : = 0
+	
+	func get_instructions() -> Array:
+		if id == 7:
+			return genome[3]
+		var current_instruction : Array = genome[id] 
+		id = 3
+		return current_instruction
+"
+
+[node name="CaTesting" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
+tile_set = SubResource("TileSet_ruoc3")
+format = 2
+layer_0/name = "WALL"
+layer_0/tile_data = PackedInt32Array(1, 2, 0, 65537, 2, 0, 131073, 2, 0, 196609, 2, 0, 2, 2, 0, 65538, 2, 0, 131074, 2, 0, 196610, 2, 0, 3, 2, 0, 65539, 2, 0, 131075, 2, 0, 196611, 2, 0, 4, 2, 0, 65540, 2, 0, 131076, 2, 0, 196612, 2, 0, 5, 2, 0, 65541, 2, 0, 131077, 3, 0, 196613, 3, 0, 6, 2, 0, 65542, 2, 0, 131078, 3, 0, 196614, 3, 0, 262149, 3, 0, 327685, 3, 0, 262150, 3, 0, 327686, 3, 0, 131079, 3, 0, 196615, 3, 0, 262151, 3, 0, 327687, 3, 0, 131080, 3, 0, 196616, 3, 0, 262152, 3, 0, 327688, 3, 0, 393220, 1, 0, 458756, 1, 0, 524292, 1, 0, 589828, 1, 0, 655364, 1, 0, 720900, 1, 0, 393221, 1, 0, 458757, 1, 0, 524293, 1, 0, 589829, 1, 0, 655365, 1, 0, 720901, 1, 0, 393222, 1, 0, 458758, 1, 0, 524294, 1, 0, 589830, 1, 0, 655366, 1, 0, 720902, 1, 0, 393223, 1, 0, 458759, 1, 0, 524295, 1, 0, 589831, 1, 0, 655367, 1, 0, 720903, 1, 0, 393224, 1, 0, 458760, 1, 0, 524296, 1, 0, 589832, 1, 0, 655368, 1, 0, 720904, 1, 0, 393225, 1, 0, 458761, 1, 0, 524297, 1, 0, 589833, 1, 0, 655369, 1, 0, 720905, 1, 0, 393226, 0, 0, 458762, 0, 0, 524298, 1, 0, 589834, 1, 0, 655370, 1, 0, 720906, 1, 0, 393227, 0, 0, 458763, 0, 0, 524299, 1, 0, 589835, 1, 0, 655371, 1, 0, 720907, 1, 0, 393228, 0, 0, 458764, 0, 0, 524300, 1, 0, 589836, 1, 0, 655372, 1, 0, 720908, 1, 0, 393229, 0, 0, 458765, 0, 0, 524301, 1, 0, 589837, 1, 0, 655373, 1, 0, 720909, 1, 0, 393230, 0, 0, 458766, 0, 0, 524302, 1, 0, 589838, 1, 0, 655374, 1, 0, 720910, 1, 0, 262154, 0, 0, 327690, 0, 0, 262155, 0, 0, 327691, 0, 0, 262156, 0, 0, 327692, 0, 0, 262157, 0, 0, 327693, 0, 0, 262158, 0, 0, 327694, 0, 0, 262159, 0, 0, 327695, 0, 0, 393231, 0, 0, 458767, 0, 0, 262160, 0, 0, 327696, 0, 0, 393232, 0, 0, 458768, 0, 0, 262161, 0, 0, 327697, 0, 0, 393233, 0, 0, 458769, 0, 0)
+layer_1/name = "GOL"
+layer_1/z_index = 1
+layer_1/navigation_enabled = false
+layer_1/tile_data = PackedInt32Array()
+script = SubResource("GDScript_0ax2j")
+world_size = Vector2i(20, 20)

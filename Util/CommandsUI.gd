@@ -8,7 +8,7 @@ extends FlowContainer
 
 func _ready():
 	team_manager.member_switch.connect(refresh_ui)
-	refresh_ui(team_manager.get_active_member())
+	#refresh_ui(team_manager.get_active_member())
 	
 func refresh_ui(player : Object):
 	for child in get_children():
