@@ -219,22 +219,6 @@ class Cell:
 		[7, 2, 7, 7, 7], #Go up
 		[7, 7, 7, 3, 7], #Go down
 		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
-		[7, 7, 7, 7, 7], #Dont move
 	]
 	var id : = CELL_TYPE.SEED #0 - Seed, 1 - wood, 2 - leaf, 3 - root, 4 - antenna
 	var genome_index : = 0
@@ -345,7 +329,7 @@ func _input(event):
 	if Input.is_action_just_pressed(\"left_click\"):
 		var coords : = local_to_map(to_local(get_global_mouse_position()))
 		if is_in_bounds(coords):
-			world[coords.x][coords.y].environment[\"pheromones\"] = 100.0
+			world[coords.x][coords.y].environment[\"pheromones\"] = 10.0
 			draw_cell(coords)
 	if Input.is_action_just_pressed(\"right_click\"):
 		var coords : = local_to_map(to_local(get_global_mouse_position()))
@@ -356,30 +340,21 @@ func _input(event):
 		update_cells()
 
 func _process(delta):
-	for _i in range(200):
-		var cell : Vector2i = order[order_index]
-		var avg_pheromone : = 0.0
-		for x in range(-1, 1):
-			for y in range(-1, 1):
-				var offset : = Vector2i(x,y)
-				var current_coords : = cell + offset
-				var current_pheromone : float = world[current_coords.x][current_coords.y].environment[\"pheromones\"]
-				avg_pheromone += current_pheromone
-		
-		avg_pheromone /= 5.0
-		avg_pheromone -= 0.001
-		for x in range(-1, 1):
-			for y in range(-1, 1):
-				var offset : = Vector2i(x,y)
-				var current_coords : = cell + offset
-				world[current_coords.x][current_coords.y].environment[\"pheromones\"] = avg_pheromone
-		
-		var background_color : = Color.BLACK
-		background_color.r = avg_pheromone
-		p_image.set_pixelv(cell, background_color)
-		pheromone_sprite.texture.update(p_image)
-		
-		order_index = wrapi(order_index + 1, 0, order.size())
+	var cell : = Vector2i(
+		randi_range(0, world_size.x - 1),
+		randi_range(0, world_size.y - 1),
+	)
+	var avg_pheromone : = 0.0
+	for x in range(-1, 1):
+		for y in range(-1, 1):
+			var offset : = Vector2i(x,y)
+			
+	var current_pheromone : float = world[cell.x][cell.y].environment[\"pheromones\"]
+	current_pheromone -= 0.01
+	var background_color : = Color.BLACK
+	background_color.r = current_pheromone
+	p_image.set_pixelv(cell, background_color)
+	pheromone_sprite.texture.update(p_image)
 	
 class Ant:
 	var id : = 0
@@ -395,16 +370,8 @@ class Ant:
 		var highest_pheromone : = 0.0
 		for i in dir_array:
 			var current_dir : = Vector2i(i)
-			if neighbors[current_dir] != null:
-				if neighbors[current_dir].environment[\"pheromones\"] > highest_pheromone:
-					highest_pheromone = neighbors[current_dir].environment[\"pheromones\"]
-					dir = current_dir
-		
-		if neighbors[Vector2i(dir)] != null:
-			var me = neighbors[Vector2i.ZERO].content
-			var neighbor = neighbors[Vector2i(dir)].content
-			neighbors[Vector2i(dir)].content = me
-			neighbors[Vector2i.ZERO].content = neighbor
+			if neighbors[current_dir].environment[\"pheromones\"] > highest_pheromone:
+				dir = current_dir
 "
 
 [sub_resource type="Gradient" id="Gradient_6lom3"]
@@ -437,6 +404,7 @@ mesh = SubResource("ArrayMesh_vhiv7")
 texture = SubResource("GradientTexture2D_jlfxh")
 
 [node name="TileMap" type="TileMap" parent="."]
+visible = false
 texture_filter = 1
 tile_set = SubResource("TileSet_ruoc3")
 format = 2
@@ -457,9 +425,9 @@ script = ExtResource("1_vsj12")
 map_size = Vector2i(75, 44)
 
 [node name="AntCAUnits" type="TileMap" parent="."]
-visible = false
 tile_set = SubResource("TileSet_ruoc3")
 format = 2
+layer_0/tile_data = PackedInt32Array(65539, 0, 0, 65540, 0, 0, 65541, 0, 0, 65542, 0, 0, 131078, 0, 0, 131079, 0, 0, 131080, 0, 0, 131081, 0, 0, 131082, 0, 0, 131083, 0, 0, 131084, 0, 0, 65549, 0, 0, 13, 0, 0, -65523, 0, 0, -131059, 0, 0, -196595, 0, 0, -262131, 0, 0)
 script = SubResource("GDScript_aljtg")
 
 [node name="Sprite2D" type="Sprite2D" parent="AntCAUnits"]
