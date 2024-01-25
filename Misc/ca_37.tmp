@@ -5,7 +5,7 @@
 
 [sub_resource type="Gradient" id="Gradient_qykm5"]
 offsets = PackedFloat32Array(0.0186916)
-colors = PackedColorArray(1, 1, 1, 1)
+colors = PackedColorArray(0.196078, 0.196078, 0.196078, 0.439216)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_b3j0p"]
 gradient = SubResource("Gradient_qykm5")
@@ -20,7 +20,7 @@ texture = SubResource("GradientTexture2D_b3j0p")
 
 [sub_resource type="Gradient" id="Gradient_m01wv"]
 interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_tms2h"]
 gradient = SubResource("Gradient_m01wv")
@@ -39,7 +39,7 @@ texture = SubResource("GradientTexture2D_tms2h")
 
 [sub_resource type="Gradient" id="Gradient_cr3ni"]
 interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0.0117647, 0)
+colors = PackedColorArray(1, 0, 0, 1, 0.741176, 0, 0.0117647, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_0n3fd"]
 gradient = SubResource("Gradient_cr3ni")
@@ -78,7 +78,7 @@ texture = SubResource("GradientTexture2D_x8a2q")
 
 [sub_resource type="Gradient" id="Gradient_a1auk"]
 interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+colors = PackedColorArray(0.87451, 0.341176, 0.0980392, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_ou5cb"]
 gradient = SubResource("Gradient_a1auk")
@@ -97,7 +97,7 @@ texture = SubResource("GradientTexture2D_ou5cb")
 
 [sub_resource type="Gradient" id="Gradient_6rlpd"]
 interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_5kp1k"]
 gradient = SubResource("Gradient_6rlpd")
@@ -112,7 +112,7 @@ texture = SubResource("GradientTexture2D_5kp1k")
 
 [sub_resource type="Gradient" id="Gradient_l4boe"]
 interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+colors = PackedColorArray(0.540232, 0.231185, 0.0518031, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_b134m"]
 gradient = SubResource("Gradient_l4boe")
@@ -131,7 +131,7 @@ texture = SubResource("GradientTexture2D_b134m")
 
 [sub_resource type="Gradient" id="Gradient_ljefs"]
 interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_dn2et"]
 gradient = SubResource("Gradient_ljefs")
@@ -176,13 +176,6 @@ var wall_tile_id : = 2
 
 func _ready():
 	$Ants/AntQueen/Marker2D.global_position = world_size * Vector2i(16.0, 16.0)/2.0
-	
-	#Modulate tiles
-	for i in range(Cell.CELL_TYPE.MAX):
-		var tileset : = tile_set
-		var tile_source : TileSetAtlasSource = tileset.get_source(Cell.CELL_TYPE.values()[i])
-		var tile_data : = tile_source.get_tile_data(Vector2i.ZERO, 0)
-		tile_data.modulate = get_color(i)
 	super._ready()
 	for x in world_size.x:
 		for y in world_size.y:
@@ -192,7 +185,6 @@ func _ready():
 	for _i in iterations:
 		await get_tree().process_frame
 		step()
-	
 		
 		
 func step():
@@ -267,20 +259,6 @@ func _process(delta):
 		if get_cell_source_id(0, cell_coords) == -1:
 			create_cell(cell_coords)
 
-func get_color(id : int) -> Color:
-	match id:
-		Cell.CELL_TYPE.SEED:
-			return Color.WHEAT
-		Cell.CELL_TYPE.WOOD:
-			return Color.BROWN
-		Cell.CELL_TYPE.SPROUT:
-			return Color.GREEN_YELLOW
-		Cell.CELL_TYPE.LEAF:
-			return Color.DARK_GREEN
-		Cell.CELL_TYPE.WALL:
-			return Color.SADDLE_BROWN
-		_:
-			return Color.TRANSPARENT
 #func _input(event):
 	#if Input.is_action_just_pressed(\"left_click\"):
 		#var coords : = local_to_map(to_local(get_global_mouse_position()))
@@ -607,7 +585,6 @@ class Cell:
 		)
 		genome[random_gene_index.x][random_gene_index.y] = randi_range(GENE_MIN, CELL_TYPE.MAX - 1)
 	
-
 	func die():
 		match id:
 			#CELL_TYPE.SEED:
