@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://brxdslody1wwf"]
+[gd_scene load_steps=40 format=3 uid="uid://brxdslody1wwf"]
 
 [ext_resource type="PackedScene" uid="uid://plbbnale87i1" path="res://Misc/gj_ant.tscn" id="1_e60jg"]
 [ext_resource type="Script" path="res://Misc/gj_ant_queen.gd" id="2_uk046"]
@@ -95,21 +95,6 @@ texture = SubResource("GradientTexture2D_ou5cb")
 0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
-[sub_resource type="Gradient" id="Gradient_6rlpd"]
-interpolation_mode = 1
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_5kp1k"]
-gradient = SubResource("Gradient_6rlpd")
-width = 16
-height = 16
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-metadata/_snap_enabled = true
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_efa5p"]
-texture = SubResource("GradientTexture2D_5kp1k")
-
 [sub_resource type="Gradient" id="Gradient_l4boe"]
 interpolation_mode = 1
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -148,16 +133,54 @@ texture = SubResource("GradientTexture2D_dn2et")
 0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
+[sub_resource type="Gradient" id="Gradient_6rlpd"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5kp1k"]
+gradient = SubResource("Gradient_6rlpd")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_efa5p"]
+texture = SubResource("GradientTexture2D_5kp1k")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="Gradient" id="Gradient_gvbam"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rvje8"]
+gradient = SubResource("Gradient_gvbam")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5nlun"]
+texture = SubResource("GradientTexture2D_rvje8")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+
 [sub_resource type="TileSet" id="TileSet_ruoc3"]
 physics_layer_0/collision_layer = 1
 sources/1 = SubResource("TileSetAtlasSource_lhb30")
 sources/0 = SubResource("TileSetAtlasSource_8syai")
 sources/2 = SubResource("TileSetAtlasSource_vghc0")
-sources/421 = SubResource("TileSetAtlasSource_efa5p")
 sources/3 = SubResource("TileSetAtlasSource_30pmh")
 sources/4 = SubResource("TileSetAtlasSource_0mrdv")
 sources/5 = SubResource("TileSetAtlasSource_h30n4")
 sources/6 = SubResource("TileSetAtlasSource_03cm5")
+sources/7 = SubResource("TileSetAtlasSource_efa5p")
+sources/8 = SubResource("TileSetAtlasSource_5nlun")
 
 [sub_resource type="GDScript" id="GDScript_0ax2j"]
 script/source = "extends MFM
@@ -173,9 +196,15 @@ var timer : = 0.0
 var wall_tile_id : = 2
 
 @onready var ant_scene : = preload(\"res://Misc/gj_ant.tscn\")
+@onready var ant_queen = $Ants/AntQueen
+
+
+@onready var camera : = $Camera2D
+@onready var world_center : = $Marker2D
+var camera_following : = false
 
 func _ready():
-	$Ants/AntQueen/Marker2D.global_position = world_size * Vector2i(16.0, 16.0)/2.0
+	$Marker2D.global_position = world_size * Vector2i(16.0, 16.0)/2.0
 	
 	#Modulate tiles
 	for i in range(Cell.CELL_TYPE.MAX):
@@ -192,9 +221,11 @@ func _ready():
 	for _i in iterations:
 		await get_tree().process_frame
 		step()
-	
+		await get_tree().create_timer(0.1).timeout
 		
-		
+	await get_tree().create_timer(0.1).timeout	
+	camera_following = true
+
 func step():
 	for x in world_size.x:
 		for y in world_size.y:
@@ -213,7 +244,7 @@ func step():
 				var neighbor : = get_cell_source_id(0, tile + dir)
 				if neighbor == wall_tile_id:
 					count += 1
-				
+			
 			match get_cell_source_id(0, tile):
 				-1: 
 					if count < 5:
@@ -233,7 +264,15 @@ func step():
 						var wall_cell : = Cell.new()
 						wall_cell.id = Cell.CELL_TYPE.WALL
 						world[tile.x][tile.y].content = wall_cell
-	
+	#Clear out space around queen
+	var queen_coords : = local_to_map(to_local(ant_queen.global_position))
+	for x in [-1, 0, 1]:
+		for y in [-1, 0, 1]:
+			var offset : = Vector2i(x,y)
+			if is_in_bounds(queen_coords + offset):
+				set_cell(0, offset + queen_coords)
+				world[queen_coords.x + x][queen_coords.y + y].content = null
+		
 func randomize_map():
 	for x in world_size.x:
 		for y in world_size.y:
@@ -252,9 +291,16 @@ func _build_edges():
 		set_cell(0, right_wall, wall_tile_id, Vector2i.ZERO)
 			
 func _process(delta):
-	#timer += delta
-	#if timer >= steps_per_second / 60.0:
-		#timer = 0.0
+	#Camera
+	var tween : = get_tree().create_tween()
+	tween.set_parallel(true)
+	if camera_following:
+		tween.tween_property(camera, \"zoom\", Vector2(2, 2), 0.5)
+		tween.tween_property(camera, \"global_position\", ant_queen.global_position, 0.5)
+	else:
+		tween.tween_property(camera, \"zoom\", Vector2(0.5, 0.5), 0.5)	
+		tween.tween_property(camera, \"global_position\", world_center.global_position, 0.5)			
+	tween.play()
 	if paused:
 		return
 	_queue_cells()
@@ -267,16 +313,24 @@ func _process(delta):
 		if get_cell_source_id(0, cell_coords) == -1:
 			create_cell(cell_coords)
 
+func _input(event):
+	if Input.is_action_just_pressed(\"tab\"):
+		camera_following = not camera_following
+
 func get_color(id : int) -> Color:
 	match id:
 		Cell.CELL_TYPE.SEED:
-			return Color.WHEAT
+			return Color(\"dda15e\")
 		Cell.CELL_TYPE.WOOD:
-			return Color.BROWN
+			return Color(\"283618\")
 		Cell.CELL_TYPE.SPROUT:
-			return Color.GREEN_YELLOW
+			return Color(\"fefae0\")
 		Cell.CELL_TYPE.LEAF:
-			return Color.DARK_GREEN
+			return Color(\"606c38\")
+		Cell.CELL_TYPE.ROOT:
+			return Color(\"ffa62b\")
+		Cell.CELL_TYPE.TRAP:
+			return Color.CRIMSON
 		Cell.CELL_TYPE.WALL:
 			return Color.SADDLE_BROWN
 		_:
@@ -327,9 +381,14 @@ func place_wall(coords : Vector2i):
 	draw_cell(coords)
 	
 func is_wall(coords : Vector2i) -> bool:
-	if is_space_empty(coords):
+	if is_in_bounds(coords) and is_space_empty(coords):
 		return false
 	return world[coords.x][coords.y].content.id == Cell.CELL_TYPE.WALL
+
+func is_trap(coords : Vector2i) -> bool:
+	if is_in_bounds(coords) and is_space_empty(coords):
+		return false
+	return world[coords.x][coords.y].content.id == Cell.CELL_TYPE.TRAP
 
 class Cell:
 	enum GENE {
@@ -348,6 +407,8 @@ class Cell:
 		SEED,
 		WOOD,
 		LEAF,
+		ROOT,
+		TRAP,
 		MAX
 	}
 	enum DIR {
@@ -458,7 +519,7 @@ class Cell:
 					return
 				#if parent == -1 or (neighbors.has(parent) and neighbors[parent].content == null):
 				instructions = genome[genome_index]
-				genome_index = 0
+				genome_index = INSTRUCTION_MIN
 				dist_from_origin = 0 
 				current_lifetime = 0
 				id = CELL_TYPE.SPROUT
@@ -528,6 +589,37 @@ class Cell:
 						if cell.id == CELL_TYPE.WOOD or cell.id == CELL_TYPE.SEED:
 							return
 				die()
+			CELL_TYPE.ROOT:
+				var count : = 0
+				for dir in [
+					Vector2i.LEFT, 
+					Vector2i.RIGHT,
+					Vector2i.UP,
+					Vector2i.DOWN,
+					Vector2i.LEFT + Vector2i.UP,
+					Vector2i.LEFT + Vector2i.DOWN,
+					Vector2i.RIGHT + Vector2i.UP,
+					Vector2i.RIGHT + Vector2i.DOWN,
+				]:
+					if neighbors.has(dir) and neighbors[dir].content != null and neighbors[dir].content.id == CELL_TYPE.WALL:
+						count += 1
+				energy += count
+				share_energy(neighbors)
+				if neighbors.has(get_dir(parent)):
+					var cell = neighbors[get_dir(parent)].content
+					if cell != null:
+						if cell.id == CELL_TYPE.WOOD or cell.id == CELL_TYPE.SEED:
+							return
+				die()
+			CELL_TYPE.TRAP:
+				if neighbors.has(get_dir(parent)):
+					var cell = neighbors[get_dir(parent)].content
+					if cell != null:
+						if cell.id != CELL_TYPE.WALL:
+							energy += cell.energy
+							cell.die()
+				if get_neighbor_cell_count(neighbors) >= 8:
+					die()
 			CELL_TYPE.DEAD:
 				#print_debug(\"It dead \")
 				pass
@@ -626,6 +718,58 @@ class Cell:
 				
 "
 
+[sub_resource type="Gradient" id="Gradient_tq2sn"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0.65098, 0.984314, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wbpmd"]
+gradient = SubResource("Gradient_tq2sn")
+width = 16
+height = 16
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.9, 0.2)
+metadata/_snap_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_8gr74"]
+interpolation_mode = 1
+colors = PackedColorArray(0.0196078, 0.0980392, 0.137255, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_v8lw4"]
+gradient = SubResource("Gradient_8gr74")
+width = 16
+height = 16
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.9, 0.2)
+metadata/_snap_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_grclc"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0.207843, 0.329412, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4pjru"]
+gradient = SubResource("Gradient_grclc")
+width = 16
+height = 16
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.9, 0.2)
+metadata/_snap_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_k677n"]
+interpolation_mode = 1
+colors = PackedColorArray(0.376471, 0.827451, 0.580392, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xdai4"]
+gradient = SubResource("Gradient_k677n")
+width = 16
+height = 16
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.9, 0.2)
+metadata/_snap_enabled = true
+
 [node name="CaTesting" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -635,15 +779,29 @@ format = 2
 layer_0/navigation_enabled = false
 layer_0/tile_data = PackedInt32Array(1, 2, 0, 65537, 2, 0, 131073, 2, 0, 196609, 2, 0, 2, 2, 0, 65538, 2, 0, 131074, 2, 0, 196610, 2, 0, 3, 2, 0, 65539, 2, 0, 131075, 2, 0, 196611, 2, 0, 4, 2, 0, 65540, 2, 0, 131076, 2, 0, 196612, 2, 0, 5, 2, 0, 65541, 2, 0, 131077, 3, 0, 196613, 3, 0, 6, 2, 0, 65542, 2, 0, 131078, 3, 0, 196614, 3, 0, 262149, 3, 0, 327685, 3, 0, 262150, 3, 0, 327686, 3, 0, 131079, 3, 0, 196615, 3, 0, 262151, 3, 0, 327687, 3, 0, 131080, 3, 0, 196616, 3, 0, 262152, 3, 0, 327688, 3, 0, 393220, 1, 0, 458756, 1, 0, 524292, 1, 0, 589828, 1, 0, 655364, 1, 0, 720900, 1, 0, 393221, 1, 0, 458757, 1, 0, 524293, 1, 0, 589829, 1, 0, 655365, 1, 0, 720901, 1, 0, 393222, 1, 0, 458758, 1, 0, 524294, 1, 0, 589830, 1, 0, 655366, 1, 0, 720902, 1, 0, 393223, 1, 0, 458759, 1, 0, 524295, 1, 0, 589831, 1, 0, 655367, 1, 0, 720903, 1, 0, 393224, 7, 0, 458760, 7, 0, 524296, 1, 0, 589832, 1, 0, 655368, 1, 0, 720904, 1, 0, 393225, 7, 0, 458761, 7, 0, 524297, 7, 0, 589833, 7, 0, 655369, 1, 0, 720905, 1, 0, 393226, 7, 0, 458762, 7, 0, 524298, 7, 0, 589834, 7, 0, 655370, 7, 0, 720906, 7, 0, 393227, 7, 0, 458763, 7, 0, 524299, 7, 0, 589835, 7, 0, 655371, 7, 0, 720907, 1, 0, 393228, 7, 0, 458764, 7, 0, 524300, 7, 0, 589836, 7, 0, 655372, 7, 0, 720908, 1, 0, 393229, 7, 0, 458765, 7, 0, 524301, 7, 0, 589837, 7, 0, 655373, 7, 0, 720909, 7, 0, 393230, 7, 0, 458766, 7, 0, 524302, 7, 0, 589838, 7, 0, 655374, 7, 0, 720910, 7, 0, 262154, 7, 0, 327690, 0, 0, 262155, 0, 0, 327691, 7, 0, 262156, 7, 0, 327692, 7, 0, 262157, 7, 0, 327693, 7, 0, 262158, 0, 0, 327694, 7, 0, 262159, 7, 0, 327695, 7, 0, 393231, 7, 0, 458767, 7, 0, 262160, 0, 0, 327696, 0, 0, 393232, 7, 0, 458768, 7, 0, 262161, 0, 0, 327697, 0, 0, 393233, 7, 0, 458769, 7, 0, 262153, 7, 0, 196618, 7, 0, 131082, 7, 0, 196622, 7, 0, 196621, 7, 0, 458770, 7, 0, 524304, 7, 0, 589839, 7, 0, 655376, 7, 0, 655377, 7, 0, 786447, 7, 0, 524306, 7, 0, 589842, 7, 0, 720912, 7, 0, 720911, 7, 0, 589840, 7, 0, 851983, 7, 0, 851982, 7, 0, 851981, 7, 0, 851980, 7, 0, 851979, 7, 0, 786442, 7, 0, 655378, 7, 0, 196623, 7, 0, 131087, 7, 0, 65551, 7, 0, 131088, 7, 0, 196625, 7, 0, 262162, 7, 0, 655375, 7, 0, 589841, 7, 0, 524303, 7, 0, 2883584, 2, 0, 2883658, 2, 0, 2883657, 2, 0, 2883656, 2, 0, 2883655, 2, 0, 2883654, 2, 0, 2883653, 2, 0, 2883652, 2, 0, 2883651, 2, 0, 2883650, 2, 0, 2883649, 2, 0, 2883648, 2, 0, 2883647, 2, 0, 2883646, 2, 0, 2883645, 2, 0, 2883644, 2, 0, 2883643, 2, 0, 2883642, 2, 0, 2883641, 2, 0, 2883640, 2, 0, 2883639, 2, 0, 2883638, 2, 0, 2883637, 2, 0, 2883636, 2, 0, 2883635, 2, 0, 2883634, 2, 0, 2883633, 2, 0, 2883632, 2, 0, 2883631, 2, 0, 2883630, 2, 0, 2883629, 2, 0, 2883628, 2, 0, 2883627, 2, 0, 2883626, 2, 0, 2883625, 2, 0, 2883624, 2, 0, 2883623, 2, 0, 2883622, 2, 0, 2883621, 2, 0, 2883620, 2, 0, 2883619, 2, 0, 2883618, 2, 0, 2883617, 2, 0, 2883616, 2, 0, 2883615, 2, 0, 2883614, 2, 0, 2883613, 2, 0, 2883612, 2, 0, 2883611, 2, 0, 2883610, 2, 0, 2883609, 2, 0, 2883608, 2, 0, 2883607, 2, 0, 2883606, 2, 0, 2883605, 2, 0, 2883604, 2, 0, 2883603, 2, 0, 2883602, 2, 0, 2883601, 2, 0, 2883600, 2, 0, 2883599, 2, 0, 2883598, 2, 0, 2883597, 2, 0, 2883596, 2, 0, 2883595, 2, 0, 2883594, 2, 0, 2883593, 2, 0, 2883592, 2, 0, 2883591, 2, 0, 2883590, 2, 0, 2883589, 2, 0, 2883588, 2, 0, 2883587, 2, 0, 2883586, 2, 0, 2883585, 2, 0, 2883659, 2, 0, 2818123, 2, 0, 2752587, 2, 0, 2687051, 2, 0, 2621515, 2, 0, 2555979, 2, 0, 2490443, 2, 0, 2424907, 2, 0, 2359371, 2, 0, 2293835, 2, 0, 2228299, 2, 0, 2162763, 2, 0, 2097227, 2, 0, 2031691, 2, 0, 1966155, 2, 0, 1900619, 2, 0, 1835083, 2, 0, 1769547, 2, 0, 1704011, 2, 0, 1638475, 2, 0, 1572939, 2, 0, 1507403, 2, 0, 1441867, 2, 0, 1376331, 2, 0, 1310795, 2, 0, 1245259, 2, 0, 1179723, 2, 0, 1114187, 2, 0, 1048651, 2, 0, 983115, 2, 0, 917579, 2, 0, 786507, 2, 0, 852043, 2, 0, 720971, 2, 0, 655435, 2, 0, 589899, 2, 0, 524363, 2, 0, 458827, 2, 0, 393291, 2, 0, 327755, 2, 0, 262219, 2, 0, 196683, 2, 0, 131147, 2, 0, 65611, 2, 0, 75, 2, 0, 65535, 2, 0, 131071, 2, 0, 196607, 2, 0, 262143, 2, 0, 327679, 2, 0, 393215, 2, 0, 458751, 2, 0, 524287, 2, 0, 589823, 2, 0, 655359, 2, 0, 720895, 2, 0, 786431, 2, 0, 851967, 2, 0, 917503, 2, 0, 983039, 2, 0, 1048575, 2, 0, 1114111, 2, 0, 1179647, 2, 0, 1245183, 2, 0, 1310719, 2, 0, 1376255, 2, 0, 1441791, 2, 0, 1507327, 2, 0, 1572863, 2, 0, 1638399, 2, 0, 1703935, 2, 0, 1769471, 2, 0, 1835007, 2, 0, 1900543, 2, 0, 1966079, 2, 0, 2031615, 2, 0, 2097151, 2, 0, 2162687, 2, 0, 2228223, 2, 0, 2293759, 2, 0, 2359295, 2, 0, 2424831, 2, 0, 2490367, 2, 0, 2555903, 2, 0, 2621439, 2, 0, 2686975, 2, 0, 2752511, 2, 0, 2818047, 2, 0, 2883583, 2, 0, 2949119, 2, 0, 3014655, 2, 0, 2949120, 2, 0, 2949121, 2, 0, 2949122, 2, 0, 2949123, 2, 0, 2949124, 2, 0, 2949125, 2, 0, 2949126, 2, 0, 2949127, 2, 0, 2949128, 2, 0, 2949129, 2, 0, 2949130, 2, 0, 2949131, 2, 0, 2949132, 2, 0, 2949133, 2, 0, 2949134, 2, 0, 2949135, 2, 0, 2949136, 2, 0, 2949137, 2, 0, 2949138, 2, 0, 2949139, 2, 0, 2949140, 2, 0, 2949141, 2, 0, 2949142, 2, 0, 2949143, 2, 0, 2949144, 2, 0, 2949145, 2, 0, 2949146, 2, 0, 2949147, 2, 0, 2949148, 2, 0, 2949149, 2, 0, 2949150, 2, 0, 2949151, 2, 0, 2949152, 2, 0, 2949153, 2, 0, 2949154, 2, 0, 2949155, 2, 0, 2949156, 2, 0, 2949157, 2, 0, 2949158, 2, 0, 2949159, 2, 0, 2949160, 2, 0, 2949161, 2, 0, 2949162, 2, 0, 2949163, 2, 0, 2949164, 2, 0, 2949165, 2, 0, 2949166, 2, 0, 2949167, 2, 0, 2949168, 2, 0, 2949169, 2, 0, 2949170, 2, 0, 2949171, 2, 0, 2949172, 2, 0, 2949173, 2, 0, 2949174, 2, 0, 2949175, 2, 0, 2949176, 2, 0, 2949177, 2, 0, 2949178, 2, 0, 2949179, 2, 0, 2949180, 2, 0, 2949181, 2, 0, 2949182, 2, 0, 2949183, 2, 0, 2949184, 2, 0, 2949185, 2, 0, 2949186, 2, 0, 2949187, 2, 0, 2949188, 2, 0, 2949189, 2, 0, 2949190, 2, 0, 2949191, 2, 0, 2949192, 2, 0, 2949193, 2, 0, 2949194, 2, 0, 2949195, 2, 0)
 script = SubResource("GDScript_0ax2j")
-spawn_chance = 0.05
+spawn_chance = 0.1
 world_size = Vector2i(150, 86)
-cells_per_frame = 170
+cells_per_frame = 140
+
+[node name="Camera2D" type="Camera2D" parent="TileMap"]
+position = Vector2(1200, 700)
+zoom = Vector2(0.5, 0.5)
+
+[node name="Marker2D" type="Marker2D" parent="TileMap"]
+top_level = true
 
 [node name="Ants" type="Node2D" parent="TileMap"]
 
 [node name="AntQueen" parent="TileMap/Ants" instance=ExtResource("1_e60jg")]
 z_index = 1
+position = Vector2(1185, 1324)
 script = ExtResource("2_uk046")
+digger_cost = 10
+launcher_cost = 100
+bridger_cost = 50
+grabber_cost = 20
+energy = 100
+energy_timer = 0.5
 friction = 0.048
 speed = 20
 
@@ -651,10 +809,161 @@ speed = 20
 scale = Vector2(1.5, 1.5)
 color = Color(0.215686, 0.211765, 0.870588, 1)
 
-[node name="Camera2D" type="Camera2D" parent="TileMap/Ants/AntQueen"]
-zoom = Vector2(2, 2)
+[node name="CanvasLayer" type="CanvasLayer" parent="TileMap/Ants/AntQueen"]
 
-[node name="Marker2D" type="Marker2D" parent="TileMap/Ants/AntQueen"]
-top_level = true
+[node name="UI" type="Control" parent="TileMap/Ants/AntQueen/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -135.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Energy: 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+size_flags_vertical = 3
+max_value = 512.0
+step = 1.0
+value = 100.0
+fill_mode = 3
+show_percentage = false
+
+[node name="Digger" type="VBoxContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Name" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Digger"]
+layout_mode = 2
+text = "Digger"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Digger"]
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 1
+texture_normal = SubResource("GradientTexture2D_wbpmd")
+stretch_mode = 5
+
+[node name="EnergyCost" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Digger"]
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Launcher" type="VBoxContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Name" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Launcher"]
+layout_mode = 2
+text = "Launcher
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Launcher"]
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 1
+texture_normal = SubResource("GradientTexture2D_v8lw4")
+stretch_mode = 5
+
+[node name="EnergyCost" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Launcher"]
+layout_mode = 2
+text = "100
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bridger" type="VBoxContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Name" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Bridger"]
+layout_mode = 2
+text = "Bridger"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Bridger"]
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 1
+texture_normal = SubResource("GradientTexture2D_4pjru")
+stretch_mode = 5
+
+[node name="EnergyCost" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Bridger"]
+layout_mode = 2
+text = "50"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Grabber" type="VBoxContainer" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Name" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Grabber"]
+layout_mode = 2
+text = "Grabber"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Grabber"]
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 1
+texture_normal = SubResource("GradientTexture2D_xdai4")
+stretch_mode = 5
+
+[node name="EnergyCost" type="Label" parent="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Grabber"]
+layout_mode = 2
+text = "20"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Digger/TextureButton" to="TileMap/Ants/AntQueen" method="spawn_digger"]
+[connection signal="pressed" from="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Launcher/TextureButton" to="TileMap/Ants/AntQueen" method="spawn_launcher"]
+[connection signal="pressed" from="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Bridger/TextureButton" to="TileMap/Ants/AntQueen" method="spawn_bridger"]
+[connection signal="pressed" from="TileMap/Ants/AntQueen/CanvasLayer/UI/PanelContainer/MarginContainer/HBoxContainer/Grabber/TextureButton" to="TileMap/Ants/AntQueen" method="spawn_grabber"]
 
 [editable path="TileMap/Ants/AntQueen"]
