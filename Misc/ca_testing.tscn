@@ -810,6 +810,7 @@ scale = Vector2(1.5, 1.5)
 color = Color(0.215686, 0.211765, 0.870588, 1)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="TileMap/Ants/AntQueen"]
+visible = false
 
 [node name="UI" type="Control" parent="TileMap/Ants/AntQueen/CanvasLayer"]
 layout_mode = 3

@@ -1,0 +1,69 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://bqu7agd8c2dqj"]
+
+[ext_resource type="FontFile" uid="uid://botbufg61q74g" path="res://Alchemist's Pixels.ttf" id="1_sdfji"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m3ppc"]
+bg_color = Color(0.0509804, 0.0392157, 0.0431373, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.447059, 0.690196, 0.113725, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 4
+shadow_offset = Vector2(4, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e24pr"]
+bg_color = Color(0.0509804, 0.0392157, 0.0431373, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.447059, 0.690196, 0.113725, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 4
+shadow_offset = Vector2(4, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bgmef"]
+bg_color = Color(0.0509804, 0.0392157, 0.0431373, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.447059, 0.690196, 0.113725, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+expand_margin_left = 8.0
+expand_margin_top = 8.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
+shadow_size = 4
+shadow_offset = Vector2(4, 4)
+anti_aliasing = false
+
+[resource]
+default_font = ExtResource("1_sdfji")
+default_font_size = 48
+/colors/Dark = Color(0.0509804, 0.0392157, 0.0431373, 1)
+/colors/Gray = Color(0.270588, 0.286275, 0.333333, 1)
+/colors/Light = Color(0.952941, 0.937255, 0.960784, 1)
+/colors/Main = Color(0.247059, 0.490196, 0.12549, 1)
+/colors/Secondary = Color(0.447059, 0.690196, 0.113725, 1)
+/font_sizes/FontSize = 16
+/fonts/MainFont = ExtResource("1_sdfji")
+/styles/TextBox = SubResource("StyleBoxFlat_m3ppc")
+BoxContainer/constants/separation = 8
+HBoxContainer/constants/separation = 18
+Panel/styles/panel = SubResource("StyleBoxFlat_e24pr")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_bgmef")
+VBoxContainer/constants/separation = 8

@@ -1,0 +1,235 @@
+[gd_scene load_steps=12 format=3 uid="uid://bj0pjqe4mjjr2"]
+
+[ext_resource type="Theme" uid="uid://bqu7agd8c2dqj" path="res://new_theme.tres" id="1_mftyu"]
+[ext_resource type="Texture2D" uid="uid://cs5eje71ptmi5" path="res://Assets/3DFont/Letter C.png" id="2_8aovc"]
+[ext_resource type="Texture2D" uid="uid://dckju75tu658g" path="res://Assets/3DFont/Letter H.png" id="3_awdfv"]
+[ext_resource type="Texture2D" uid="uid://b5xsp0beiidro" path="res://Assets/3DFont/Letter A.png" id="4_ep3ak"]
+[ext_resource type="Texture2D" uid="uid://ic0aqsrgw42d" path="res://Assets/3DFont/Letter T.png" id="5_62bvv"]
+[ext_resource type="Script" path="res://StreamStuff/Overlay.gd" id="6_3qylv"]
+[ext_resource type="Texture2D" uid="uid://caymhlvedwa2b" path="res://Assets/3DFont/Letter E.png" id="7_ffuo0"]
+[ext_resource type="Texture2D" uid="uid://cccktobp6etyt" path="res://Assets/3DFont/Letter M.png" id="8_wt2vt"]
+[ext_resource type="Texture2D" uid="uid://dadrurxe6ff87" path="res://Assets/3DFont/Letter G.png" id="9_krvjo"]
+
+[sub_resource type="Gradient" id="Gradient_pgkw6"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2qtfi"]
+gradient = SubResource("Gradient_pgkw6")
+
+[node name="Background" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 1, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+theme = ExtResource("1_mftyu")
+
+[node name="BlockTitle" type="Node2D" parent="MarginContainer/VBoxContainer2/Panel"]
+position = Vector2(20, -15)
+
+[node name="LetterC" type="Sprite2D" parent="MarginContainer/VBoxContainer2/Panel/BlockTitle"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+scale = Vector2(3, 3)
+texture = ExtResource("2_8aovc")
+
+[node name="LetterH" type="Sprite2D" parent="MarginContainer/VBoxContainer2/Panel/BlockTitle"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(30, 0)
+scale = Vector2(3, 3)
+texture = ExtResource("3_awdfv")
+
+[node name="LetterA" type="Sprite2D" parent="MarginContainer/VBoxContainer2/Panel/BlockTitle"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(60, 0)
+scale = Vector2(3, 3)
+texture = ExtResource("4_ep3ak")
+
+[node name="LetterT" type="Sprite2D" parent="MarginContainer/VBoxContainer2/Panel/BlockTitle"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(90, 0)
+scale = Vector2(3, 3)
+texture = ExtResource("5_62bvv")
+
+[node name="Spacer" type="TextureRect" parent="MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(224, 112)
+layout_mode = 2
+texture = SubResource("GradientTexture2D_2qtfi")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -132.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_mftyu")
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+script = ExtResource("6_3qylv")
+solo = true
+team_name = "Thank you Viewers!"
+member_names = "Pain and Sufferingh"
+game_name = "Thank you Devs!"
+game_description = "Bye now"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextBoxes" type="HBoxContainer" parent="Margin/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+
+[node name="TeamPanel" type="PanelContainer" parent="Margin/VBoxContainer/TextBoxes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Margin/VBoxContainer/TextBoxes/TeamPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="TeamName" type="Label" parent="Margin/VBoxContainer/TextBoxes/TeamPanel/VBoxContainer2"]
+layout_mode = 2
+text = "Thank you Viewers!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TeamMembers" type="Label" parent="Margin/VBoxContainer/TextBoxes/TeamPanel/VBoxContainer2"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.517647, 0.541176, 0.603922, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 28
+text = "Pain and Sufferingh"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxLabel" type="Node2D" parent="Margin/VBoxContainer/TextBoxes/TeamPanel"]
+position = Vector2(0, -24)
+scale = Vector2(3, 3)
+
+[node name="LetterT" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/TeamPanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(8, 0)
+texture = ExtResource("5_62bvv")
+
+[node name="LetterE" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/TeamPanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(20, 0)
+texture = ExtResource("7_ffuo0")
+
+[node name="LetterA" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/TeamPanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(32, 0)
+texture = ExtResource("4_ep3ak")
+
+[node name="LetterM" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/TeamPanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(44, 0)
+texture = ExtResource("8_wt2vt")
+
+[node name="GamePanel" type="PanelContainer" parent="Margin/VBoxContainer/TextBoxes"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BoxLabel" type="Node2D" parent="Margin/VBoxContainer/TextBoxes/GamePanel"]
+position = Vector2(0, -24)
+scale = Vector2(3, 3)
+
+[node name="LetterG" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/GamePanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(8, -0.5)
+texture = ExtResource("9_krvjo")
+
+[node name="LetterA" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/GamePanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(20, -0.5)
+texture = ExtResource("4_ep3ak")
+
+[node name="LetterM" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/GamePanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(32, -0.5)
+texture = ExtResource("8_wt2vt")
+
+[node name="LetterE" type="Sprite2D" parent="Margin/VBoxContainer/TextBoxes/GamePanel/BoxLabel"]
+modulate = Color(0.447059, 0.690196, 0.113725, 1)
+position = Vector2(44, -0.5)
+texture = ExtResource("7_ffuo0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin/VBoxContainer/TextBoxes/GamePanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="GameName" type="Label" parent="Margin/VBoxContainer/TextBoxes/GamePanel/VBoxContainer"]
+layout_mode = 2
+text = "Thank you Devs!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Genre" type="Label" parent="Margin/VBoxContainer/TextBoxes/GamePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.517647, 0.541176, 0.603922, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 28
+text = "Bye now"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBars" type="HBoxContainer" parent="Margin/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="SongGoal" type="PanelContainer" parent="Margin/VBoxContainer/ProgressBars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="Margin/VBoxContainer/ProgressBars/SongGoal"]
+layout_mode = 2
+
+[node name="GameGoal" type="PanelContainer" parent="Margin/VBoxContainer/ProgressBars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="Margin/VBoxContainer/ProgressBars/GameGoal"]
+layout_mode = 2
+
+[node name="CommunityGoal" type="PanelContainer" parent="Margin/VBoxContainer/ProgressBars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="Margin/VBoxContainer/ProgressBars/CommunityGoal"]
+layout_mode = 2

@@ -78,6 +78,7 @@ config/name="CC4.0"
 run/main_scene="res://Misc/ca_testing.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 run/max_fps=120
+boot_splash/show_image=false
 config/icon="res://icon.svg"
 
 [debug]
@@ -88,9 +89,11 @@ gdscript/stdout/print_fps=false
 
 [display]
 
-window/size/viewport_width=1200
-window/size/viewport_height=700
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/transparent=true
 window/stretch/mode="canvas_items"
+window/per_pixel_transparency/allowed=true
 window/vsync/vsync_mode=0
 
 [dotnet]
@@ -157,7 +160,16 @@ tab={
 ]
 }
 
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [layer_names]
 
 2d_physics/layer_1="Main Entities"
 2d_physics/layer_2="Terrain"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+viewport/transparent_background=true
