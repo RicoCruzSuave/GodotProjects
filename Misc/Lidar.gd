@@ -36,7 +36,7 @@ func _process(delta):
 		impulse += global_position.direction_to(get_global_mouse_position()) * 5.0
 	
 	##Debug
-
+	print(impulse)
 	get_parent().apply_central_impulse(impulse)
 	
 	

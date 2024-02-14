@@ -1,0 +1,55 @@
+[gd_scene load_steps=6 format=3 uid="uid://2gd45iusrfbc"]
+
+[ext_resource type="Script" path="res://Misc/CCEntity.gd" id="1_6kb6d"]
+[ext_resource type="Texture2D" uid="uid://cybje52jhcpr" path="res://Misc/TestAssets/green_character.png" id="2_wy4n1"]
+[ext_resource type="PackedScene" uid="uid://dtrqtns81mqoj" path="res://CC/hand.tscn" id="3_f4mdo"]
+[ext_resource type="PackedScene" uid="uid://c7luve0ohwpkr" path="res://CC/inventory.tscn" id="4_7s4qr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ygfir"]
+radius = 20.0
+
+[node name="TestEntity" type="RigidBody2D"]
+mass = 100.0
+gravity_scale = 0.0
+linear_damp = 3.0
+angular_damp = 15.0
+script = ExtResource("1_6kb6d")
+speed = 10.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_wy4n1")
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ygfir")
+metadata/_edit_lock_ = true
+
+[node name="LeftHandJoint" type="PinJoint2D" parent="."]
+position = Vector2(25, -22)
+node_a = NodePath("..")
+node_b = NodePath("../LeftHand")
+bias = 0.9
+softness = 3.0
+
+[node name="RightHandJoint" type="PinJoint2D" parent="."]
+position = Vector2(25, 22)
+node_a = NodePath("..")
+node_b = NodePath("../RightHand")
+bias = 0.9
+softness = 3.0
+
+[node name="LeftHand" parent="." instance=ExtResource("3_f4mdo")]
+position = Vector2(25, -22)
+
+[node name="RightHand" parent="." instance=ExtResource("3_f4mdo")]
+position = Vector2(25, 22)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 15.0
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(96, 0)
+
+[node name="Inventory" parent="." instance=ExtResource("4_7s4qr")]

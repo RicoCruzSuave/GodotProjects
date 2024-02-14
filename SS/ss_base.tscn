@@ -1,7 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://cqfq5pe43kpxh"]
+[gd_scene load_steps=15 format=3 uid="uid://cqfq5pe43kpxh"]
 
-[ext_resource type="Texture2D" uid="uid://boysrnecf25t0" path="res://SS/Battleground1.png" id="1_cmakh"]
+[ext_resource type="Texture2D" uid="uid://boysrnecf25t0" path="res://Misc/SSTest/Battleground1.png" id="1_cmakh"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="2_23yio"]
+[ext_resource type="PackedScene" uid="uid://carvn6f4b2n1x" path="res://SS/basic_spell.tscn" id="3_kf2ef"]
+[ext_resource type="Script" path="res://SS/UIController.gd" id="3_uc8mg"]
+[ext_resource type="PackedScene" uid="uid://dg2ql8jraxkcq" path="res://SS/player.tscn" id="4_g432p"]
+[ext_resource type="Script" path="res://Util/Components/Character2DControlComponent.gd" id="5_o4l2j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qt40s"]
+bg_color = Color(0.34902, 0.396078, 0.435294, 1)
+
+[sub_resource type="Gradient" id="Gradient_leroi"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_um55p"]
+gradient = SubResource("Gradient_leroi")
+
+[sub_resource type="Gradient" id="Gradient_2xv8c"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7ioa6"]
+gradient = SubResource("Gradient_2xv8c")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_riepm"]
+width = 32
+height = 32
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e06hh"]
+radius = 24.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8k465"]
+radius = 12.0
+height = 170.0
 
 [node name="ss_base" type="Node2D"]
 
@@ -34,6 +66,7 @@
 [node name="MainMenu" type="Node2D" parent="Screens"]
 
 [node name="Background" type="Sprite2D" parent="Screens/MainMenu"]
+visible = false
 texture = ExtResource("1_cmakh")
 centered = false
 
@@ -95,6 +128,261 @@ layout_mode = 2
 size_flags_horizontal = 3
 texture_normal = ExtResource("2_23yio")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(600, 350)
+[node name="BattleScene" type="Node2D" parent="Screens"]
+position = Vector2(1443, 270)
+
+[node name="UI" type="Control" parent="Screens/BattleScene"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 270.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_uc8mg")
+
+[node name="BottomBar" type="MarginContainer" parent="Screens/BattleScene/UI"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -480.0
+offset_top = -100.0
+offset_right = 480.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="Screens/BattleScene/UI/BottomBar"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qt40s")
+
+[node name="MarginContainer" type="MarginContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Spell"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+expand_icon = true
+fit_to_longest_item = false
+
+[node name="TextureButton" type="TextureButton" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+texture_normal = SubResource("GradientTexture2D_um55p")
+texture_pressed = SubResource("GradientTexture2D_7ioa6")
+stretch_mode = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Power"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "Aiming"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Target"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture_normal = SubResource("NoiseTexture2D_riepm")
+stretch_mode = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Angle
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+texture_normal = SubResource("NoiseTexture2D_riepm")
+stretch_mode = 3
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "Entity"
+
+[node name="TextureButton" type="TextureButton" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer/VBoxContainer3/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+texture_normal = SubResource("NoiseTexture2D_riepm")
+stretch_mode = 3
+
+[node name="VSeparator" type="VSeparator" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "Test Button 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="Screens/BattleScene/UI/BottomBar/PanelContainer/MarginContainer/HBoxContainer3/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+texture_normal = SubResource("GradientTexture2D_um55p")
+texture_pressed = SubResource("GradientTexture2D_7ioa6")
+stretch_mode = 3
+
+[node name="ClickRadius" type="Area2D" parent="Screens/BattleScene/UI"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Screens/BattleScene/UI/ClickRadius"]
+shape = SubResource("CircleShape2D_e06hh")
+
+[node name="SpellBook" type="Node2D" parent="Screens/BattleScene/UI"]
+position = Vector2(0, -270)
+
+[node name="BasicSpell" parent="Screens/BattleScene/UI/SpellBook" instance=ExtResource("3_kf2ef")]
+sleeping = true
+freeze = true
+icon = ExtResource("2_23yio")
+
+[node name="BasicSpell2" parent="Screens/BattleScene/UI/SpellBook" instance=ExtResource("3_kf2ef")]
+position = Vector2(86, 0)
+sleeping = true
+freeze = true
+icon = ExtResource("2_23yio")
+energy = 20.0
+
+[node name="Polygon2D" parent="Screens/BattleScene/UI/SpellBook/BasicSpell2" index="1"]
+color = Color(1, 0.321569, 0.545098, 1)
+
+[node name="BasicSpell3" parent="Screens/BattleScene/UI/SpellBook" instance=ExtResource("3_kf2ef")]
+position = Vector2(-77, 0)
+sleeping = true
+freeze = true
+icon = ExtResource("2_23yio")
+energy = 30.0
+
+[node name="Polygon2D" parent="Screens/BattleScene/UI/SpellBook/BasicSpell3" index="1"]
+color = Color(1, 1, 0.545098, 1)
+
+[node name="Terrain" type="Node2D" parent="Screens/BattleScene/UI"]
+position = Vector2(0, -280)
+
+[node name="LeftPlatform" type="StaticBody2D" parent="Screens/BattleScene/UI/Terrain"]
+position = Vector2(-301, 134)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Screens/BattleScene/UI/Terrain/LeftPlatform"]
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_8k465")
+
+[node name="Polygon2D" type="Polygon2D" parent="Screens/BattleScene/UI/Terrain/LeftPlatform"]
+color = Color(0.113725, 0.117647, 0.172549, 1)
+polygon = PackedVector2Array(-85, 0, -74, -12, 75, -12, 85, 0, 75, 12, -73, 12)
+
+[node name="LeftPlatform2" type="StaticBody2D" parent="Screens/BattleScene/UI/Terrain"]
+position = Vector2(271, 134)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Screens/BattleScene/UI/Terrain/LeftPlatform2"]
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_8k465")
+
+[node name="Polygon2D" type="Polygon2D" parent="Screens/BattleScene/UI/Terrain/LeftPlatform2"]
+color = Color(0.113725, 0.117647, 0.172549, 1)
+polygon = PackedVector2Array(-85, 0, -74, -12, 75, -12, 85, 0, 75, 12, -73, 12)
+
+[node name="Entities" type="Node2D" parent="Screens/BattleScene/UI"]
+position = Vector2(0, -280)
+
+[node name="Players" type="Node2D" parent="Screens/BattleScene/UI/Entities"]
+
+[node name="LeftPlayer" parent="Screens/BattleScene/UI/Entities/Players" instance=ExtResource("4_g432p")]
+position = Vector2(-301, 73)
+
+[node name="ControlComponent" type="Node2D" parent="Screens/BattleScene/UI/Entities/Players/LeftPlayer"]
+script = ExtResource("5_o4l2j")
+jump_speed = 1000.0
+fastfall_speed = 200.0
+
+[node name="RightPlayer" parent="Screens/BattleScene/UI/Entities/Players" instance=ExtResource("4_g432p")]
+position = Vector2(271, 73)
+
+[node name="Camera2D" type="Camera2D" parent="Screens"]
+position = Vector2(1443, 270)
 position_smoothing_enabled = true
+
+[editable path="Screens/BattleScene/UI/SpellBook/BasicSpell2"]
+[editable path="Screens/BattleScene/UI/SpellBook/BasicSpell3"]

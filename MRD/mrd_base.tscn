@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://Util/TileMap/SpriteDraw.gd" id="5_o5l2n"]
 [ext_resource type="Script" path="res://Util/TileMap/TileMapAStar.gd" id="6_pvxu1"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="8_2sbes"]
-[ext_resource type="Script" path="res://Util/Components/KinematicMovement2D.gd" id="8_472cl"]
+[ext_resource type="Script" path="res://Util/Components/KinematicPathing2D.gd" id="8_472cl"]
 [ext_resource type="Script" path="res://MRD/TurnManager.gd" id="8_vbswf"]
 [ext_resource type="Script" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
 [ext_resource type="Script" path="res://Util/Components/Pathfinding2D.gd" id="9_rpso3"]
@@ -469,7 +469,6 @@ pathfinding_node_path = NodePath("../../../BattleMap/Pathfinding")
 
 [node name="Health" type="Node2D" parent="Screens/Battle/Entities/Player"]
 script = ExtResource("10_c0kbv")
-current_health = 10.0
 parent_path = NodePath("..")
 
 [node name="CameraFollow" type="Node2D" parent="Screens/Battle/Entities/Player"]
@@ -639,7 +638,6 @@ arrive_smoothly = true
 
 [node name="Health" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
 script = ExtResource("10_c0kbv")
-current_health = 10.0
 parent_path = NodePath("..")
 
 [node name="Pathfinding" type="Node2D" parent="Screens/Battle/Entities/Enemy"]

@@ -37,11 +37,12 @@ centered = false
 
 [node name="TestEntity" type="RigidBody2D" parent="."]
 position = Vector2(682, 303)
-mass = 10.0
+mass = 100.0
 gravity_scale = 0.0
 linear_damp = 3.0
 angular_damp = 10.0
 script = ExtResource("1_ubdde")
+speed = 10.0
 
 [node name="Sprite2D" type="Sprite2D" parent="TestEntity"]
 texture_filter = 1
