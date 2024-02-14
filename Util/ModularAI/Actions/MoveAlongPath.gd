@@ -29,8 +29,9 @@ func deselect() -> void:
 
 #Called every frame when active
 func update() -> void:
-	pathfinding.next_path_point()
-	movement.move_to(pathfinding.get_current_path_point())
+	if object.global_position.distance_to(pathfinding.get_current_path_point()) < threshold:
+		pathfinding.next_path_point()
+		movement.move_to(pathfinding.get_current_path_point())
 	
 func is_done() -> bool:
 	return skipped or object.global_position.distance_to(end_point) < threshold

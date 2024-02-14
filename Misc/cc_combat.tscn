@@ -1,0 +1,97 @@
+[gd_scene load_steps=9 format=3 uid="uid://dptxhfba4tyl7"]
+
+[ext_resource type="Texture2D" uid="uid://cybje52jhcpr" path="res://Misc/TestAssets/green_character.png" id="1_8wg5g"]
+[ext_resource type="Script" path="res://Misc/CCEntity.gd" id="1_ubdde"]
+[ext_resource type="Texture2D" uid="uid://c5so65pqy2ewb" path="res://Misc/TestAssets/green_hand.png" id="2_3pwpa"]
+
+[sub_resource type="Gradient" id="Gradient_bt3r7"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bmxh8"]
+noise_type = 3
+seed = 6
+frequency = 0.019
+fractal_type = 3
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vvomg"]
+width = 120
+height = 70
+color_ramp = SubResource("Gradient_bt3r7")
+noise = SubResource("FastNoiseLite_bmxh8")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hfylh"]
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bxe41"]
+radius = 8.0
+
+[node name="CombatTest" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(10, 10)
+texture = SubResource("NoiseTexture2D_vvomg")
+centered = false
+
+[node name="TestEntity" type="RigidBody2D" parent="."]
+position = Vector2(682, 303)
+mass = 100.0
+gravity_scale = 0.0
+linear_damp = 3.0
+angular_damp = 10.0
+script = ExtResource("1_ubdde")
+speed = 10.0
+
+[node name="Sprite2D" type="Sprite2D" parent="TestEntity"]
+texture_filter = 1
+texture = ExtResource("1_8wg5g")
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TestEntity"]
+shape = SubResource("CircleShape2D_hfylh")
+metadata/_edit_lock_ = true
+
+[node name="LeftHandJoint" type="PinJoint2D" parent="TestEntity"]
+position = Vector2(25, -22)
+node_a = NodePath("..")
+node_b = NodePath("../LeftHand")
+bias = 0.9
+softness = 3.0
+angular_limit_enabled = true
+
+[node name="RightHandJoint" type="PinJoint2D" parent="TestEntity"]
+position = Vector2(25, 22)
+node_a = NodePath("..")
+node_b = NodePath("../RightHand")
+bias = 0.9
+softness = 3.0
+
+[node name="LeftHand" type="RigidBody2D" parent="TestEntity"]
+position = Vector2(25, -22)
+mass = 0.1
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TestEntity/LeftHand"]
+shape = SubResource("CircleShape2D_bxe41")
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TestEntity/LeftHand"]
+texture_filter = 1
+texture = ExtResource("2_3pwpa")
+metadata/_edit_lock_ = true
+
+[node name="RightHand" type="RigidBody2D" parent="TestEntity"]
+position = Vector2(25, 22)
+mass = 0.1
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TestEntity/RightHand"]
+shape = SubResource("CircleShape2D_bxe41")
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TestEntity/RightHand"]
+texture_filter = 1
+texture = ExtResource("2_3pwpa")
+metadata/_edit_lock_ = true

@@ -1,0 +1,57 @@
+[gd_scene load_steps=8 format=3 uid="uid://carvn6f4b2n1x"]
+
+[ext_resource type="Script" path="res://SS/basic_spell.gd" id="1_iac0q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_70tii"]
+
+[sub_resource type="Gradient" id="Gradient_y4fde"]
+interpolation_mode = 2
+colors = PackedColorArray(0.611765, 0.321569, 0.545098, 1, 0.113725, 0.117647, 0.172549, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_eix4y"]
+gradient = SubResource("Gradient_y4fde")
+
+[sub_resource type="Curve" id="Curve_jttsb"]
+_data = [Vector2(0, 0), 0.0, 6.1628, 0, 0, Vector2(0.99999, 1), -1.37022, -1.37022, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xl62e"]
+curve = SubResource("Curve_jttsb")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kax5h"]
+particle_flag_disable_z = true
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 10.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -100.0
+linear_accel_max = -100.0
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_xl62e")
+color = Color(0.611765, 0.321569, 0.545098, 1)
+color_ramp = SubResource("GradientTexture1D_eix4y")
+
+[node name="BasicSpell" type="RigidBody2D"]
+script = ExtResource("1_iac0q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_70tii")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(0.611765, 0.321569, 0.545098, 1)
+polygon = PackedVector2Array(-7, -7, 0, -10, 7, -7, 10, 0, 7, 7, 0, 10, -7, 7, -10, 0)
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 100
+process_material = SubResource("ParticleProcessMaterial_kax5h")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+visible = false
+amount = 100
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 100.0

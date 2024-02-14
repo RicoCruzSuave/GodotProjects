@@ -1,0 +1,543 @@
+[gd_scene load_steps=19 format=3 uid="uid://cosnnthdcwwpu"]
+
+[ext_resource type="Texture2D" uid="uid://c4w83an8vjyao" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_castle.png" id="1_83ebt"]
+[ext_resource type="Texture2D" uid="uid://b8iec0o4vwan5" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/background_treeLarge.png" id="1_yv531"]
+[ext_resource type="Texture2D" uid="uid://py1rhfh5ixc7" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/background_cloudA.png" id="2_ovpnq"]
+[ext_resource type="Texture2D" uid="uid://bejcd30efi283" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_brick.png" id="2_sy8ji"]
+[ext_resource type="Texture2D" uid="uid://wgt0j1tub22p" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_arch.png" id="3_6wxga"]
+[ext_resource type="Texture2D" uid="uid://bt6e4lilirpjw" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/background_cloudB.png" id="3_xqc7w"]
+[ext_resource type="Texture2D" uid="uid://bhwkm741n8i4d" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/background_tree.png" id="4_85sk8"]
+[ext_resource type="Texture2D" uid="uid://cnaxbd1vcae6y" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_archColumns.png" id="4_jj4it"]
+[ext_resource type="Texture2D" uid="uid://blr77kk7u7tt7" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile.png" id="5_pabfi"]
+[ext_resource type="Texture2D" uid="uid://c4mjfd3o0uaoj" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_cog.png" id="10_y46fu"]
+[ext_resource type="Texture2D" uid="uid://2xwacbc8686s" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_crate.png" id="11_rhi48"]
+[ext_resource type="Texture2D" uid="uid://b2xucarhmewmy" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/tile_bushHalf.png" id="12_8knw8"]
+[ext_resource type="PackedScene" uid="uid://cpcd5g7ou8a8c" path="res://Engines/LaneWar/Units/basic_unit.tscn" id="13_iwh2b"]
+
+[sub_resource type="Gradient" id="Gradient_madrh"]
+interpolation_mode = 2
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bcoi0"]
+gradient = SubResource("Gradient_madrh")
+width = 1200
+height = 700
+fill_from = Vector2(0.676991, 0.493047)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tqh4o"]
+size = Vector2(60, 180)
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_hl871"]
+vertices = PackedVector2Array(2, 517, 1197, 516, 1197, 701, -1, 696)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-1, 696, 1197, 701, 1197, 516, 2, 517)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eecp4"]
+bg_color = Color(0.219608, 0.219608, 0.219608, 0.564706)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="LaneWarEngineDemo" type="Node2D"]
+
+[node name="Goals" type="Node2D" parent="."]
+
+[node name="SummonableUnits" type="Node2D" parent="Goals"]
+
+[node name="IncomeTracking" type="Node2D" parent="Goals"]
+
+[node name="ExperienceTracking" type="Node2D" parent="Goals"]
+
+[node name="DifferentActions" type="Node2D" parent="Goals"]
+
+[node name="Archer" type="Node2D" parent="Goals/DifferentActions"]
+
+[node name="Healer" type="Node2D" parent="Goals/DifferentActions"]
+
+[node name="Digger" type="Node2D" parent="Goals/DifferentActions"]
+
+[node name="StatusEffects" type="Node2D" parent="Goals"]
+
+[node name="Ice" type="Node2D" parent="Goals/StatusEffects"]
+
+[node name="Poison" type="Node2D" parent="Goals/StatusEffects"]
+
+[node name="Upgrades" type="Node2D" parent="Goals"]
+
+[node name="UnitCreator" type="Node2D" parent="Goals"]
+
+[node name="StretchGoals" type="Node2D" parent="."]
+
+[node name="MultiLaneStructure" type="Node2D" parent="StretchGoals"]
+
+[node name="Consumables" type="Node2D" parent="StretchGoals"]
+
+[node name="Terrain" type="Node2D" parent="StretchGoals"]
+
+[node name="ActivatedEffects" type="Node2D" parent="StretchGoals"]
+
+[node name="StageVisuals" type="Node2D" parent="."]
+
+[node name="Background" type="Node2D" parent="StageVisuals"]
+
+[node name="Background" type="Sprite2D" parent="StageVisuals/Background"]
+texture = SubResource("GradientTexture2D_bcoi0")
+centered = false
+
+[node name="BackgroundTreeLarge" type="Sprite2D" parent="StageVisuals/Background"]
+position = Vector2(182, 398)
+scale = Vector2(2, 2)
+texture = ExtResource("1_yv531")
+
+[node name="BackgroundTreeLarge2" type="Sprite2D" parent="StageVisuals/Background"]
+position = Vector2(718, 398)
+scale = Vector2(2, 2)
+texture = ExtResource("1_yv531")
+
+[node name="BackgroundCloudA" type="Sprite2D" parent="StageVisuals/Background"]
+position = Vector2(352, 80)
+texture = ExtResource("2_ovpnq")
+
+[node name="BackgroundCloudB" type="Sprite2D" parent="StageVisuals/Background"]
+position = Vector2(814, 157)
+texture = ExtResource("3_xqc7w")
+
+[node name="BackgroundTree" type="Sprite2D" parent="StageVisuals/Background"]
+position = Vector2(529, 454)
+texture = ExtResource("4_85sk8")
+
+[node name="MiddleGround" type="Node2D" parent="StageVisuals"]
+position = Vector2(600, 370)
+
+[node name="Ground" type="Node2D" parent="StageVisuals/MiddleGround"]
+position = Vector2(0, 145)
+
+[node name="Layer1" type="Node2D" parent="StageVisuals/MiddleGround/Ground"]
+
+[node name="Tile" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-570, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile2" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-510, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile3" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-450, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile4" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-390, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile5" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-330, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile6" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-270, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile7" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-210, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile8" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-150, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile9" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-90, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile10" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(-30, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile11" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(30, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile12" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(90, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile13" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(150, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile14" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(210, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile15" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(270, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile16" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(330, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile17" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(390, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile18" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(450, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile19" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(510, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile20" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer1"]
+position = Vector2(570, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Layer2" type="Node2D" parent="StageVisuals/MiddleGround/Ground"]
+position = Vector2(0, 60)
+
+[node name="Tile" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-570, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile2" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-510, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile3" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-450, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile4" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-390, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile5" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-330, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile6" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-270, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile7" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-210, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile8" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-150, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile9" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-90, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile10" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(-30, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile11" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(30, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile12" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(90, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile13" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(150, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile14" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(210, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile15" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(270, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile16" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(330, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile17" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(390, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile18" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(450, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile19" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(510, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile20" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer2"]
+position = Vector2(570, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Layer3" type="Node2D" parent="StageVisuals/MiddleGround/Ground"]
+position = Vector2(0, 120)
+
+[node name="Tile" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-570, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile2" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-510, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile3" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-450, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile4" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-390, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile5" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-330, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile6" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-270, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile7" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-210, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile8" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-150, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile9" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-90, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile10" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(-30, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile11" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(30, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile12" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(90, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile13" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(150, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile14" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(210, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile15" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(270, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile16" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(330, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile17" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(390, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile18" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(450, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile19" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(510, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="Tile20" type="Sprite2D" parent="StageVisuals/MiddleGround/Ground/Layer3"]
+position = Vector2(570, 32)
+texture = ExtResource("5_pabfi")
+
+[node name="LeftCastle" type="Node2D" parent="StageVisuals/MiddleGround"]
+position = Vector2(-568, 0)
+
+[node name="CastleTop" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, -59.5)
+texture = ExtResource("1_83ebt")
+
+[node name="CastleWall" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, 0.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="CastleWall2" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, 60.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="CastleWall3" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, 120.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="CastleWall4" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, 120.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="TileArch" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, 180)
+texture = ExtResource("3_6wxga")
+
+[node name="TileArchColumns" type="Sprite2D" parent="StageVisuals/MiddleGround/LeftCastle"]
+position = Vector2(0, 240)
+texture = ExtResource("4_jj4it")
+
+[node name="RightCastle" type="Node2D" parent="StageVisuals/MiddleGround"]
+position = Vector2(568, 0)
+
+[node name="CastleTop" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, -59.5)
+texture = ExtResource("1_83ebt")
+
+[node name="CastleWall" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, 0.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="CastleWall2" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, 60.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="CastleWall3" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, 120.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="CastleWall4" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, 120.5)
+texture = ExtResource("2_sy8ji")
+
+[node name="TileArch" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, 180)
+texture = ExtResource("3_6wxga")
+
+[node name="TileArchColumns2" type="Sprite2D" parent="StageVisuals/MiddleGround/RightCastle"]
+position = Vector2(0, 240)
+texture = ExtResource("4_jj4it")
+
+[node name="Foreground" type="Node2D" parent="StageVisuals"]
+
+[node name="TileCog" type="Sprite2D" parent="StageVisuals/Foreground"]
+position = Vector2(1020, 515)
+texture = ExtResource("10_y46fu")
+
+[node name="TileCrate" type="Sprite2D" parent="StageVisuals/Foreground"]
+position = Vector2(688, 639)
+texture = ExtResource("11_rhi48")
+
+[node name="TileBushHalf" type="Sprite2D" parent="StageVisuals/Foreground"]
+position = Vector2(181, 548)
+texture = ExtResource("12_8knw8")
+
+[node name="Units" type="Node2D" parent="."]
+
+[node name="LeftSpawner" type="Node2D" parent="Units"]
+position = Vector2(-59, 607)
+
+[node name="BasicUnit" parent="Units/LeftSpawner" instance=ExtResource("13_iwh2b")]
+attack = 2.0
+attack_speed = 0.5
+movement_target_path = NodePath("../../RightSpawner")
+
+[node name="RightSpawner" type="Node2D" parent="Units"]
+position = Vector2(1277, 607)
+
+[node name="BasicUnit2" parent="Units/RightSpawner" instance=ExtResource("13_iwh2b")]
+scale = Vector2(-1, 1)
+movement_target_path = NodePath("../../LeftSpawner")
+team_name = "Right"
+
+[node name="Bases" type="Node2D" parent="."]
+
+[node name="LeftBase" type="Node2D" parent="Bases"]
+position = Vector2(32, 606)
+
+[node name="Hurtbox" type="Area2D" parent="Bases/LeftBase"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bases/LeftBase/Hurtbox"]
+shape = SubResource("RectangleShape2D_tqh4o")
+
+[node name="RightBase" type="Node2D" parent="Bases"]
+position = Vector2(1168, 606)
+
+[node name="Hurtbox" type="Area2D" parent="Bases/RightBase"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bases/RightBase/Hurtbox"]
+shape = SubResource("RectangleShape2D_tqh4o")
+
+[node name="Pathfinding" type="Node2D" parent="."]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Pathfinding"]
+navigation_polygon = SubResource("NavigationPolygon_hl871")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_right = 1200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_eecp4")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="LeftSide" type="HFlowContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+
+[node name="Button" type="Button" parent="UI/PanelContainer/MarginContainer/HBoxContainer/LeftSide"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Spawn Unit
+"
+
+[node name="Center" type="CenterContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="UI/PanelContainer/MarginContainer/HBoxContainer/Center"]
+layout_mode = 2
+text = "Reset"
+
+[node name="RightSide" type="HFlowContainer" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+alignment = 2
+
+[node name="Button" type="Button" parent="UI/PanelContainer/MarginContainer/HBoxContainer/RightSide"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Spawn Unit"

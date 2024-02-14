@@ -1,0 +1,119 @@
+[gd_scene load_steps=12 format=3 uid="uid://cpcd5g7ou8a8c"]
+
+[ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_1qkxb"]
+[ext_resource type="Script" path="res://Engines/LaneWar/Units/basic_unit.gd" id="1_daaqp"]
+[ext_resource type="Texture2D" uid="uid://ciqqevfgyim6y" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/item_spear.png" id="2_3nyp3"]
+[ext_resource type="Script" path="res://Util/Components/Health.gd" id="3_hh1ws"]
+[ext_resource type="Texture2D" uid="uid://fdqimg168syy" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_handRed.png" id="3_t85a8"]
+[ext_resource type="Script" path="res://Util/Components/TeamComponent.gd" id="4_sseam"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ed0ow"]
+radius = 18.0
+height = 58.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wvwg5"]
+size = Vector2(90, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_25cf0"]
+size = Vector2(5, 112)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7r0ca"]
+size = Vector2(16, 26)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xc6dx"]
+bg_color = Color(0.6, 1, 0.6, 1)
+
+[node name="BasicUnit" type="CharacterBody2D"]
+script = ExtResource("1_daaqp")
+
+[node name="Body" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_1qkxb")
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_ed0ow")
+
+[node name="PinJoint2D" type="PinJoint2D" parent="."]
+node_a = NodePath("..")
+node_b = NodePath("../Equipment")
+bias = 0.9
+softness = 3.0
+
+[node name="HealthComponent" type="Node2D" parent="."]
+script = ExtResource("3_hh1ws")
+parent_path = NodePath("..")
+
+[node name="TeamComponent" type="Node2D" parent="."]
+script = ExtResource("4_sseam")
+
+[node name="AttackTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="FightArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FightArea"]
+position = Vector2(46, 0)
+shape = SubResource("RectangleShape2D_wvwg5")
+
+[node name="Equipment" type="RigidBody2D" parent="."]
+position = Vector2(17, -2)
+rotation = 0.523599
+collision_layer = 0
+collision_mask = 0
+mass = 0.01
+gravity_scale = 0.0
+linear_damp = 5.0
+angular_damp = 20.0
+
+[node name="ItemSpear" type="Sprite2D" parent="Equipment"]
+texture_filter = 1
+texture = ExtResource("2_3nyp3")
+
+[node name="SpearCollision" type="CollisionShape2D" parent="Equipment"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_25cf0")
+
+[node name="SpearHitbox" type="CollisionShape2D" parent="Equipment"]
+position = Vector2(0, -43)
+shape = SubResource("RectangleShape2D_7r0ca")
+disabled = true
+
+[node name="Hand1" type="Sprite2D" parent="Equipment"]
+texture_filter = 1
+position = Vector2(0, 35)
+texture = ExtResource("3_t85a8")
+
+[node name="Hand2" type="Sprite2D" parent="Equipment"]
+texture_filter = 1
+position = Vector2(1, -4)
+texture = ExtResource("3_t85a8")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -35.0
+offset_top = -72.0
+offset_right = 37.0
+offset_bottom = -51.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 0
+offset_right = 81.0
+offset_bottom = 54.0
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/VBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "TEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_xc6dx")
+value = 100.0
+rounded = true

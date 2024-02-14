@@ -1,0 +1,471 @@
+[gd_scene load_steps=32 format=3 uid="uid://d2vaf2s7fg3u1"]
+
+[ext_resource type="Script" path="res://Util/Managers/TeamManager.gd" id="1_kfjuw"]
+[ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_lk1by"]
+[ext_resource type="Script" path="res://Misc/ActionManager.gd" id="1_wy085"]
+[ext_resource type="Texture2D" uid="uid://dv5wju4rg4ni1" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundYellow.png" id="2_b7e2c"]
+[ext_resource type="Script" path="res://Misc/test_player.gd" id="3_awsh3"]
+[ext_resource type="Script" path="res://Util/ProjectileCommand2D.gd" id="4_gl43m"]
+[ext_resource type="Script" path="res://Misc/Beam.gd" id="5_0elrb"]
+[ext_resource type="Script" path="res://Misc/ProjectileBall.tres.gd" id="6_q6g3u"]
+[ext_resource type="Script" path="res://Misc/Arrow.gd" id="7_5jr0h"]
+[ext_resource type="Script" path="res://Misc/ProjectileBeam.tres.gd" id="7_sr7a3"]
+[ext_resource type="Script" path="res://Misc/ProjectileArrrow.tres.gd" id="9_sxn5t"]
+[ext_resource type="Script" path="res://Util/Handler.gd" id="10_1ujfh"]
+[ext_resource type="Script" path="res://Misc/AimingGuide.gd" id="10_vkexb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qaeqd"]
+radius = 25.0
+
+[sub_resource type="GDScript" id="GDScript_j8bkj"]
+script/source = "extends Node2D
+
+func get_options() -> Dictionary:
+	return  {
+		\"origin\" : Target2D.new(),
+		\"target\" : Target2D.new(),
+		\"power\": 1.0,
+		\"angle\": 0.0,
+	}
+
+func get_command(options : Dictionary) -> RigidBody2D:
+	#Throw error if options arent there
+	if not options.has(\"origin\") or \\
+	not options.has(\"target\") or \\
+	not options.has(\"power\") or \\
+	not options.has(\"angle\"):
+		print_debug(options)
+		return null
+	#Create new object
+	var new_projectile : = $Ball.duplicate()
+	#Get each option
+	var origin : Target2D = options[\"origin\"]
+	var target : Target2D = options[\"target\"]
+	var power : float = options[\"power\"]
+	var angle : float = options[\"angle\"]
+	#Determine position and angle
+	var start_pos : Vector2 = origin.get_pos()
+	var target_pos : Vector2 = target.get_pos()
+	var dir_to_target : Vector2 = start_pos.direction_to(target_pos)
+	#If the target is pointing to an entity, offset it a bit
+	if origin.has_entity():
+		var origin_object : Object = origin.get_entity()
+		##TODO: change how we get the radius here, its ugly
+		var offset : Vector2 = \\
+			origin_object.get_node(\"CollisionShape2D\").shape.radius \\
+			+ new_projectile.get_node(\"CollisionShape2D\").shape.radius \\
+			* dir_to_target
+		new_projectile.global_position = start_pos + offset
+	#Unsleep and shoot projectile
+	new_projectile.sleeping = false
+	new_projectile.apply_central_impulse(dir_to_target * power * new_projectile.speed_scalar)
+	#Return the new projectile to be added 
+	##TODO: change to command?
+	return new_projectile
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rwfrv"]
+
+[sub_resource type="Gradient" id="Gradient_q1t04"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vjx8b"]
+gradient = SubResource("Gradient_q1t04")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.8, 0.4)
+metadata/_snap_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
+width = 100
+height = 20
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ijq5"]
+size = Vector2(100, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
+radius = 25.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5208o"]
+size = Vector2(100, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p07o5"]
+
+[sub_resource type="GDScript" id="GDScript_8ivm4"]
+script/source = "@tool
+extends ChainHandler
+
+
+## Handler
+
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"origin\"] = self
+	return current_data
+	
+func is_completed() -> bool:
+	return true
+"
+
+[sub_resource type="GDScript" id="GDScript_ey86m"]
+script/source = "@tool
+extends ChainHandler
+
+
+## Handler
+
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"energy\"] = 10.0
+	return current_data
+	
+func is_completed() -> bool:
+	return true
+"
+
+[sub_resource type="GDScript" id="GDScript_l82l8"]
+script/source = "@tool
+extends ChainHandler
+
+var completed : = false
+
+## Handler
+		
+		
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"target\"] = get_global_mouse_position()
+	if Input.is_action_pressed(\"ui_accept\"):
+		completed = true
+	print(completed)
+	return current_data
+		
+func is_completed() -> bool:
+	return completed
+"
+
+[sub_resource type="GDScript" id="GDScript_ggwmx"]
+script/source = "@tool
+extends ChainHandler
+
+var completed : = false
+
+## Handler
+		
+		
+func handle(data : Dictionary) -> Dictionary:
+	current_data = data
+	current_data[\"angle\"] = global_position.direction_to(get_global_mouse_position())
+	if Input.is_action_pressed(\"ui_accept\"):
+		completed = true
+		print(completed)
+	return current_data
+		
+func is_completed() -> bool:
+	return completed
+"
+
+[sub_resource type="Gradient" id="Gradient_1equo"]
+interpolation_mode = 1
+colors = PackedColorArray(0.619608, 0, 0.607843, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1yarx"]
+gradient = SubResource("Gradient_1equo")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.8, 0.4)
+metadata/_snap_enabled = true
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r362s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a5cam"]
+
+[node name="ProjectileTest" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(603, 358)
+
+[node name="ActionManager" type="Node2D" parent="."]
+script = ExtResource("1_wy085")
+team_manager_path = NodePath("../TeamManager")
+actions_list_path = NodePath("../LeftSide/LeftTeam/TestBody/Projectiles")
+timer_ui_path = NodePath("../UI/VBoxContainer/CenterContainer/ProgressBar")
+
+[node name="TeamManager" type="Node2D" parent="."]
+script = ExtResource("1_kfjuw")
+teams_array = Array[NodePath]([NodePath("../LeftSide/LeftTeam"), NodePath("../RightSide/RightTeam")])
+
+[node name="LeftSide" type="Node2D" parent="."]
+position = Vector2(300, 650)
+
+[node name="Raft" type="Node2D" parent="LeftSide"]
+
+[node name="LeftTeam" type="Node2D" parent="LeftSide"]
+
+[node name="TestBody" type="RigidBody2D" parent="LeftSide/LeftTeam"]
+position = Vector2(0, -44)
+mass = 25.0
+linear_damp = 3.0
+script = ExtResource("3_awsh3")
+
+[node name="CommandList" type="Node2D" parent="LeftSide/LeftTeam/TestBody"]
+position = Vector2(0, 44)
+
+[node name="Sprite2D" type="Sprite2D" parent="LeftSide/LeftTeam/TestBody"]
+texture = ExtResource("1_lk1by")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/LeftTeam/TestBody"]
+shape = SubResource("CircleShape2D_qaeqd")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="AimingGuide" type="Node2D" parent="LeftSide/LeftTeam/TestBody"]
+position = Vector2(-300, -606)
+script = ExtResource("10_vkexb")
+
+[node name="Projectiles" type="Node2D" parent="LeftSide/LeftTeam/TestBody"]
+position = Vector2(-300, -606)
+
+[node name="Ball" type="Node2D" parent="LeftSide/LeftTeam/TestBody/Projectiles"]
+script = SubResource("GDScript_j8bkj")
+
+[node name="Ball" type="RigidBody2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball"]
+position = Vector2(310, 342)
+mass = 10.0
+sleeping = true
+freeze_mode = 1
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("6_q6g3u")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball/Ball"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball/Ball"]
+shape = SubResource("CircleShape2D_rwfrv")
+
+[node name="Sprite2D" type="Sprite2D" parent="LeftSide/LeftTeam/TestBody/Projectiles/Ball/Ball"]
+texture_filter = 1
+texture = SubResource("GradientTexture2D_vjx8b")
+
+[node name="RightSide" type="Node2D" parent="."]
+position = Vector2(900, 650)
+
+[node name="Raft" type="Node2D" parent="RightSide"]
+
+[node name="Base" type="StaticBody2D" parent="RightSide/Raft"]
+collision_layer = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/Raft/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/Raft/Base"]
+shape = SubResource("RectangleShape2D_4ijq5")
+
+[node name="Base2" type="StaticBody2D" parent="RightSide/Raft"]
+position = Vector2(63, -53)
+rotation = -1.21649
+collision_layer = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/Raft/Base2"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/Raft/Base2"]
+shape = SubResource("RectangleShape2D_4ijq5")
+
+[node name="RightTeam" type="Node2D" parent="RightSide"]
+
+[node name="TestBody" type="RigidBody2D" parent="RightSide/RightTeam"]
+position = Vector2(-1, -43)
+mass = 100.0
+linear_damp = 3.0
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/RightTeam/TestBody"]
+scale = Vector2(-1, 1)
+texture = ExtResource("2_b7e2c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/RightTeam/TestBody"]
+shape = SubResource("CircleShape2D_6flcf")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="Base" type="StaticBody2D" parent="RightSide"]
+position = Vector2(-600, 0)
+collision_layer = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="RightSide/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightSide/Base"]
+shape = SubResource("RectangleShape2D_5208o")
+
+[node name="OldProjectiles" type="Node2D" parent="."]
+
+[node name="Ball" type="Node2D" parent="OldProjectiles"]
+script = ExtResource("4_gl43m")
+projectile_path = NodePath("Ball")
+
+[node name="Conditions" type="Node2D" parent="OldProjectiles/Ball"]
+
+[node name="HasOrigin" type="Node2D" parent="OldProjectiles/Ball/Conditions"]
+
+[node name="HasEnergy" type="Node2D" parent="OldProjectiles/Ball/Conditions"]
+
+[node name="HasAngle" type="Node2D" parent="OldProjectiles/Ball/Conditions"]
+
+[node name="Ball" type="RigidBody2D" parent="OldProjectiles/Ball"]
+position = Vector2(310, 342)
+mass = 10.0
+sleeping = true
+freeze_mode = 1
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("6_q6g3u")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="OldProjectiles/Ball/Ball"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Ball/Ball"]
+shape = SubResource("CircleShape2D_rwfrv")
+
+[node name="Sprite2D" type="Sprite2D" parent="OldProjectiles/Ball/Ball"]
+texture_filter = 1
+texture = SubResource("GradientTexture2D_vjx8b")
+
+[node name="Beam" type="Node2D" parent="OldProjectiles"]
+script = ExtResource("5_0elrb")
+projectile_path = NodePath("Beam")
+
+[node name="Beam" type="Node2D" parent="OldProjectiles/Beam"]
+position = Vector2(495, 297)
+script = ExtResource("7_sr7a3")
+duration = 0.5
+
+[node name="Line2D" type="Line2D" parent="OldProjectiles/Beam/Beam"]
+
+[node name="Timer" type="Timer" parent="OldProjectiles/Beam/Beam"]
+one_shot = true
+
+[node name="RayCast2D" type="RayCast2D" parent="OldProjectiles/Beam/Beam"]
+
+[node name="Area2D" type="Area2D" parent="OldProjectiles/Beam/Beam"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Beam/Beam/Area2D"]
+shape = SubResource("RectangleShape2D_p07o5")
+
+[node name="Arrow" type="Node2D" parent="OldProjectiles"]
+script = ExtResource("7_5jr0h")
+projectile_path = null
+
+[node name="Inputs" type="Node2D" parent="OldProjectiles/Arrow"]
+
+[node name="Target" type="Node2D" parent="OldProjectiles/Arrow/Inputs"]
+
+[node name="Angle" type="Node2D" parent="OldProjectiles/Arrow/Inputs"]
+
+[node name="Conditions" type="Node2D" parent="OldProjectiles/Arrow"]
+script = ExtResource("10_1ujfh")
+
+[node name="Origin" type="Node2D" parent="OldProjectiles/Arrow/Conditions"]
+script = ExtResource("10_1ujfh")
+
+[node name="TargetEntity" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Origin"]
+script = SubResource("GDScript_8ivm4")
+
+[node name="Energy" type="Node2D" parent="OldProjectiles/Arrow/Conditions"]
+script = SubResource("GDScript_ey86m")
+
+[node name="TargetEntityProperty" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Energy"]
+
+[node name="Target" type="Node2D" parent="OldProjectiles/Arrow/Conditions"]
+script = ExtResource("10_1ujfh")
+handler_order = 0
+
+[node name="TargetStatic" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Target"]
+script = SubResource("GDScript_l82l8")
+
+[node name="TargetAngle" type="Node2D" parent="OldProjectiles/Arrow/Conditions/Target"]
+script = SubResource("GDScript_ggwmx")
+
+[node name="Projectile" type="RigidBody2D" parent="OldProjectiles/Arrow"]
+position = Vector2(656, 249)
+mass = 10.0
+gravity_scale = 0.0
+sleeping = true
+lock_rotation = true
+linear_damp = 3.0
+script = ExtResource("9_sxn5t")
+turning_radius = 1.571
+speed = 200.0
+
+[node name="Sprite2D" type="Sprite2D" parent="OldProjectiles/Arrow/Projectile"]
+texture_filter = 1
+texture = SubResource("GradientTexture2D_1yarx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Arrow/Projectile"]
+shape = SubResource("CircleShape2D_r362s")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="OldProjectiles/Arrow/Projectile"]
+
+[node name="RayCast2D" type="RayCast2D" parent="OldProjectiles/Arrow/Projectile"]
+target_position = Vector2(0, -25)
+
+[node name="Ground" type="Node2D" parent="OldProjectiles"]
+
+[node name="Inputs" type="Node2D" parent="OldProjectiles/Ground"]
+
+[node name="Target" type="Node2D" parent="OldProjectiles/Ground/Inputs"]
+
+[node name="Size" type="Node2D" parent="OldProjectiles/Ground/Inputs"]
+
+[node name="Ground" type="StaticBody2D" parent="OldProjectiles/Ground"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldProjectiles/Ground/Ground"]
+shape = SubResource("RectangleShape2D_a5cam")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 0
+offset_right = 1200.0
+offset_bottom = 81.0
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.0
+
+[node name="HFlowContainer" type="HFlowContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="Fire Arrow" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fire Arrow"
+
+[node name="Lightning Beam" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Lightning Beam
+"
+
+[node name="Mudball" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mudball"
+
+[node name="Black hole" type="Button" parent="UI/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Black Hole"

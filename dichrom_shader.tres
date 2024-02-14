@@ -3,6 +3,8 @@
 [sub_resource type="Shader" id="Shader_difom"]
 code = "shader_type canvas_item;
 
+uniform bool border_on = false;
+
 void fragment() {
 	vec4 tex = texture(TEXTURE, UV);
 	
@@ -11,12 +13,15 @@ void fragment() {
 	} else {
 		COLOR = vec4(vec3(0.0), 1.0);
 	}
-	if (UV.x < 0.01 || UV.x > 0.99 || UV.y < 0.01 || UV.y > 0.96) {
-		COLOR = vec4(0.0);
-		COLOR.a = 1.0;
+	if (border_on) {
+		if (UV.x < 0.01 || UV.x > 0.99 || UV.y < 0.01 || UV.y > 0.99) {
+			COLOR = vec4(0.0);
+			COLOR.a = 1.0;
+		}
 	}
 }
 "
 
 [resource]
 shader = SubResource("Shader_difom")
+shader_parameter/border_on = false

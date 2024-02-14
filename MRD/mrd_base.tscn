@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://dq2rvw3xksgpu"]
+[gd_scene load_steps=36 format=3 uid="uid://dq2rvw3xksgpu"]
 
 [ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_wtx80"]
 [ext_resource type="Script" path="res://Util/ConnectPoints.gd" id="2_4bee6"]
@@ -8,11 +8,15 @@
 [ext_resource type="Script" path="res://Util/TileMap/SpriteDraw.gd" id="5_o5l2n"]
 [ext_resource type="Script" path="res://Util/TileMap/TileMapAStar.gd" id="6_pvxu1"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="8_2sbes"]
-[ext_resource type="Script" path="res://Util/Components/KinematicMovement2D.gd" id="8_472cl"]
+[ext_resource type="Script" path="res://Util/Components/KinematicPathing2D.gd" id="8_472cl"]
 [ext_resource type="Script" path="res://MRD/TurnManager.gd" id="8_vbswf"]
 [ext_resource type="Script" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
 [ext_resource type="Script" path="res://Util/Components/Pathfinding2D.gd" id="9_rpso3"]
+[ext_resource type="Script" path="res://Util/Components/CameraFollow2D.gd" id="10_6gmml"]
+[ext_resource type="Script" path="res://Util/Components/Health.gd" id="10_c0kbv"]
 [ext_resource type="Script" path="res://Util/ModularAI/Actions/MoveAlongPath.gd" id="10_ffk6r"]
+[ext_resource type="Script" path="res://Util/ModularAI/Actions/AbilityContainer.gd" id="12_7vkrm"]
+[ext_resource type="PackedScene" uid="uid://i6f62k4ygwl0" path="res://MRD/AbilityBase.tscn" id="13_5docr"]
 
 [sub_resource type="GDScript" id="GDScript_12ta3"]
 script/source = "extends Node2D
@@ -258,7 +262,7 @@ script = SubResource("GDScript_12ta3")
 
 [node name="Camera2D" type="Camera2D" parent="Screens"]
 position = Vector2(2468, 1188)
-zoom = Vector2(0.653, 0.653)
+zoom = Vector2(0.451, 0.451)
 
 [node name="Title" type="Node2D" parent="Screens"]
 
@@ -436,10 +440,13 @@ tilemap_path = NodePath("..")
 [node name="Entities" type="Node2D" parent="Screens/Battle"]
 
 [node name="Player" type="CharacterBody2D" parent="Screens/Battle/Entities"]
-position = Vector2(2652, 868)
+position = Vector2(2656, 864)
 script = ExtResource("5_7nkbs")
 turn_manager_path = NodePath("../../TurnManager")
 action_manager_path = NodePath("../../ActionManager")
+
+[node name="ActionManager" type="Node2D" parent="Screens/Battle/Entities/Player"]
+position = Vector2(-2656, -864)
 
 [node name="Polygon2D" type="Polygon2D" parent="Screens/Battle/Entities/Player"]
 color = Color(1, 0, 1, 1)
@@ -452,6 +459,7 @@ polygon = PackedVector2Array(0, 20, 22, -1, 0, -23, -22, -2)
 script = ExtResource("8_472cl")
 pathfinding_path = NodePath("../Pathfinding")
 body_path = NodePath("..")
+speed = 100.0
 smooth_threshold = 8.0
 arrive_smoothly = true
 
@@ -459,9 +467,26 @@ arrive_smoothly = true
 script = ExtResource("9_rpso3")
 pathfinding_node_path = NodePath("../../../BattleMap/Pathfinding")
 
+[node name="Health" type="Node2D" parent="Screens/Battle/Entities/Player"]
+script = ExtResource("10_c0kbv")
+parent_path = NodePath("..")
+
+[node name="CameraFollow" type="Node2D" parent="Screens/Battle/Entities/Player"]
+script = ExtResource("10_6gmml")
+camera_path = NodePath("../../../../Camera2D")
+
+[node name="Attacks" type="Node2D" parent="Screens/Battle/Entities/Player"]
+
 [node name="Actions" type="Node2D" parent="Screens/Battle/Entities/Player"]
 
 [node name="Attack" type="Node2D" parent="Screens/Battle/Entities/Player/Actions"]
+
+[node name="AttackContainer" type="Node2D" parent="Screens/Battle/Entities/Player/Actions/Attack"]
+script = ExtResource("12_7vkrm")
+effect_path = NodePath("AbilityBase")
+effect_parent_path = NodePath("../../../Attacks")
+
+[node name="AbilityBase" parent="Screens/Battle/Entities/Player/Actions/Attack/AttackContainer" instance=ExtResource("13_5docr")]
 
 [node name="Move" type="Node2D" parent="Screens/Battle/Entities/Player/Actions"]
 
@@ -611,16 +636,23 @@ body_path = NodePath("..")
 arrive_threshold = 8.0
 arrive_smoothly = true
 
+[node name="Health" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
+script = ExtResource("10_c0kbv")
+parent_path = NodePath("..")
+
 [node name="Pathfinding" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
 script = ExtResource("9_rpso3")
 pathfinding_node_path = NodePath("../../../BattleMap/Pathfinding")
+
+[node name="CameraFollow" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
+script = ExtResource("10_6gmml")
+camera_path = NodePath("../../../../Camera2D")
 
 [node name="Actions" type="Node2D" parent="Screens/Battle/Entities/Enemy"]
 
 [node name="Move" type="Node2D" parent="Screens/Battle/Entities/Enemy/Actions"]
 
 [node name="MoveTowards" type="Node2D" parent="Screens/Battle/Entities/Enemy/Actions/Move"]
-position = Vector2(-256, -760)
 script = ExtResource("10_ffk6r")
 movement_path = NodePath("../../../Movement")
 pathfinding_path = NodePath("../../../Pathfinding")

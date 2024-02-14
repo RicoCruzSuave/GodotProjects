@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://dt0hex31qx46i"]
+
+[sub_resource type="Gradient" id="Gradient_821tl"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cnu85"]
+gradient = SubResource("Gradient_821tl")
+width = 1200
+height = 700
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4tol4"]
+
+[node name="RtsEngine" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_cnu85")
+centered = false
+
+[node name="Units" type="Node2D" parent="."]
+
+[node name="TestUnit" type="CharacterBody2D" parent="Units"]
+position = Vector2(250, 218)
+motion_mode = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Units/TestUnit"]
+shape = SubResource("CircleShape2D_4tol4")
+
+[node name="Polygon2D" type="Polygon2D" parent="Units/TestUnit"]
+color = Color(1, 0.47451, 1, 1)
+polygon = PackedVector2Array(0, -11, 10, -1, 0, 10, -10, 0)
+
+[node name="HealthComponent" type="Node2D" parent="Units/TestUnit"]
+
+[node name="MovementComponent" type="Node2D" parent="Units/TestUnit"]
+
+[node name="ActionComponent" type="Node2D" parent="Units/TestUnit"]
+
+[node name="Combat" type="Node2D" parent="Units/TestUnit/ActionComponent"]
+
+[node name="Heal" type="Node2D" parent="Units/TestUnit/ActionComponent"]
+
+[node name="Gather" type="Node2D" parent="Units/TestUnit/ActionComponent"]
+
+[node name="AbilityComponent" type="Node2D" parent="Units/TestUnit"]

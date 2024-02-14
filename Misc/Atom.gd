@@ -1,12 +1,10 @@
 extends Resource
 class_name Atom
 
-@export var density : = 1
-@export var temp : = 1
-@export var type : = 0
+@export var color : = Color.WHITE
 
-func _init():
-	pass
+func update(neighbors : Dictionary) -> bool:
+	return false
 
 #func act(neighbors : Dictionary) -> Array:
 	#Intake neighbors and return swap coordinates in pairs
@@ -16,6 +14,5 @@ func _init():
 	#	- maybe use a dict? or make an instruction struct? 
 	# 	- transformation made directly on other cell?
 	
-
-func get_color():
-	pass
+func get_color() -> Color:
+	return color

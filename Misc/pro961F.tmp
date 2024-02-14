@@ -1,0 +1,162 @@
+[gd_scene load_steps=9 format=3 uid="uid://d2vaf2s7fg3u1"]
+
+[ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_lk1by"]
+[ext_resource type="Texture2D" uid="uid://dv5wju4rg4ni1" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundYellow.png" id="2_b7e2c"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qaeqd"]
+radius = 25.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bouuv"]
+width = 100
+height = 20
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5208o"]
+size = Vector2(100, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6flcf"]
+radius = 25.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ijq5"]
+size = Vector2(100, 20)
+
+[sub_resource type="GDScript" id="GDScript_a2pam"]
+script/source = "extends Control
+
+@export_node_path(\"Node2D\") var projectiles_nodepath
+
+@onready var projectiles_node : = get_node(projectiles_nodepath)
+
+func _ready():
+	for child in get_children():
+		child.free()
+	for child in projectiles_node.get_children():
+		var new_button : = Button.new()
+		new_button.add_theme_font_size_override(\"font\", 30)
+		new_button.text = child.name
+		add_child(new_button)
+		#new_button.connect(\"pressed\", ?????)
+	queue_redraw()
+"
+
+[node name="ProjectileTest" type="Node2D"]
+
+[node name="LeftPlayer" type="Node2D" parent="."]
+position = Vector2(300, 650)
+
+[node name="Team" type="Node2D" parent="LeftPlayer"]
+
+[node name="TestBody" type="RigidBody2D" parent="LeftPlayer/Team"]
+position = Vector2(0, -33)
+mass = 10.0
+linear_damp = 3.0
+
+[node name="Sprite2D" type="Sprite2D" parent="LeftPlayer/Team/TestBody"]
+texture = ExtResource("1_lk1by")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftPlayer/Team/TestBody"]
+shape = SubResource("CircleShape2D_qaeqd")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="Raft" type="Node2D" parent="LeftPlayer"]
+
+[node name="Base" type="StaticBody2D" parent="LeftPlayer/Raft"]
+
+[node name="Sprite2D" type="Sprite2D" parent="LeftPlayer/Raft/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftPlayer/Raft/Base"]
+shape = SubResource("RectangleShape2D_5208o")
+
+[node name="RightPlayer" type="Node2D" parent="."]
+position = Vector2(900, 650)
+
+[node name="Team" type="Node2D" parent="RightPlayer"]
+
+[node name="TestBody" type="RigidBody2D" parent="RightPlayer/Team"]
+position = Vector2(0, -33)
+mass = 10.0
+linear_damp = 3.0
+
+[node name="Sprite2D" type="Sprite2D" parent="RightPlayer/Team/TestBody"]
+scale = Vector2(-1, 1)
+texture = ExtResource("2_b7e2c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightPlayer/Team/TestBody"]
+shape = SubResource("CircleShape2D_6flcf")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="Raft" type="Node2D" parent="RightPlayer"]
+
+[node name="Base" type="StaticBody2D" parent="RightPlayer/Raft"]
+
+[node name="Sprite2D" type="Sprite2D" parent="RightPlayer/Raft/Base"]
+texture = SubResource("NoiseTexture2D_bouuv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightPlayer/Raft/Base"]
+shape = SubResource("RectangleShape2D_4ijq5")
+
+[node name="Projectiles" type="Node2D" parent="."]
+
+[node name="BallBase" type="Node2D" parent="Projectiles"]
+
+[node name="BeamBase" type="Node2D" parent="Projectiles"]
+
+[node name="ArrowBase" type="Node2D" parent="Projectiles"]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+script = SubResource("GDScript_a2pam")
+projectiles_nodepath = NodePath("../Projectiles")
+
+[node name="ActionBar" type="HFlowContainer" parent="UI"]
+layout_mode = 2
+offset_right = 1200.0
+offset_bottom = 178.0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+alignment = 1
+
+[node name="Button" type="Button" parent="UI/ActionBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Ball Base"
+
+[node name="Button2" type="Button" parent="UI/ActionBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Ball Base"
+
+[node name="Button3" type="Button" parent="UI/ActionBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Ball Base"
+
+[node name="Button4" type="Button" parent="UI/ActionBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Ball Base"
+
+[node name="Button5" type="Button" parent="UI/ActionBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Ball Base"
+
+[node name="Button6" type="Button" parent="UI/ActionBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Ball Base"

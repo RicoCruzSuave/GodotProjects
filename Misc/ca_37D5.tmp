@@ -1,0 +1,659 @@
+[gd_scene load_steps=29 format=3 uid="uid://brxdslody1wwf"]
+
+[ext_resource type="PackedScene" uid="uid://plbbnale87i1" path="res://Misc/gj_ant.tscn" id="1_e60jg"]
+[ext_resource type="Script" path="res://Misc/gj_ant_queen.gd" id="2_uk046"]
+
+[sub_resource type="Gradient" id="Gradient_qykm5"]
+offsets = PackedFloat32Array(0.0186916)
+colors = PackedColorArray(0.196078, 0.196078, 0.196078, 0.439216)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_b3j0p"]
+gradient = SubResource("Gradient_qykm5")
+width = 16
+height = 16
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8syai"]
+texture = SubResource("GradientTexture2D_b3j0p")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="Gradient" id="Gradient_m01wv"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tms2h"]
+gradient = SubResource("Gradient_m01wv")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lhb30"]
+texture = SubResource("GradientTexture2D_tms2h")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="Gradient" id="Gradient_cr3ni"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 0, 0, 1, 0.741176, 0, 0.0117647, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0n3fd"]
+gradient = SubResource("Gradient_cr3ni")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vghc0"]
+texture = SubResource("GradientTexture2D_0n3fd")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="Gradient" id="Gradient_d4p60"]
+interpolation_mode = 1
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_x8a2q"]
+gradient = SubResource("Gradient_d4p60")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_30pmh"]
+texture = SubResource("GradientTexture2D_x8a2q")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="Gradient" id="Gradient_a1auk"]
+interpolation_mode = 1
+colors = PackedColorArray(0.87451, 0.341176, 0.0980392, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ou5cb"]
+gradient = SubResource("Gradient_a1auk")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0mrdv"]
+texture = SubResource("GradientTexture2D_ou5cb")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="Gradient" id="Gradient_6rlpd"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5kp1k"]
+gradient = SubResource("Gradient_6rlpd")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_efa5p"]
+texture = SubResource("GradientTexture2D_5kp1k")
+
+[sub_resource type="Gradient" id="Gradient_l4boe"]
+interpolation_mode = 1
+colors = PackedColorArray(0.540232, 0.231185, 0.0518031, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_b134m"]
+gradient = SubResource("Gradient_l4boe")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h30n4"]
+texture = SubResource("GradientTexture2D_b134m")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="Gradient" id="Gradient_ljefs"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_dn2et"]
+gradient = SubResource("Gradient_ljefs")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_03cm5"]
+texture = SubResource("GradientTexture2D_dn2et")
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSet" id="TileSet_ruoc3"]
+physics_layer_0/collision_layer = 1
+sources/1 = SubResource("TileSetAtlasSource_lhb30")
+sources/0 = SubResource("TileSetAtlasSource_8syai")
+sources/2 = SubResource("TileSetAtlasSource_vghc0")
+sources/421 = SubResource("TileSetAtlasSource_efa5p")
+sources/3 = SubResource("TileSetAtlasSource_30pmh")
+sources/4 = SubResource("TileSetAtlasSource_0mrdv")
+sources/5 = SubResource("TileSetAtlasSource_h30n4")
+sources/6 = SubResource("TileSetAtlasSource_03cm5")
+
+[sub_resource type="GDScript" id="GDScript_0ax2j"]
+script/source = "extends MFM
+
+var current_origin : = 0
+var steps_per_second : = 5.0
+var timer : = 0.0
+@export var spawn_chance : = 0.005
+@export var iterations : = 5
+@export var density : = 0.5
+@export var paused : = false
+
+var wall_tile_id : = 2
+
+@onready var ant_scene : = preload(\"res://Misc/gj_ant.tscn\")
+
+func _ready():
+	$Ants/AntQueen/Marker2D.global_position = world_size * Vector2i(16.0, 16.0)/2.0
+	
+	#Modulate tiles
+	for i in Cell.CELL_TYPE:
+		var tileset : = tile_set
+		var tile_source : TileSetAtlasSource = tileset.get_source(Cell.CELL_TYPE.keys()[i])
+		var tile_data : = tile_source.get_tile_data(Vector2i.ZERO, 0)
+		tile_data.modulate = Color.REBECCA_PURPLE
+	super._ready()
+	for x in world_size.x:
+		for y in world_size.y:
+			draw_cell(Vector2i(x,y))
+	_build_edges()
+	randomize_map()
+	for _i in iterations:
+		await get_tree().process_frame
+		step()
+	
+		
+		
+func step():
+	for x in world_size.x:
+		for y in world_size.y:
+			var tile : = Vector2i(x,y)
+			var count : = 0
+			for dir in [
+				Vector2i.LEFT, 
+				Vector2i.RIGHT,
+				Vector2i.UP,
+				Vector2i.DOWN,
+				Vector2i.LEFT + Vector2i.UP,
+				Vector2i.LEFT + Vector2i.DOWN,
+				Vector2i.RIGHT + Vector2i.UP,
+				Vector2i.RIGHT + Vector2i.DOWN,
+			]:
+				var neighbor : = get_cell_source_id(0, tile + dir)
+				if neighbor == wall_tile_id:
+					count += 1
+				
+			match get_cell_source_id(0, tile):
+				-1: 
+					if count < 5:
+						call_deferred(\"set_cell\", 0, tile)
+						world[tile.x][tile.y].content = null
+					else:
+						call_deferred(\"set_cell\", 0, tile, wall_tile_id, Vector2i.ZERO)
+						var wall_cell : = Cell.new()
+						wall_cell.id = Cell.CELL_TYPE.WALL
+						world[tile.x][tile.y].content = wall_cell
+				wall_tile_id: 
+					if count < 4:
+						call_deferred(\"set_cell\", 0, tile)
+						world[tile.x][tile.y].content = null
+					else:
+						call_deferred(\"set_cell\", 0, tile, wall_tile_id, Vector2i.ZERO)
+						var wall_cell : = Cell.new()
+						wall_cell.id = Cell.CELL_TYPE.WALL
+						world[tile.x][tile.y].content = wall_cell
+	
+func randomize_map():
+	for x in world_size.x:
+		for y in world_size.y:
+			var tile : = Vector2i(x,y)
+			if randf() < density:
+				set_cell(0, tile, wall_tile_id, Vector2i.ZERO)
+func _build_edges():
+	for x in world_size.x:
+		var bottom_wall : = Vector2i(x, world_size.y)
+		set_cell(0, bottom_wall, wall_tile_id, Vector2i.ZERO)
+		
+	for y in world_size.y:
+		var left_wall : = Vector2i(-1, y)
+		var right_wall : = Vector2i(world_size.x, y)
+		set_cell(0, left_wall, wall_tile_id, Vector2i.ZERO)
+		set_cell(0, right_wall, wall_tile_id, Vector2i.ZERO)
+			
+func _process(delta):
+	#timer += delta
+	#if timer >= steps_per_second / 60.0:
+		#timer = 0.0
+	if paused:
+		return
+	_queue_cells()
+	update_cells()
+	if randf() < spawn_chance:
+		var cell_coords : = Vector2i(
+			randi_range(0, world_size.x - 1),
+			randi_range(0, world_size.y - 1),
+		)
+		if get_cell_source_id(0, cell_coords) == -1:
+			create_cell(cell_coords)
+
+#func _input(event):
+	#if Input.is_action_just_pressed(\"left_click\"):
+		#var coords : = local_to_map(to_local(get_global_mouse_position()))
+		#if is_space_valid(coords):
+			#create_cell(coords)
+	#
+	#if Input.is_action_just_pressed(\"right_click\"):
+		#var new_ant : = ant_scene.instantiate()
+		#new_ant.global_position = get_global_mouse_position()
+		#$Ants.add_child(new_ant)
+		#var coords : = local_to_map(to_local(get_global_mouse_position()))
+		#if is_space_valid(coords):
+			#var cell = world[coords.x][coords.y].content
+			#if cell != null:
+				#print(cell.energy)
+			#
+	#if Input.is_action_just_pressed(\"ui_accept\"):
+		#paused = not paused
+		#
+	#
+	#if Input.is_action_just_pressed(\"ui_up\"):
+		#paused = false
+		#await get_tree().process_frame
+		#paused = true
+
+func create_cell(coords : Vector2i):
+	var new_cell : = Cell.new()
+	new_cell.origin = current_origin
+	new_cell.energy = 10
+	new_cell.id = Cell.CELL_TYPE.SEED
+	new_cell.randomize_genome()
+	world[coords.x][coords.y].content = new_cell 
+	current_origin += 1
+	draw_cell(coords)
+	
+func delete_cell(coords : Vector2i):
+	world[coords.x][coords.y].content = null
+	draw_cell(coords)
+	
+func place_wall(coords : Vector2i):
+	var new_cell : = Cell.new()
+	new_cell.id = Cell.CELL_TYPE.WALL
+	world[coords.x][coords.y].content = new_cell 
+	draw_cell(coords)
+	
+func is_wall(coords : Vector2i) -> bool:
+	if is_space_empty(coords):
+		return false
+	return world[coords.x][coords.y].content.id == Cell.CELL_TYPE.WALL
+
+class Cell:
+	enum GENE {
+		LEFT,
+		RIGHT,
+		FORWARD,
+		DIR,
+		SELF,
+		MAX
+	}
+	enum CELL_TYPE {
+		DEAD,
+		NUCLEUS,
+		WALL,
+		SPROUT,
+		SEED,
+		WOOD,
+		LEAF,
+		MAX
+	}
+	enum DIR {
+		LEFT,
+		UP,
+		RIGHT,
+		DOWN,
+		MAX
+	}
+	const N_GENE : = 0
+	const INSTRUCTION_MIN : = 0
+	const GENE_MIN: = 3
+	const GENOME_SIZE : = 25
+	
+	var genome : = [
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+		[0,0,0,0,0],
+	]
+	var genome_index : = INSTRUCTION_MIN
+	var genome_variance : = [
+		CELL_TYPE.MAX,
+		CELL_TYPE.MAX,
+		2
+	]
+	var id : = CELL_TYPE.SEED
+	
+	var energy : = 0
+	var energy_threshold : = 10
+	var lifetime : = 3
+	var current_lifetime : = 0
+	var energy_to_new_cells : = 5
+	
+	var dir : = DIR.RIGHT
+	var parent : int = -1 
+	var origin : = 0
+	var dist_from_origin : = 0
+	var seed_move : = false
+
+	
+	func randomize_genome():
+		var new_genome : = []
+		for _j in genome.size():
+			var new_array = []
+			for _i in range(GENE.MAX):
+				var rand : = randi_range(GENE_MIN, CELL_TYPE.MAX - 1)
+				new_array.append(rand)
+			new_genome.append(new_array)
+		genome = new_genome
+
+	func update(neighbors: Dictionary):
+		if id == CELL_TYPE.WALL:
+			return
+		if id == 0:
+			#for dir in [
+				#Vector2i.LEFT, 
+				#Vector2i.RIGHT,
+				#Vector2i.UP,
+				#Vector2i.DOWN,
+				#Vector2i.LEFT + Vector2i.UP,
+				#Vector2i.LEFT + Vector2i.DOWN,
+				#Vector2i.RIGHT + Vector2i.UP,
+				#Vector2i.RIGHT + Vector2i.DOWN,
+			#]:
+				#if neighbors.has(dir) and neighbors[dir].content != null and neighbors[dir].content.id != CELL_TYPE.WALL:
+					#neighbors[dir].content == null 
+			neighbors[Vector2i.ZERO].content = null
+			return
+			
+		#genome_index += 1
+		if genome_index >= genome.size():
+			genome_index = INSTRUCTION_MIN
+			#die()
+			return
+		var instructions : Array = genome[genome_index]
+		current_lifetime += 1		
+		if id != CELL_TYPE.SEED:
+			energy -= 1
+		if energy > 255:
+			print_debug(\"Ah\")
+		if energy <= 0 and current_lifetime >= lifetime:
+			die()
+		match id:
+			CELL_TYPE.NUCLEUS:
+				pass
+			CELL_TYPE.SEED:
+				if seed_move:
+					if neighbors.has(get_dir(dir)) and neighbors[get_dir(dir)].content == null:
+						#if neighbors[get_dir(dir)].content.id != CELL_TYPE.WALL:
+						swap_cells(neighbors, get_dir(dir))
+					else:
+						die()
+				if current_lifetime < lifetime:
+					energy += get_neighbor_cell_count(neighbors)
+					return
+				#if parent == -1 or (neighbors.has(parent) and neighbors[parent].content == null):
+				instructions = genome[genome_index]
+				genome_index = 0
+				dist_from_origin = 0 
+				current_lifetime = 0
+				id = CELL_TYPE.SPROUT
+			CELL_TYPE.SPROUT:
+				var right = wrapi(dir + 1, 0, DIR.MAX)
+				var left = wrapi(dir - 1, 0, DIR.MAX)
+				if neighbors.has(get_dir(dir)) and neighbors[get_dir(dir)].content == null:
+					var new_cell : = Cell.new()
+					new_cell.id = instructions[GENE.FORWARD]
+					new_cell.genome_index = genome_index + 1
+					new_cell.energy = energy_to_new_cells
+					new_cell.current_lifetime = 0
+					new_cell.genome = genome
+					new_cell.dir = dir
+					new_cell.parent = wrapi(dir + 2, 0, DIR.MAX)
+					new_cell.mutate()
+					
+					energy -= energy_to_new_cells
+					neighbors[get_dir(dir)].content = new_cell
+				if neighbors.has(get_dir(right)) and neighbors[get_dir(right)].content == null:
+					#Place cells to right
+					var new_cell : = Cell.new()
+					new_cell.id = instructions[GENE.RIGHT]
+					new_cell.genome_index = genome_index + 1
+					new_cell.energy = energy_to_new_cells
+					new_cell.current_lifetime = 0
+					new_cell.genome = genome
+					#new_cell.dist_from_origin = dist_from_origin + 1
+					new_cell.dir = right
+					new_cell.parent = left
+					new_cell.mutate()
+					
+					energy -= energy_to_new_cells					
+					neighbors[get_dir(right)].content = new_cell
+				if neighbors.has(get_dir(left)) and neighbors[get_dir(left)].content == null:
+					#Place cells to left
+					var new_cell : = Cell.new()
+					new_cell.id = instructions[GENE.LEFT]
+					new_cell.genome_index = genome_index + 1
+					new_cell.energy = energy_to_new_cells
+					new_cell.current_lifetime = 0
+					new_cell.genome = genome
+					#new_cell.dist_from_origin = dist_from_origin + 1
+					new_cell.dir = left
+					new_cell.parent = right					
+					new_cell.mutate()
+					
+					energy -= energy_to_new_cells					
+					neighbors[get_dir(left)].content = new_cell
+				dir = wrapi(dir + (instructions[GENE.DIR] % 3) - 1, 0, DIR.MAX)	
+				id = CELL_TYPE.WOOD
+			CELL_TYPE.WOOD:
+				energy_threshold = 2
+				share_energy(neighbors)
+				if neighbors.has(get_dir(dir)):
+					var cell = neighbors[get_dir(dir)].content
+					if cell != null:
+						if cell.id == CELL_TYPE.WOOD or cell.id == CELL_TYPE.SEED:
+							return
+				#die()
+			CELL_TYPE.LEAF:
+				energy += get_neighbor_cell_count(neighbors)
+				share_energy(neighbors)
+				if neighbors.has(get_dir(parent)):
+					var cell = neighbors[get_dir(parent)].content
+					if cell != null:
+						if cell.id == CELL_TYPE.WOOD or cell.id == CELL_TYPE.SEED:
+							return
+				die()
+			CELL_TYPE.DEAD:
+				#print_debug(\"It dead \")
+				pass
+			_:
+				print_debug(str(id) + \"Aliens\")
+				
+		
+
+	func create_cell(neighbors : Dictionary, dir : Vector2i):
+		if neighbors.has(dir):
+			pass
+
+	func swap_cells(neighbors : Dictionary, dir : Vector2i):
+		if neighbors.has(dir):
+			var self_ref = neighbors[Vector2i.ZERO].content 
+			var neighbor_ref = neighbors[dir].content
+			neighbors[Vector2i.ZERO].content = neighbor_ref
+			neighbors[dir].content = self_ref
+	
+	func get_dir(dir_enum : DIR) -> Vector2i:
+		match dir_enum:
+			DIR.LEFT:
+				return Vector2i.LEFT
+			DIR.RIGHT:
+				return Vector2i.RIGHT
+			DIR.UP:
+				return Vector2i.UP
+			DIR.DOWN:
+				return Vector2i.DOWN
+			_:
+				print_debug(\"I guess this would be a new dimension: \" + str(dir_enum))
+				return Vector2i.ZERO
+	
+	func share_energy(neighbors : Dictionary):
+		const MAX_ENERGY_SHARE : = 5
+		if energy < energy_threshold:
+			return
+		var surplus_energy : int = clamp(energy - energy_threshold, 0, MAX_ENERGY_SHARE)
+		if neighbors.has(dir):
+			var cell = neighbors[dir].content
+			if cell != null and cell.id != CELL_TYPE.WALL:
+				cell.energy += surplus_energy
+				energy -= surplus_energy
+				return
+		else:
+			if neighbors.has(parent):
+				var cell = neighbors[parent].content
+				if cell != null and cell.id != CELL_TYPE.WALL:
+					cell.energy += surplus_energy
+					energy -= surplus_energy
+					return
+					
+	func get_neighbor_cell_count(neighbors : Dictionary, count_empty : = true) -> int:
+		var count : = 0
+		for dir in [
+			Vector2i.LEFT, 
+			Vector2i.RIGHT,
+			Vector2i.UP,
+			Vector2i.DOWN,
+			Vector2i.LEFT + Vector2i.UP,
+			Vector2i.LEFT + Vector2i.DOWN,
+			Vector2i.RIGHT + Vector2i.UP,
+			Vector2i.RIGHT + Vector2i.DOWN,
+		]:
+			if not count_empty:
+				if neighbors.has(dir) and neighbors[dir].content != null:
+					count += 1
+			else:
+				if neighbors.has(dir) and neighbors[dir].content == null: 
+					count += 1
+		return count	
+	
+	func mutate():
+		var random_gene_index : = Vector2i(
+			randi_range(0, genome.size() - 1),
+			randi_range(0, GENE.MAX - 1),
+		)
+		genome[random_gene_index.x][random_gene_index.y] = randi_range(GENE_MIN, CELL_TYPE.MAX - 1)
+	
+	func get_color() -> Color:
+		match id:
+			CELL_TYPE.SEED:
+				return Color.WHEAT
+			CELL_TYPE.WOOD:
+				return Color.BROWN
+			CELL_TYPE.SPROUT:
+				return Color.GREEN_YELLOW
+			CELL_TYPE.LEAF:
+				return Color.DARK_GREEN
+			CELL_TYPE.WALL:
+				return Color.DARK_SLATE_GRAY
+			_:
+				return Color.TRANSPARENT
+	func die():
+		match id:
+			#CELL_TYPE.SEED:
+				#id = CELL_TYPE.NUCLEUS
+			#CELL_TYPE.SPROUT,\\
+			#CELL_TYPE.LEAF:
+				#mutate()
+				#id = CELL_TYPE.SEED
+				#genome_index = 0
+				#dist_from_origin = 0 
+				#current_lifetime = 0
+			CELL_TYPE.WALL:
+				return
+			_:
+				id = CELL_TYPE.DEAD
+				
+"
+
+[node name="CaTesting" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
+tile_set = SubResource("TileSet_ruoc3")
+format = 2
+layer_0/navigation_enabled = false
+layer_0/tile_data = PackedInt32Array(1, 2, 0, 65537, 2, 0, 131073, 2, 0, 196609, 2, 0, 2, 2, 0, 65538, 2, 0, 131074, 2, 0, 196610, 2, 0, 3, 2, 0, 65539, 2, 0, 131075, 2, 0, 196611, 2, 0, 4, 2, 0, 65540, 2, 0, 131076, 2, 0, 196612, 2, 0, 5, 2, 0, 65541, 2, 0, 131077, 3, 0, 196613, 3, 0, 6, 2, 0, 65542, 2, 0, 131078, 3, 0, 196614, 3, 0, 262149, 3, 0, 327685, 3, 0, 262150, 3, 0, 327686, 3, 0, 131079, 3, 0, 196615, 3, 0, 262151, 3, 0, 327687, 3, 0, 131080, 3, 0, 196616, 3, 0, 262152, 3, 0, 327688, 3, 0, 393220, 1, 0, 458756, 1, 0, 524292, 1, 0, 589828, 1, 0, 655364, 1, 0, 720900, 1, 0, 393221, 1, 0, 458757, 1, 0, 524293, 1, 0, 589829, 1, 0, 655365, 1, 0, 720901, 1, 0, 393222, 1, 0, 458758, 1, 0, 524294, 1, 0, 589830, 1, 0, 655366, 1, 0, 720902, 1, 0, 393223, 1, 0, 458759, 1, 0, 524295, 1, 0, 589831, 1, 0, 655367, 1, 0, 720903, 1, 0, 393224, 7, 0, 458760, 7, 0, 524296, 1, 0, 589832, 1, 0, 655368, 1, 0, 720904, 1, 0, 393225, 7, 0, 458761, 7, 0, 524297, 7, 0, 589833, 7, 0, 655369, 1, 0, 720905, 1, 0, 393226, 7, 0, 458762, 7, 0, 524298, 7, 0, 589834, 7, 0, 655370, 7, 0, 720906, 7, 0, 393227, 7, 0, 458763, 7, 0, 524299, 7, 0, 589835, 7, 0, 655371, 7, 0, 720907, 1, 0, 393228, 7, 0, 458764, 7, 0, 524300, 7, 0, 589836, 7, 0, 655372, 7, 0, 720908, 1, 0, 393229, 7, 0, 458765, 7, 0, 524301, 7, 0, 589837, 7, 0, 655373, 7, 0, 720909, 7, 0, 393230, 7, 0, 458766, 7, 0, 524302, 7, 0, 589838, 7, 0, 655374, 7, 0, 720910, 7, 0, 262154, 7, 0, 327690, 0, 0, 262155, 0, 0, 327691, 7, 0, 262156, 7, 0, 327692, 7, 0, 262157, 7, 0, 327693, 7, 0, 262158, 0, 0, 327694, 7, 0, 262159, 7, 0, 327695, 7, 0, 393231, 7, 0, 458767, 7, 0, 262160, 0, 0, 327696, 0, 0, 393232, 7, 0, 458768, 7, 0, 262161, 0, 0, 327697, 0, 0, 393233, 7, 0, 458769, 7, 0, 262153, 7, 0, 196618, 7, 0, 131082, 7, 0, 196622, 7, 0, 196621, 7, 0, 458770, 7, 0, 524304, 7, 0, 589839, 7, 0, 655376, 7, 0, 655377, 7, 0, 786447, 7, 0, 524306, 7, 0, 589842, 7, 0, 720912, 7, 0, 720911, 7, 0, 589840, 7, 0, 851983, 7, 0, 851982, 7, 0, 851981, 7, 0, 851980, 7, 0, 851979, 7, 0, 786442, 7, 0, 655378, 7, 0, 196623, 7, 0, 131087, 7, 0, 65551, 7, 0, 131088, 7, 0, 196625, 7, 0, 262162, 7, 0, 655375, 7, 0, 589841, 7, 0, 524303, 7, 0, 2883584, 2, 0, 2883658, 2, 0, 2883657, 2, 0, 2883656, 2, 0, 2883655, 2, 0, 2883654, 2, 0, 2883653, 2, 0, 2883652, 2, 0, 2883651, 2, 0, 2883650, 2, 0, 2883649, 2, 0, 2883648, 2, 0, 2883647, 2, 0, 2883646, 2, 0, 2883645, 2, 0, 2883644, 2, 0, 2883643, 2, 0, 2883642, 2, 0, 2883641, 2, 0, 2883640, 2, 0, 2883639, 2, 0, 2883638, 2, 0, 2883637, 2, 0, 2883636, 2, 0, 2883635, 2, 0, 2883634, 2, 0, 2883633, 2, 0, 2883632, 2, 0, 2883631, 2, 0, 2883630, 2, 0, 2883629, 2, 0, 2883628, 2, 0, 2883627, 2, 0, 2883626, 2, 0, 2883625, 2, 0, 2883624, 2, 0, 2883623, 2, 0, 2883622, 2, 0, 2883621, 2, 0, 2883620, 2, 0, 2883619, 2, 0, 2883618, 2, 0, 2883617, 2, 0, 2883616, 2, 0, 2883615, 2, 0, 2883614, 2, 0, 2883613, 2, 0, 2883612, 2, 0, 2883611, 2, 0, 2883610, 2, 0, 2883609, 2, 0, 2883608, 2, 0, 2883607, 2, 0, 2883606, 2, 0, 2883605, 2, 0, 2883604, 2, 0, 2883603, 2, 0, 2883602, 2, 0, 2883601, 2, 0, 2883600, 2, 0, 2883599, 2, 0, 2883598, 2, 0, 2883597, 2, 0, 2883596, 2, 0, 2883595, 2, 0, 2883594, 2, 0, 2883593, 2, 0, 2883592, 2, 0, 2883591, 2, 0, 2883590, 2, 0, 2883589, 2, 0, 2883588, 2, 0, 2883587, 2, 0, 2883586, 2, 0, 2883585, 2, 0, 2883659, 2, 0, 2818123, 2, 0, 2752587, 2, 0, 2687051, 2, 0, 2621515, 2, 0, 2555979, 2, 0, 2490443, 2, 0, 2424907, 2, 0, 2359371, 2, 0, 2293835, 2, 0, 2228299, 2, 0, 2162763, 2, 0, 2097227, 2, 0, 2031691, 2, 0, 1966155, 2, 0, 1900619, 2, 0, 1835083, 2, 0, 1769547, 2, 0, 1704011, 2, 0, 1638475, 2, 0, 1572939, 2, 0, 1507403, 2, 0, 1441867, 2, 0, 1376331, 2, 0, 1310795, 2, 0, 1245259, 2, 0, 1179723, 2, 0, 1114187, 2, 0, 1048651, 2, 0, 983115, 2, 0, 917579, 2, 0, 786507, 2, 0, 852043, 2, 0, 720971, 2, 0, 655435, 2, 0, 589899, 2, 0, 524363, 2, 0, 458827, 2, 0, 393291, 2, 0, 327755, 2, 0, 262219, 2, 0, 196683, 2, 0, 131147, 2, 0, 65611, 2, 0, 75, 2, 0, 65535, 2, 0, 131071, 2, 0, 196607, 2, 0, 262143, 2, 0, 327679, 2, 0, 393215, 2, 0, 458751, 2, 0, 524287, 2, 0, 589823, 2, 0, 655359, 2, 0, 720895, 2, 0, 786431, 2, 0, 851967, 2, 0, 917503, 2, 0, 983039, 2, 0, 1048575, 2, 0, 1114111, 2, 0, 1179647, 2, 0, 1245183, 2, 0, 1310719, 2, 0, 1376255, 2, 0, 1441791, 2, 0, 1507327, 2, 0, 1572863, 2, 0, 1638399, 2, 0, 1703935, 2, 0, 1769471, 2, 0, 1835007, 2, 0, 1900543, 2, 0, 1966079, 2, 0, 2031615, 2, 0, 2097151, 2, 0, 2162687, 2, 0, 2228223, 2, 0, 2293759, 2, 0, 2359295, 2, 0, 2424831, 2, 0, 2490367, 2, 0, 2555903, 2, 0, 2621439, 2, 0, 2686975, 2, 0, 2752511, 2, 0, 2818047, 2, 0, 2883583, 2, 0, 2949119, 2, 0, 3014655, 2, 0, 2949120, 2, 0, 2949121, 2, 0, 2949122, 2, 0, 2949123, 2, 0, 2949124, 2, 0, 2949125, 2, 0, 2949126, 2, 0, 2949127, 2, 0, 2949128, 2, 0, 2949129, 2, 0, 2949130, 2, 0, 2949131, 2, 0, 2949132, 2, 0, 2949133, 2, 0, 2949134, 2, 0, 2949135, 2, 0, 2949136, 2, 0, 2949137, 2, 0, 2949138, 2, 0, 2949139, 2, 0, 2949140, 2, 0, 2949141, 2, 0, 2949142, 2, 0, 2949143, 2, 0, 2949144, 2, 0, 2949145, 2, 0, 2949146, 2, 0, 2949147, 2, 0, 2949148, 2, 0, 2949149, 2, 0, 2949150, 2, 0, 2949151, 2, 0, 2949152, 2, 0, 2949153, 2, 0, 2949154, 2, 0, 2949155, 2, 0, 2949156, 2, 0, 2949157, 2, 0, 2949158, 2, 0, 2949159, 2, 0, 2949160, 2, 0, 2949161, 2, 0, 2949162, 2, 0, 2949163, 2, 0, 2949164, 2, 0, 2949165, 2, 0, 2949166, 2, 0, 2949167, 2, 0, 2949168, 2, 0, 2949169, 2, 0, 2949170, 2, 0, 2949171, 2, 0, 2949172, 2, 0, 2949173, 2, 0, 2949174, 2, 0, 2949175, 2, 0, 2949176, 2, 0, 2949177, 2, 0, 2949178, 2, 0, 2949179, 2, 0, 2949180, 2, 0, 2949181, 2, 0, 2949182, 2, 0, 2949183, 2, 0, 2949184, 2, 0, 2949185, 2, 0, 2949186, 2, 0, 2949187, 2, 0, 2949188, 2, 0, 2949189, 2, 0, 2949190, 2, 0, 2949191, 2, 0, 2949192, 2, 0, 2949193, 2, 0, 2949194, 2, 0, 2949195, 2, 0)
+script = SubResource("GDScript_0ax2j")
+spawn_chance = 0.05
+world_size = Vector2i(150, 86)
+cells_per_frame = 170
+
+[node name="Ants" type="Node2D" parent="TileMap"]
+
+[node name="AntQueen" parent="TileMap/Ants" instance=ExtResource("1_e60jg")]
+z_index = 1
+script = ExtResource("2_uk046")
+friction = 0.048
+speed = 20
+
+[node name="Polygon2D" parent="TileMap/Ants/AntQueen" index="1"]
+scale = Vector2(1.5, 1.5)
+color = Color(0.215686, 0.211765, 0.870588, 1)
+
+[node name="Camera2D" type="Camera2D" parent="TileMap/Ants/AntQueen"]
+zoom = Vector2(2, 2)
+
+[node name="Marker2D" type="Marker2D" parent="TileMap/Ants/AntQueen"]
+top_level = true
+
+[editable path="TileMap/Ants/AntQueen"]

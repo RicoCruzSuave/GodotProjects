@@ -1,0 +1,147 @@
+[gd_scene load_steps=14 format=3 uid="uid://cknp70u8atak4"]
+
+[ext_resource type="Material" uid="uid://oyv4romd1hae" path="res://dichrom_shader.tres" id="1_n3ca6"]
+[ext_resource type="Texture2D" uid="uid://hgaecaky3c1v" path="res://Engines/Artillery/Assets/little_wiz_guy.png" id="2_3v8f0"]
+[ext_resource type="Shader" path="res://Util/GPU/white_pixel_sdf.gdshader" id="2_qs7c2"]
+[ext_resource type="Script" path="res://Util/Components/CameraFollow2D.gd" id="4_dtxfg"]
+[ext_resource type="Script" path="res://Util/Components/Rigid2DMoveTowardsClick.gd" id="5_pa3sw"]
+[ext_resource type="Script" path="res://Util/Components/ShootProjectile2D.gd" id="6_s2188"]
+
+[sub_resource type="GDScript" id="GDScript_38rjy"]
+script/source = "extends Node2D
+
+#Select rigid bodies
+#Apply forces to bodies
+#Paint on textures
+#Open up debug menu
+#Take control of bodies
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_y8qgl"]
+noise_type = 3
+seed = 11
+frequency = 0.003
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h4k1i"]
+normalize = false
+noise = SubResource("FastNoiseLite_y8qgl")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_01a3o"]
+resource_local_to_scene = true
+shader = ExtResource("2_qs7c2")
+shader_parameter/check_dist = 10
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wfeiw"]
+size = Vector2(512, 512)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_puv62"]
+radius = 4.0
+
+[sub_resource type="GDScript" id="GDScript_ilir1"]
+script/source = "extends Node2D
+
+@export_node_path(\"Sprite2D\") var collision_sprite_path 
+@export_node_path(\"RigidBody2D\") var parent_path
+@export var pixel_radius : = 4
+@export var pixel_directions : = 4
+@export var debug : = true
+
+@onready var collision_sprite : = get_node(collision_sprite_path)
+@onready var parent : RigidBody2D = get_node(parent_path)
+
+func _draw():
+	if debug:
+		for i in range(pixel_directions):
+			var dir : = Vector2.RIGHT.rotated((TAU/pixel_directions) * i)
+			draw_line(Vector2.ZERO, dir * pixel_radius, Color.RED)
+
+func _process(delta):
+	var repel_factor : = 1.0
+	var collision_image : Image = collision_sprite.texture.get_image()
+	
+	parent.gravity_scale = 1.0
+	parent.linear_damp = 1.0
+	#for j in range(pixel_directions):
+		#var dir : = Vector2.RIGHT.rotated((TAU/pixel_directions) * j)
+	for i in range(pixel_radius):
+		#var check_pixel : = dir * i
+		var check_pixel : = Vector2.DOWN * i
+		if collision_image.get_used_rect().has_point(Vector2i(global_position + check_pixel)):
+			if collision_image.get_pixelv(Vector2i(global_position + check_pixel)).r > 0.5:
+				parent.linear_damp += 10.0
+				parent.gravity_scale = 0.0
+		
+			
+		
+		
+		
+		
+		
+		
+		
+"
+
+[node name="ArtilleryEngine" type="Node2D"]
+
+[node name="DebugOptions2D" type="Node2D" parent="."]
+script = SubResource("GDScript_38rjy")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Terrain" type="Sprite2D" parent="Terrain"]
+texture_filter = 1
+material = ExtResource("1_n3ca6")
+texture = SubResource("NoiseTexture2D_h4k1i")
+centered = false
+
+[node name="SDF" type="Sprite2D" parent="Terrain"]
+material = SubResource("ShaderMaterial_01a3o")
+texture = SubResource("PlaceholderTexture2D_wfeiw")
+centered = false
+
+[node name="TurnManager" type="Node2D" parent="."]
+
+[node name="TeamManager" type="Node2D" parent="."]
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Players" type="Node2D" parent="Entities"]
+
+[node name="RigidBody2D" type="RigidBody2D" parent="Entities/Players"]
+position = Vector2(73, 324)
+mass = 0.1
+lock_rotation = true
+linear_damp = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Entities/Players/RigidBody2D"]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_3v8f0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Entities/Players/RigidBody2D"]
+shape = SubResource("CircleShape2D_puv62")
+
+[node name="CanvasCollision" type="Node2D" parent="Entities/Players/RigidBody2D"]
+script = SubResource("GDScript_ilir1")
+collision_sprite_path = NodePath("../../../../Terrain/Terrain")
+parent_path = NodePath("..")
+
+[node name="CameraFollow" type="Node2D" parent="Entities/Players/RigidBody2D"]
+script = ExtResource("4_dtxfg")
+camera_path = NodePath("../../../../Camera2D")
+
+[node name="Rigid2DMoveTowardsClick" type="Node2D" parent="Entities/Players/RigidBody2D"]
+script = ExtResource("5_pa3sw")
+parent_path = NodePath("..")
+
+[node name="ShootProjectile2D" type="Node2D" parent="Entities/Players/RigidBody2D"]
+script = ExtResource("6_s2188")
+parent_path = NodePath("..")
+projectile_path = NodePath("..")
+
+[node name="AI" type="Node2D" parent="Entities"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0

@@ -2,7 +2,7 @@ extends Node3D
 
 @export_node_path("Node3D") var target_path
 
-@onready var target : = get_node(target_path)
+@onready var target : = get_node(target_path) if target_path != null else null
 @onready var raycast : = $Camera3D/RayCast3D
 
 func _process(delta):

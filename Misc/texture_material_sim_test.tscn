@@ -1,0 +1,181 @@
+[gd_scene load_steps=18 format=3 uid="uid://tlj7h8ihpaly"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wwdb1"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n2ien"]
+width = 100
+height = 100
+noise = SubResource("FastNoiseLite_wwdb1")
+
+[sub_resource type="Shader" id="Shader_kukwi"]
+code = "shader_type canvas_item;
+
+uniform sampler2D feedback;
+uniform sampler2D interaction_tex;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	vec4 base_tex = texture(TEXTURE, UV);
+	vec4 feedback_tex = texture(feedback, UV);
+	vec4 interaction = texture(interaction_tex, UV);
+	COLOR.rgb = round(base_tex.rgb*3.0) / 3.0;
+	//COLOR.r = interaction.r;
+	COLOR.a = 1.0 - interaction.r ;
+}
+
+void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+}
+"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5mati"]
+viewport_path = NodePath("Main/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4n431"]
+viewport_path = NodePath("Interaction/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dg8vg"]
+resource_local_to_scene = true
+shader = SubResource("Shader_kukwi")
+shader_parameter/feedback = SubResource("ViewportTexture_5mati")
+shader_parameter/interaction_tex = SubResource("ViewportTexture_4n431")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_pnmu1"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nl7id"]
+width = 100
+height = 100
+noise = SubResource("FastNoiseLite_pnmu1")
+
+[sub_resource type="Shader" id="Shader_osww1"]
+code = "shader_type canvas_item;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec2 pixel_size = TEXTURE_PIXEL_SIZE;
+	if (tex.r < 0.1) {
+		COLOR.a = 0.0;
+	} else {
+		COLOR.rgb = tex.rgb;
+	} 
+}
+
+void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ybbdy"]
+shader = SubResource("Shader_osww1")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ny8oc"]
+viewport_path = NodePath("Interaction/SubViewport")
+
+[sub_resource type="Shader" id="Shader_v1us3"]
+code = "shader_type canvas_item;
+
+uniform sampler2D full_tex;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec2 pixel_size = TEXTURE_PIXEL_SIZE;
+	
+	float tl = texture(full_tex, UV + vec2(-pixel_size.x, -pixel_size.y)).r; // Top Left
+	float cl = texture(full_tex, UV + vec2(-pixel_size.x, 0)).r; // Center Left
+	float bl = texture(full_tex, UV + vec2(-pixel_size.x, pixel_size.y)).r; // Bottom Left
+	float tc = texture(full_tex, UV + vec2(0, -pixel_size.y)).r; // Top Center
+	float bc = texture(full_tex, UV + vec2(0, pixel_size.y)).r; // Bottom Center
+	float tr = texture(full_tex, UV + vec2(pixel_size.x, -pixel_size.y)).r; // Top Right
+	float cr = texture(full_tex, UV + vec2(pixel_size.x, 0)).r; // Center Right
+	float br = texture(full_tex, UV + vec2(pixel_size.x, pixel_size.y)).r; // Bottom Right
+	COLOR.rgb = vec3((tl + cl + bl + tc + bc + tr + cr + br) / 8.0);
+	if (COLOR.r < 0.001) {
+		COLOR.rgb = vec3(0.0);
+	}
+	COLOR.rgb -= vec3(0.001);
+}
+
+void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+}
+"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_o6ldj"]
+viewport_path = NodePath("Interaction/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ihhos"]
+resource_local_to_scene = true
+shader = SubResource("Shader_v1us3")
+shader_parameter/full_tex = SubResource("ViewportTexture_o6ldj")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nmhyj"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_71n4b"]
+width = 100
+height = 100
+noise = SubResource("FastNoiseLite_nmhyj")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n6al8"]
+
+[node name="TextureMaterialSimTest" type="Node2D"]
+
+[node name="Main" type="SubViewportContainer" parent="."]
+texture_filter = 1
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="Main"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(100, 100)
+
+[node name="Sprite2D" type="Sprite2D" parent="Main/SubViewport"]
+visible = false
+texture = SubResource("NoiseTexture2D_n2ien")
+centered = false
+
+[node name="Terrain" type="Sprite2D" parent="Main/SubViewport"]
+texture_filter = 2
+material = SubResource("ShaderMaterial_dg8vg")
+texture = SubResource("NoiseTexture2D_nl7id")
+centered = false
+
+[node name="Interaction" type="Sprite2D" parent="Main/SubViewport"]
+visible = false
+texture_filter = 1
+material = SubResource("ShaderMaterial_ybbdy")
+texture = SubResource("ViewportTexture_ny8oc")
+centered = false
+
+[node name="Interaction" type="SubViewportContainer" parent="."]
+texture_filter = 1
+offset_left = 100.0
+offset_right = 140.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="Interaction"]
+transparent_bg = true
+size = Vector2i(100, 100)
+render_target_clear_mode = 1
+
+[node name="Interaction" type="Sprite2D" parent="Interaction/SubViewport"]
+texture_filter = 2
+material = SubResource("ShaderMaterial_ihhos")
+texture = SubResource("NoiseTexture2D_71n4b")
+centered = false
+
+[node name="Sprite2D" type="Sprite2D" parent="Interaction/SubViewport"]
+position = Vector2(86.915, 80.74)
+scale = Vector2(8.21, 8.21)
+texture = SubResource("PlaceholderTexture2D_n6al8")

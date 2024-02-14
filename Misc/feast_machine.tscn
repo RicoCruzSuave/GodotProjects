@@ -326,36 +326,37 @@ class Cell extends RefCounted:
 
 class Sand extends Atom:
 	func _init():
-		type = 1
-		density = 5
+		pass
+		#type = 1
+		#density = 5
 		
 class Wander extends Atom:
 	var light : = 50.0
-	
-	func _init():
-		type = 2
-		density = 1
+#
+	#func _init():
+		#type = 2
+		#density = 1
 		
 	func act(neighbors : Dictionary):
 		if randf() > 0.999:
 			light = randf() * 100
 		else:
 			light -= 25.0
-		for cell in neighbors.values():
-			if cell != null:
-				if cell.content.type == type and cell.content.light < light:
-					if randf() > 0.8:
-						cell.content.light = light - 10.0
+		#for cell in neighbors.values():
+			#if cell != null:
+				#if cell.content.type == type and cell.content.light < light:
+					#if randf() > 0.8:
+						#cell.content.light = light - 10.0
 								
 class Stone extends Atom:
 	var sleeping : = false
 	var inertia : = 0.9
 	var height : = 4
 	
-	func _init():
-		type = TYPE.STONE
-		density = 10
-		inertia = 0.1
+	#func _init():
+		#type = TYPE.STONE
+		#density = 10
+		#inertia = 0.1
 		
 	func act():
 		pass

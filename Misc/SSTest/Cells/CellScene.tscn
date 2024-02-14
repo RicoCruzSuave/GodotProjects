@@ -1,0 +1,55 @@
+[gd_scene load_steps=6 format=3 uid="uid://rq7820bcakt8"]
+
+[ext_resource type="Script" path="res://Misc/SSTest/Cells/CellScene.gd" id="1_ktaph"]
+[ext_resource type="Script" path="res://Misc/SSTest/Components/CellMovement.gd" id="2_47mjq"]
+[ext_resource type="Script" path="res://Misc/SSTest/Components/ForcesApplied.gd" id="3_k5ceh"]
+
+[sub_resource type="Gradient" id="Gradient_0pwt4"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.451613, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fgsd2"]
+gradient = SubResource("Gradient_0pwt4")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.490826, 0.486239)
+fill_to = Vector2(0.899083, 0.206422)
+
+[node name="CellScene" type="Node2D"]
+script = ExtResource("1_ktaph")
+color = Color(1, 0.737255, 0.309804, 1)
+max_speed = null
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.737255, 0.309804, 1)
+texture = SubResource("GradientTexture2D_fgsd2")
+
+[node name="MovementSequence" type="Node2D" parent="."]
+script = ExtResource("2_47mjq")
+
+[node name="MoveDown" type="Node2D" parent="MovementSequence"]
+
+[node name="RandomSelector" type="Node2D" parent="MovementSequence"]
+
+[node name="MoveLeft" type="Node2D" parent="MovementSequence/RandomSelector"]
+
+[node name="MoveRight" type="Node2D" parent="MovementSequence/RandomSelector"]
+
+[node name="ForcesApplied" type="Node2D" parent="."]
+script = ExtResource("3_k5ceh")
+
+[node name="TowardsMouse" type="Node2D" parent="ForcesApplied"]
+
+[node name="Friction" type="Node2D" parent="ForcesApplied"]
+visible = false
+
+[node name="Gravity" type="Node2D" parent="ForcesApplied"]
+visible = false
+
+[node name="CollidesWith" type="Node2D" parent="."]
+
+[node name="ChangesWith" type="Node2D" parent="."]
+
+[node name="ChangesWhen" type="Node2D" parent="."]
