@@ -1,21 +1,21 @@
 [gd_scene load_steps=36 format=3 uid="uid://dq2rvw3xksgpu"]
 
-[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_wtx80"]
-[ext_resource type="Script" path="res://Util/ConnectPoints.gd" id="2_4bee6"]
-[ext_resource type="Script" path="res://Util/RandomizeLocations.gd" id="3_57lvp"]
-[ext_resource type="Shader" path="res://Util/GPU/cave_ca.gdshader" id="4_thhmb"]
-[ext_resource type="Script" path="res://MRD/Entity.gd" id="5_7nkbs"]
-[ext_resource type="Script" path="res://Util/TileMap/SpriteDraw.gd" id="5_o5l2n"]
-[ext_resource type="Script" path="res://Util/TileMap/TileMapAStar.gd" id="6_pvxu1"]
+[ext_resource type="Shader" uid="uid://obb8m032cngm" path="res://Util/GPU/step_color.gdshader" id="1_wtx80"]
+[ext_resource type="Script" uid="uid://bvje08mctqxnn" path="res://Util/ConnectPoints.gd" id="2_4bee6"]
+[ext_resource type="Script" uid="uid://ja1kuv28q07e" path="res://Util/RandomizeLocations.gd" id="3_57lvp"]
+[ext_resource type="Shader" uid="uid://dre3mmo1k8p6r" path="res://Util/GPU/cave_ca.gdshader" id="4_thhmb"]
+[ext_resource type="Script" uid="uid://d3fflcllpwd15" path="res://MRD/Entity.gd" id="5_7nkbs"]
+[ext_resource type="Script" uid="uid://cfbcvwfeitteh" path="res://Util/TileMap/SpriteDraw.gd" id="5_o5l2n"]
+[ext_resource type="Script" uid="uid://bniykeyi0uqux" path="res://Util/TileMap/TileMapAStar.gd" id="6_pvxu1"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="8_2sbes"]
-[ext_resource type="Script" path="res://Util/Components/KinematicPathing2D.gd" id="8_472cl"]
-[ext_resource type="Script" path="res://MRD/TurnManager.gd" id="8_vbswf"]
-[ext_resource type="Script" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
-[ext_resource type="Script" path="res://Util/Components/Pathfinding2D.gd" id="9_rpso3"]
-[ext_resource type="Script" path="res://Util/Components/CameraFollow2D.gd" id="10_6gmml"]
-[ext_resource type="Script" path="res://Util/Components/Health.gd" id="10_c0kbv"]
-[ext_resource type="Script" path="res://Util/ModularAI/Actions/MoveAlongPath.gd" id="10_ffk6r"]
-[ext_resource type="Script" path="res://Util/ModularAI/Actions/AbilityContainer.gd" id="12_7vkrm"]
+[ext_resource type="Script" uid="uid://csjxpnp2yebb8" path="res://Util/Components/KinematicPathing2D.gd" id="8_472cl"]
+[ext_resource type="Script" uid="uid://2t2m6pljjtr1" path="res://MRD/TurnManager.gd" id="8_vbswf"]
+[ext_resource type="Script" uid="uid://323eftwh4wqr" path="res://MRD/ActionManager.gd" id="9_hl6ej"]
+[ext_resource type="Script" uid="uid://dl2wfahhu6fvk" path="res://Util/Components/Pathfinding2D.gd" id="9_rpso3"]
+[ext_resource type="Script" uid="uid://djvfj8dchro81" path="res://Util/Components/CameraFollow2D.gd" id="10_6gmml"]
+[ext_resource type="Script" uid="uid://cy8aawxg8yhlw" path="res://Util/Components/Health.gd" id="10_c0kbv"]
+[ext_resource type="Script" uid="uid://bxbkgmuradm7g" path="res://Util/ModularAI/Actions/MoveAlongPath.gd" id="10_ffk6r"]
+[ext_resource type="Script" uid="uid://cdo65d330fyfq" path="res://Util/ModularAI/Actions/AbilityContainer.gd" id="12_7vkrm"]
 [ext_resource type="PackedScene" uid="uid://i6f62k4ygwl0" path="res://MRD/AbilityBase.tscn" id="13_5docr"]
 
 [sub_resource type="GDScript" id="GDScript_12ta3"]
@@ -218,11 +218,11 @@ viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/Background/SubViewport
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ssx26"]
 resource_local_to_scene = true
 shader = ExtResource("4_thhmb")
+shader_parameter/wall_values = SubResource("ViewportTexture_smvms")
 shader_parameter/enabled = true
 shader_parameter/stopped = false
 shader_parameter/death_count = 4.0
 shader_parameter/life_count = 4.0
-shader_parameter/wall_values = SubResource("ViewportTexture_smvms")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_vaqt0"]
 viewport_path = NodePath("Screens/Battle/BattleMap/MapGen/Background/SubViewportContainer/SubViewport")

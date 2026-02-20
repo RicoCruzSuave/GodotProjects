@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://rq7820bcakt8"]
 
-[ext_resource type="Script" path="res://Misc/SSTest/Cells/CellScene.gd" id="1_ktaph"]
-[ext_resource type="Script" path="res://Misc/SSTest/Components/CellMovement.gd" id="2_47mjq"]
-[ext_resource type="Script" path="res://Misc/SSTest/Components/ForcesApplied.gd" id="3_k5ceh"]
+[ext_resource type="Script" uid="uid://dja8aorylom7c" path="res://Misc/SSTest/Cells/CellScene.gd" id="1_ktaph"]
+[ext_resource type="Script" uid="uid://bfh4esu0icdeb" path="res://Misc/SSTest/Components/CellMovement.gd" id="2_47mjq"]
+[ext_resource type="Script" uid="uid://hoe0rikqcl5y" path="res://Misc/SSTest/Components/ForcesApplied.gd" id="3_k5ceh"]
 
 [sub_resource type="Gradient" id="Gradient_0pwt4"]
 interpolation_mode = 2

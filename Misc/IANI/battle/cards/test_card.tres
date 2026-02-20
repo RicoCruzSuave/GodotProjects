@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Card" load_steps=2 format=3 uid="uid://da4ttaydo2ppf"]
+
+[ext_resource type="Script" uid="uid://dfyjndb0vi5ht" path="res://Misc/IANI/battle/cards/card_res.gd" id="1_dln6k"]
+
+[resource]
+script = ExtResource("1_dln6k")
+metadata/_custom_type_script = "uid://dfyjndb0vi5ht"

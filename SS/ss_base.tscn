@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://boysrnecf25t0" path="res://Misc/SSTest/Battleground1.png" id="1_cmakh"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="2_23yio"]
 [ext_resource type="PackedScene" uid="uid://carvn6f4b2n1x" path="res://SS/basic_spell.tscn" id="3_kf2ef"]
-[ext_resource type="Script" path="res://SS/UIController.gd" id="3_uc8mg"]
+[ext_resource type="Script" uid="uid://byjf3l70u4582" path="res://SS/UIController.gd" id="3_uc8mg"]
 [ext_resource type="PackedScene" uid="uid://dg2ql8jraxkcq" path="res://SS/player.tscn" id="4_g432p"]
-[ext_resource type="Script" path="res://Util/Components/Character2DControlComponent.gd" id="5_o4l2j"]
+[ext_resource type="Script" uid="uid://cjvdqgplw3e0o" path="res://Util/Components/Character2DControlComponent.gd" id="5_o4l2j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qt40s"]
 bg_color = Color(0.34902, 0.396078, 0.435294, 1)

@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://bgbu7tlnevbo3"]
 
-[ext_resource type="Script" path="res://PKC/Pokemon.gd" id="1_c3km3"]
-[ext_resource type="Script" path="res://PKC/Commands/Move.gd" id="2_t3x2f"]
-[ext_resource type="Script" path="res://PKC/Commands/Pass.gd" id="4_v7463"]
-[ext_resource type="Script" path="res://PKC/Commands/Tackle.gd" id="5_qia4f"]
+[ext_resource type="Script" uid="uid://dwox08eipaypd" path="res://PKC/Pokemon.gd" id="1_c3km3"]
+[ext_resource type="Script" uid="uid://1ky7xik5s32g" path="res://PKC/Commands/Move.gd" id="2_t3x2f"]
+[ext_resource type="Script" uid="uid://bjtqgw7wkf2tq" path="res://PKC/Commands/Pass.gd" id="4_v7463"]
+[ext_resource type="Script" uid="uid://db0ogh3mmkrty" path="res://PKC/Commands/Tackle.gd" id="5_qia4f"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_vtavm"]
 radius = 0.1

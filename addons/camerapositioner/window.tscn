@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bqukbkjtnywt6"]
 
-[ext_resource type="Script" path="res://addons/camerapositioner/window.gd" id="1_ja1uq"]
+[ext_resource type="Script" uid="uid://323ifmdq5j72" path="res://addons/camerapositioner/window.gd" id="1_ja1uq"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dtugt"]
 

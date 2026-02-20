@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://blo40kqmwxeug"]
 
-[ext_resource type="Script" path="res://TB/ranking_table_3d.gd" id="1_53j8a"]
+[ext_resource type="Script" uid="uid://bino00vaulos3" path="res://TB/ranking_table_3d.gd" id="1_53j8a"]
 [ext_resource type="Material" uid="uid://bwe7gwvqhfm48" path="res://TB/Assets/text_material.tres" id="3_1e34c"]
 [ext_resource type="Material" uid="uid://bju5wks3ommcx" path="res://TB/Assets/cylinder_half_material_off.tres" id="4_en01c"]
 [ext_resource type="PackedScene" uid="uid://bo4p63qytw7t8" path="res://TB/title_bar.tscn" id="4_oij88"]

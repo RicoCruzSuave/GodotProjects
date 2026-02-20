@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://caygwmrdx14l6"]
 
-[ext_resource type="Script" path="res://Misc/TestSpell.gd" id="1_0vrfi"]
+[ext_resource type="Script" uid="uid://bcohw3ulomira" path="res://Misc/TestSpell.gd" id="1_0vrfi"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ebv0k"]
 friction = 0.0

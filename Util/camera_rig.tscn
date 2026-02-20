@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://drv54quujuh00"]
 
-[ext_resource type="Script" path="res://Util/CameraRig.gd" id="1_7htl4"]
+[ext_resource type="Script" uid="uid://cmcql4o6kmwmi" path="res://Util/CameraRig.gd" id="1_7htl4"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_p5wvb"]
 

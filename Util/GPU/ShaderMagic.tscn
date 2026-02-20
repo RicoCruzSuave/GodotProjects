@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://cwatrjcfmpmi1"]
 
-[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="1_g8jnw"]
-[ext_resource type="Shader" path="res://Util/GPU/cave_ca.gdshader" id="2_kaiiq"]
+[ext_resource type="Shader" uid="uid://obb8m032cngm" path="res://Util/GPU/step_color.gdshader" id="1_g8jnw"]
+[ext_resource type="Shader" uid="uid://dre3mmo1k8p6r" path="res://Util/GPU/cave_ca.gdshader" id="2_kaiiq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3sknd"]
 shader = ExtResource("1_g8jnw")
@@ -23,11 +23,11 @@ viewport_path = NodePath("SubViewportContainer/SubViewport")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7eopq"]
 resource_local_to_scene = true
 shader = ExtResource("2_kaiiq")
+shader_parameter/wall_values = SubResource("ViewportTexture_4ohsy")
 shader_parameter/enabled = true
 shader_parameter/stopped = false
 shader_parameter/death_count = 4.0
 shader_parameter/life_count = 5.0
-shader_parameter/wall_values = SubResource("ViewportTexture_4ohsy")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_dpr7c"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")

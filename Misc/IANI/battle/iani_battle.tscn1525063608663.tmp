@@ -1,0 +1,1377 @@
+[gd_scene load_steps=83 format=3 uid="uid://bjvkgtualf30r"]
+
+[ext_resource type="Script" uid="uid://de7ddbr4ep2g4" path="res://Misc/IANI/battle/iani_battle.gd" id="1_5olio"]
+[ext_resource type="Texture2D" uid="uid://c5xfmxuxvbj1l" path="res://Misc/IANI/battle/entities/Soldier.png" id="1_nfcqr"]
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="2_03vco"]
+[ext_resource type="Script" uid="uid://dodthqemgenrv" path="res://Misc/IANI/battle/entities/hero.gd" id="2_hu6ek"]
+[ext_resource type="Texture2D" uid="uid://cx0c881p0hw1s" path="res://Misc/IANI/battle/entities/Orc.png" id="5_0vu6i"]
+[ext_resource type="Script" uid="uid://vlyxbejdimtm" path="res://Misc/IANI/battle/stat.gd" id="5_ec8im"]
+[ext_resource type="Script" uid="uid://cvlm5lr3vpvhx" path="res://Misc/IANI/battle/enemy_factory.gd" id="5_iodvy"]
+[ext_resource type="Script" uid="uid://oab8jc7cprsi" path="res://Misc/IANI/battle/base_enemy.gd" id="6_hb1on"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yctkt"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(0, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5olio"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(100, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hu6ek"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(200, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0vu6i"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(300, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cvivo"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(400, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_okwk2"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(500, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hh2rl"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(0, 600, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wg7yg"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(100, 600, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_upr1u"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(200, 600, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0u0uo"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(300, 600, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gr08n"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(0, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uamqa"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(100, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7v3kx"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(200, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0wa8"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(300, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2fkh"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rjrf3"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m8g3b"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c13er"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ndlh"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bfot7"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jfetl"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(0, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qvttt"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(100, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_21q8q"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(200, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g3vr2"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(300, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bk3c3"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(400, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wgabv"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(500, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbxao"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(600, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gvp20"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(700, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ejtb3"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(800, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nfcqr"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(0, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gus0j"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(100, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vbki"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(200, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hgffp"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(300, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0iiqv"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(400, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5r4tc"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(500, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aldga"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(600, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y1wn6"]
+atlas = ExtResource("1_nfcqr")
+region = Rect2(700, 100, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gus0j"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yctkt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5olio")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hu6ek")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0vu6i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cvivo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_okwk2")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hh2rl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wg7yg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_upr1u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0u0uo")
+}],
+"loop": false,
+"name": &"death",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gr08n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uamqa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7v3kx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0wa8")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2fkh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rjrf3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m8g3b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c13er")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ndlh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bfot7")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jfetl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qvttt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_21q8q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g3vr2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bk3c3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wgabv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gbxao")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gvp20")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ejtb3")
+}],
+"loop": false,
+"name": &"shoot",
+"speed": 18.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nfcqr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gus0j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vbki")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hgffp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0iiqv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5r4tc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aldga")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y1wn6")
+}],
+"loop": false,
+"name": &"walk",
+"speed": 12.0
+}]
+
+[sub_resource type="GDScript" id="GDScript_v481m"]
+script/source = "extends AnimatedSprite2D
+
+@onready var hero : = get_parent()
+var last_pos
+
+func _ready() -> void:
+	last_pos = hero.global_position
+	hero.attack.connect(play.bind(\"attack\"))
+	hero.hit.connect(play.bind(\"hurt\"))
+
+func _process(_delta: float) -> void:
+	if last_pos != hero.global_position:
+		play(\"walk\")
+		last_pos = hero.global_position
+	if not is_playing():
+		play(\"idle\")
+"
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mbmbq"]
+radius = 22.0
+height = 72.0
+
+[sub_resource type="SkeletonModificationStack2D" id="SkeletonModificationStack2D_mbmbq"]
+modification_count = 1
+
+[sub_resource type="GDScript" id="GDScript_hb1on"]
+script/source = "extends Node2D
+
+@export var cooldown_timer : = 10.0
+@export var pierce : = INF
+@onready var effect: Node2D = $Effect
+@onready var range_area: Area2D = $Range
+
+var current_cooldown_timer : = cooldown_timer
+var ready_to_use : = false
+var can_use : = false
+
+func _physics_process(_delta: float) -> void:
+	if range_area.has_overlapping_bodies():
+		can_use = true
+
+func cooldown(amount : float) -> void:
+	current_cooldown_timer -= amount
+	if current_cooldown_timer <= 0.0:
+		#if range_area.has_overlapping_bodies():
+		current_cooldown_timer = cooldown_timer
+		ready_to_use = true
+		print(\"cooled_down\")
+		print(current_cooldown_timer)
+
+func use():
+	var enemies : = range_area.get_overlapping_bodies()
+	var counter : = 0
+	for enemy in enemies:
+		effect.activate(enemy)
+		counter += 1
+		if counter >= pierce:
+			break
+	ready_to_use = false
+"
+
+[sub_resource type="GDScript" id="GDScript_ec8im"]
+script/source = "extends Node2D
+
+@export var effects : Array[String]
+#@export var effects_ : Dictionary[String, int]
+@export var strength : = 10
+
+func activate(other : PhysicsBody2D) -> void:
+	for effect in effects:
+		Callable(self, effect).call(other)
+		#print_debug(\"{0} called on {1}\".format([effect, other.name]))
+		#Callable(other, effect).call(effects[effect])
+
+func deal_damage(other) -> void:
+	other.damage(strength)
+
+func knockback(other) -> void:
+	other.knockback(strength)
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ec8im"]
+size = Vector2(200, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_15ric"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(0, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rsmby"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(100, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0jj4"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(200, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bhekf"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(300, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_80t4x"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(400, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8x2t2"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(500, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m0vh0"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(0, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yaro0"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(100, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5g4d8"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(200, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sag6w"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(300, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1tmxn"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(0, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ub5e"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(100, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ew326"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(200, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s0c2h"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(300, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ubpm2"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ttli3"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbyrk"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6fog"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hl60l"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_drsm7"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4pvse"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(0, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y51tp"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(100, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xwbih"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(200, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_61bcl"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(300, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_exy8l"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(400, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_arovq"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(500, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2j68r"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(600, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jewfc"]
+atlas = ExtResource("5_0vu6i")
+region = Rect2(700, 100, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m0vh0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_15ric")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rsmby")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0jj4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bhekf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_80t4x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8x2t2")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m0vh0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yaro0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5g4d8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sag6w")
+}],
+"loop": false,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1tmxn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ub5e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ew326")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s0c2h")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ubpm2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ttli3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbyrk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6fog")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hl60l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_drsm7")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [],
+"loop": false,
+"name": &"shoot",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4pvse")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y51tp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xwbih")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_61bcl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_exy8l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_arovq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2j68r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jewfc")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 12.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hu6ek"]
+radius = 22.0
+height = 72.0
+
+[node name="IaniBattle" type="Node2D"]
+script = ExtResource("1_5olio")
+
+[node name="WaveController" type="Node2D" parent="."]
+
+[node name="UI" type="Control" parent="."]
+top_level = true
+custom_minimum_size = Vector2(3.685, 0)
+layout_mode = 3
+anchor_left = 0.01
+anchor_top = 0.6759259
+anchor_right = 0.99
+anchor_bottom = 0.98999995
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="StatDisplay" type="Control" parent="UI"]
+layout_mode = 1
+anchor_right = 0.2650935
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Stats" type="VBoxContainer" parent="UI/StatDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.47300002
+anchor_bottom = 1.033
+offset_right = 0.03378296
+offset_bottom = -0.0317688
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/StatDisplay/Stats"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="UI/StatDisplay/Stats/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Health                "
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/StatDisplay/Stats/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+show_percentage = false
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/StatDisplay/Stats"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="UI/StatDisplay/Stats/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Stamina       "
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/StatDisplay/Stats/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+show_percentage = false
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="UI/StatDisplay/Stats"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="UI/StatDisplay/Stats/VBoxContainer3"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Mana                "
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/StatDisplay/Stats/VBoxContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+show_percentage = false
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="UI/StatDisplay/Stats"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="UI/StatDisplay/Stats/VBoxContainer4"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Mana                "
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/StatDisplay/Stats/VBoxContainer4"]
+layout_mode = 2
+size_flags_vertical = 3
+show_percentage = false
+
+[node name="Stats2" type="VBoxContainer" parent="UI/StatDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.48900002
+anchor_right = 0.98200005
+anchor_bottom = 1.0
+offset_left = 0.043388367
+offset_right = 0.08920288
+offset_bottom = -0.0317688
+
+[node name="ProgressBar4" type="ProgressBar" parent="UI/StatDisplay/Stats2"]
+layout_mode = 2
+show_percentage = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/StatDisplay/Stats2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/StatDisplay/Stats2/VBoxContainer"]
+layout_mode = 2
+text = "Health                 "
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/StatDisplay/Stats2/VBoxContainer"]
+layout_mode = 2
+show_percentage = false
+
+[node name="Label2" type="Label" parent="UI/StatDisplay/Stats2"]
+layout_mode = 2
+text = "Health"
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/StatDisplay/Stats2"]
+layout_mode = 2
+show_percentage = false
+
+[node name="Label3" type="Label" parent="UI/StatDisplay/Stats2"]
+layout_mode = 2
+text = "Health"
+
+[node name="ProgressBar3" type="ProgressBar" parent="UI/StatDisplay/Stats2"]
+layout_mode = 2
+show_percentage = false
+
+[node name="Inventory" type="ScrollContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.26509354
+anchor_right = 0.781
+anchor_bottom = 1.0
+offset_left = -1.5258789e-05
+offset_right = -0.36480713
+offset_bottom = 0.4000244
+vertical_scroll_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/Inventory"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Inventory" type="GridContainer" parent="UI/Inventory/CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 7
+
+[node name="TextureRect" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect3" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect4" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect5" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect6" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect7" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect8" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect17" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect18" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect19" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect20" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect21" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect22" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect23" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect24" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect25" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect26" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect27" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect28" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect29" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect30" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect31" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect32" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect33" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect34" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect35" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect36" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect37" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect38" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect39" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect40" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect41" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect42" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect43" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect44" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect45" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect46" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect47" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect48" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect9" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect10" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect11" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect12" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect13" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect14" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect15" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect16" type="TextureRect" parent="UI/Inventory/CenterContainer/Inventory"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/Inventory/CenterContainer"]
+layout_mode = 2
+
+[node name="EnemyDisplay" type="ScrollContainer" parent="UI"]
+custom_minimum_size = Vector2(212.39, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.781
+anchor_top = 0.029000001
+anchor_right = 1.006
+anchor_bottom = 1.0020001
+offset_left = -0.76483154
+offset_top = -4.9183993
+offset_right = -0.054870605
+offset_bottom = 0.060806274
+vertical_scroll_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/EnemyDisplay"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Arrow Enemy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Arrow Enemy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+texture = ExtResource("2_03vco")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Arrow Enemy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar2" type="ProgressBar" parent="UI/EnemyDisplay/VBoxContainer/HBoxContainer3/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Ground" type="Line2D" parent="."]
+position = Vector2(0, 360)
+points = PackedVector2Array(-100, 0, 1000, 0)
+
+[node name="HeroSpot" type="Marker2D" parent="."]
+position = Vector2(77, 355)
+
+[node name="Hero" type="CharacterBody2D" parent="." groups=["hero"]]
+position = Vector2(-99, 355)
+script = ExtResource("2_hu6ek")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Hero"]
+position = Vector2(0, -29)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_gus0j")
+animation = &"walk"
+script = SubResource("GDScript_v481m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hero"]
+position = Vector2(0, -35)
+shape = SubResource("CapsuleShape2D_mbmbq")
+
+[node name="Visuals" type="Node2D" parent="Hero"]
+visible = false
+
+[node name="Skeleton" type="Node2D" parent="Hero/Visuals"]
+
+[node name="Skeleton2D" type="Skeleton2D" parent="Hero/Visuals/Skeleton"]
+position = Vector2(0, 10)
+modification_stack = SubResource("SkeletonModificationStack2D_mbmbq")
+
+[node name="Pelvis" type="Bone2D" parent="Hero/Visuals/Skeleton/Skeleton2D"]
+rotation = -1.5707964
+rest = Transform2D(-4.371139e-08, -1, 1, -4.371139e-08, 0, 0)
+
+[node name="Line2D" type="Line2D" parent="Hero/Visuals/Skeleton/Skeleton2D/Pelvis"]
+points = PackedVector2Array(0, 0, 10, 0)
+
+[node name="Lumbar" type="Bone2D" parent="Hero/Visuals/Skeleton/Skeleton2D/Pelvis"]
+position = Vector2(10, 4.3711387e-07)
+rotation = 1.5707964
+rest = Transform2D(1.1924881e-08, 1, -1, 1.1924881e-08, 10, 4.3711387e-07)
+
+[node name="Line2D" type="Line2D" parent="Hero/Visuals/Skeleton/Skeleton2D/Pelvis/Lumbar"]
+points = PackedVector2Array(0, 0, 0, -12)
+width = 6.0
+
+[node name="Chest" type="Bone2D" parent="Hero/Visuals/Skeleton/Skeleton2D/Pelvis/Lumbar"]
+position = Vector2(6.7549297e-07, -12)
+rotation = 3.1415925
+rest = Transform2D(-1, 8.742278e-08, -8.742278e-08, -1, 6.7549297e-07, -12)
+
+[node name="Line2D" type="Line2D" parent="Hero/Visuals/Skeleton/Skeleton2D/Pelvis/Lumbar/Chest"]
+points = PackedVector2Array(0, 0, -7.6293945e-06, 18)
+width = 16.0
+
+[node name="Weapon" type="Node2D" parent="Hero"]
+position = Vector2(26, -35)
+script = SubResource("GDScript_hb1on")
+cooldown_timer = 100.0
+
+[node name="Effect" type="Node2D" parent="Hero/Weapon"]
+script = SubResource("GDScript_ec8im")
+effects = Array[String](["deal_damage", "knockback"])
+
+[node name="Range" type="Area2D" parent="Hero/Weapon"]
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hero/Weapon/Range"]
+position = Vector2(100, 0)
+shape = SubResource("RectangleShape2D_ec8im")
+
+[node name="Stats" type="Node2D" parent="Hero"]
+
+[node name="Health" type="Node2D" parent="Hero/Stats" node_paths=PackedStringArray("ui")]
+script = ExtResource("5_ec8im")
+ui = NodePath("../../../UI/StatDisplay/Stats/VBoxContainer")
+
+[node name="Stamina" type="Node2D" parent="Hero/Stats" node_paths=PackedStringArray("ui")]
+script = ExtResource("5_ec8im")
+ui = NodePath("../../../UI/StatDisplay/Stats/VBoxContainer2")
+
+[node name="Speed" type="Node2D" parent="Hero/Stats" node_paths=PackedStringArray("ui")]
+script = ExtResource("5_ec8im")
+ui = NodePath("../../../UI/StatDisplay/Stats2/VBoxContainer")
+value = 1.0
+
+[node name="EnemyFactory" type="Node2D" parent="."]
+position = Vector2(1097, 355)
+script = ExtResource("5_iodvy")
+
+[node name="Templates" type="Node2D" parent="EnemyFactory"]
+
+[node name="BaseEnemy" type="CharacterBody2D" parent="EnemyFactory/Templates"]
+collision_layer = 2
+script = ExtResource("6_hb1on")
+max_speed = 100.0
+speed = 10.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="EnemyFactory/Templates/BaseEnemy"]
+position = Vector2(0, -27)
+scale = Vector2(-4, 4)
+sprite_frames = SubResource("SpriteFrames_m0vh0")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyFactory/Templates/BaseEnemy"]
+position = Vector2(0, -35)
+shape = SubResource("CapsuleShape2D_hu6ek")
+
+[node name="MovementComponenet" type="Node2D" parent="EnemyFactory/Templates/BaseEnemy"]
+
+[node name="Stats" type="Node2D" parent="EnemyFactory/Templates/BaseEnemy"]
+
+[node name="StateMachine" type="Node2D" parent="EnemyFactory/Templates/BaseEnemy"]

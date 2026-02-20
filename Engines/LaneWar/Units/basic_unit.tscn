@@ -1,11 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://cpcd5g7ou8a8c"]
 
 [ext_resource type="Texture2D" uid="uid://ds805iltnvi5k" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_roundRed.png" id="1_1qkxb"]
-[ext_resource type="Script" path="res://Engines/LaneWar/Units/basic_unit.gd" id="1_daaqp"]
+[ext_resource type="Script" uid="uid://bh0xjqsmlee84" path="res://Engines/LaneWar/Units/basic_unit.gd" id="1_daaqp"]
 [ext_resource type="Texture2D" uid="uid://ciqqevfgyim6y" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/item_spear.png" id="2_3nyp3"]
-[ext_resource type="Script" path="res://Util/Components/Health.gd" id="3_hh1ws"]
+[ext_resource type="Script" uid="uid://cy8aawxg8yhlw" path="res://Util/Components/Health.gd" id="3_hh1ws"]
 [ext_resource type="Texture2D" uid="uid://fdqimg168syy" path="res://Engines/LaneWar/Assets/KenneyScribblePlatformer/Default/character_handRed.png" id="3_t85a8"]
-[ext_resource type="Script" path="res://Util/Components/TeamComponent.gd" id="4_sseam"]
+[ext_resource type="Script" uid="uid://dsjgb0521tnpt" path="res://Util/Components/TeamComponent.gd" id="4_sseam"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ed0ow"]
 radius = 18.0

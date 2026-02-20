@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://chb4tjruh4j8m"]
+
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_whc7k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_whc7k"]
+bg_color = Color(0.2123048, 0.21230489, 0.21230471, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_whc7k"]
+
+[node name="Mobile" type="Node2D" unique_id=1519300211]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=546837113]
+position = Vector2(477, 271)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1059287033]
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=1532554566]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_whc7k")
+
+[node name="UI" type="VSplitContainer" parent="CanvasLayer/PanelContainer" unique_id=709368271]
+layout_mode = 2
+split_offsets = PackedInt32Array(336)
+drag_area_highlight_in_editor = true
+split_offset = 336
+
+[node name="TabContainer" type="TabContainer" parent="CanvasLayer/PanelContainer/UI" unique_id=926438603]
+z_index = 1
+layout_mode = 2
+current_tab = 0
+tabs_position = 1
+
+[node name="Parties" type="SubViewportContainer" parent="CanvasLayer/PanelContainer/UI/TabContainer" unique_id=220066956]
+layout_mode = 2
+stretch = true
+metadata/_tab_index = 0
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/PanelContainer/UI/TabContainer/Parties" unique_id=645555366]
+handle_input_locally = false
+size = Vector2i(960, 305)
+render_target_update_mode = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/PanelContainer/UI/TabContainer/Parties/SubViewport" unique_id=919556138]
+position = Vector2(360, 150)
+texture = ExtResource("1_whc7k")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/PanelContainer/UI" unique_id=837370594]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_whc7k")

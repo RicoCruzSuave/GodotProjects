@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://cf2dcvg6c0r60"]
 
-[ext_resource type="Shader" path="res://Util/GPU/blur_spread.gdshader" id="1_evegt"]
-[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="2_1qrm6"]
+[ext_resource type="Shader" uid="uid://wvmx6ocn0m71" path="res://Util/GPU/blur_spread.gdshader" id="1_evegt"]
+[ext_resource type="Shader" uid="uid://obb8m032cngm" path="res://Util/GPU/step_color.gdshader" id="2_1qrm6"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_pplu7"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
@@ -9,8 +9,8 @@ viewport_path = NodePath("SubViewportContainer/SubViewport")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yxwly"]
 resource_local_to_scene = true
 shader = ExtResource("1_evegt")
-shader_parameter/blur_factor = 5.25
 shader_parameter/feedbackTex = SubResource("ViewportTexture_pplu7")
+shader_parameter/blur_factor = 5.25
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kx6yi"]
 
@@ -461,8 +461,8 @@ shader_parameter/angular_velocity_min = 0.0
 shader_parameter/angular_velocity_max = 0.0
 shader_parameter/orbit_velocity_min = 0.0
 shader_parameter/orbit_velocity_max = 0.0
-shader_parameter/radial_velocity_min = null
-shader_parameter/radial_velocity_max = null
+shader_parameter/radial_velocity_min = 0.0
+shader_parameter/radial_velocity_max = 0.0
 shader_parameter/linear_accel_min = 0.0
 shader_parameter/linear_accel_max = 0.0
 shader_parameter/radial_accel_min = 0.0
@@ -488,8 +488,8 @@ shader_parameter/velocity_pivot = Vector3(0, 0, 0)
 shader_parameter/emission_sphere_radius = 5.0
 shader_parameter/color_value = Color(1, 1, 1, 1)
 shader_parameter/gravity = Vector3(0, 0, 0)
-shader_parameter/paused = true
 shader_parameter/feedbackTex = SubResource("ViewportTexture_muy8k")
+shader_parameter/paused = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mo0cw"]
 shader = ExtResource("2_1qrm6")

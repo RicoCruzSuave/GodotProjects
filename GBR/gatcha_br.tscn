@@ -1,7 +1,7 @@
 [gd_scene load_steps=16 format=3 uid="uid://6tatdnhhtis1"]
 
-[ext_resource type="Script" path="res://GBR/CameraRig.gd" id="1_6ekrb"]
-[ext_resource type="Script" path="res://GBR/MarchingCubesShowcase.gd" id="1_tb5gw"]
+[ext_resource type="Script" uid="uid://dn7mv7r4ohwr3" path="res://GBR/CameraRig.gd" id="1_6ekrb"]
+[ext_resource type="Script" uid="uid://bg65nwrk70wjm" path="res://GBR/MarchingCubesShowcase.gd" id="1_tb5gw"]
 
 [sub_resource type="GDScript" id="GDScript_i1bi7"]
 script/source = "extends StaticBody3D
@@ -72,6 +72,7 @@ material = SubResource("ORMMaterial3D_yub6y")
 item/0/name = "test"
 item/0/mesh = SubResource("SphereMesh_aebpc")
 item/0/mesh_transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+item/0/mesh_cast_shadow = 1
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1

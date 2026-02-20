@@ -1,8 +1,8 @@
 [gd_scene load_steps=30 format=3 uid="uid://cgrie7tkt6apq"]
 
-[ext_resource type="Shader" path="res://Misc/rts_terrain.gdshader" id="1_0oarm"]
-[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="2_0o2rp"]
-[ext_resource type="Script" path="res://Util/ConnectingPoints2D.gd" id="2_pvp3l"]
+[ext_resource type="Shader" uid="uid://cqxrqv55mlv3i" path="res://Misc/rts_terrain.gdshader" id="1_0oarm"]
+[ext_resource type="Shader" uid="uid://obb8m032cngm" path="res://Util/GPU/step_color.gdshader" id="2_0o2rp"]
+[ext_resource type="Script" uid="uid://rluc6fe4nuh0" path="res://Util/ConnectingPoints2D.gd" id="2_pvp3l"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="4_22h8s"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rwsv0"]
@@ -12,8 +12,8 @@ viewport_path = NodePath("RTSTerrain/SubViewport")
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_0oarm")
-shader_parameter/squish_factor = 3.0
 shader_parameter/tex = SubResource("ViewportTexture_rwsv0")
+shader_parameter/squish_factor = 3.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_hoeru"]
 material = SubResource("ShaderMaterial_4bn8h")

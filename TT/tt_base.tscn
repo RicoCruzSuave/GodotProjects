@@ -1,12 +1,12 @@
 [gd_scene load_steps=112 format=3 uid="uid://cmsh5krgbqcc6"]
 
-[ext_resource type="Script" path="res://Util/CameraRig.gd" id="1_8o0bd"]
-[ext_resource type="Script" path="res://TT/TerrainZoom.gd" id="1_fjofe"]
+[ext_resource type="Script" uid="uid://cmcql4o6kmwmi" path="res://Util/CameraRig.gd" id="1_8o0bd"]
+[ext_resource type="Script" uid="uid://c62yl5p1iewnq" path="res://TT/TerrainZoom.gd" id="1_fjofe"]
 [ext_resource type="PackedScene" uid="uid://c3ug8fx0ubhsx" path="res://TT/base_card_format.tscn" id="1_vyxii"]
-[ext_resource type="Shader" path="res://TT/heightmap_terrain.gdshader" id="2_867fi"]
+[ext_resource type="Shader" uid="uid://cbixvrpbadiaf" path="res://TT/heightmap_terrain.gdshader" id="2_867fi"]
 [ext_resource type="PackedScene" uid="uid://bitajxuykbta3" path="res://TT/Assets/stupid_house.tscn" id="2_no1sn"]
 [ext_resource type="MeshLibrary" uid="uid://d1b8m2lquchxf" path="res://TT/Assets/KenneyFantasyTown/FantasyTown.tres" id="2_sinmd"]
-[ext_resource type="Script" path="res://TT/heightmap_terrain.gd" id="3_vt4uu"]
+[ext_resource type="Script" uid="uid://t1oep5t0h05d" path="res://TT/heightmap_terrain.gd" id="3_vt4uu"]
 [ext_resource type="PackedScene" uid="uid://bak7wwanbnic6" path="res://TT/Assets/SlumRoad/tavern.tscn" id="3_x76vf"]
 [ext_resource type="PackedScene" uid="uid://caufiaqi7l14o" path="res://TT/Assets/KenneyFantasyTown/wallWoodBlock.glb" id="4_0b7xh"]
 [ext_resource type="PackedScene" uid="uid://gj7ffcwxab1g" path="res://TT/Assets/KenneyFantasyTown/wallDoorwaySquareWideCurved.glb" id="4_338k4"]
@@ -65,7 +65,7 @@
 [ext_resource type="PackedScene" uid="uid://bb505tim8q62k" path="res://TT/Assets/pencil.glb" id="49_ukow3"]
 [ext_resource type="PackedScene" uid="uid://cfy3pbaimr4es" path="res://TT/Assets/KenneyFantasyTown/roofCornerRound.glb" id="50_42gi1"]
 [ext_resource type="PackedScene" uid="uid://b0c7g3drxmbke" path="res://TT/Assets/KenneyFantasyTown/planks.glb" id="53_dsx2a"]
-[ext_resource type="Shader" path="res://Util/GPU/step_color.gdshader" id="65_kstgp"]
+[ext_resource type="Shader" uid="uid://obb8m032cngm" path="res://Util/GPU/step_color.gdshader" id="65_kstgp"]
 
 [sub_resource type="GDScript" id="GDScript_hseqy"]
 script/source = "extends GridMap
@@ -195,6 +195,7 @@ radial_segments = 8
 item/0/name = "Floor/Ceiling"
 item/0/mesh = SubResource("BoxMesh_h3g20")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 0.01, 0, 0, 0, 1, 0, 0.99, 0)
+item/0/mesh_cast_shadow = 1
 item/0/shapes = [SubResource("BoxShape3D_h2l3c"), Transform3D(1, 0, 0, 0, 0.01, 0, 0, 0, 1, 0, 0.99, 0)]
 item/0/navigation_mesh = SubResource("NavigationMesh_os3j8")
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -202,6 +203,7 @@ item/0/navigation_layers = 1
 item/1/name = "PlyaerPlaceholder"
 item/1/mesh = SubResource("CapsuleMesh_nda6d")
 item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/mesh_cast_shadow = 1
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
@@ -250,6 +252,7 @@ radial_segments = 8
 item/0/name = "Floor/Ceiling"
 item/0/mesh = SubResource("BoxMesh_bva4y")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 0.01, 0, 0, 0, 1, 0, 0.99, 0)
+item/0/mesh_cast_shadow = 1
 item/0/shapes = [SubResource("BoxShape3D_h2l3c"), Transform3D(1, 0, 0, 0, 0.01, 0, 0, 0, 1, 0, 0.99, 0)]
 item/0/navigation_mesh = SubResource("NavigationMesh_8evun")
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -257,6 +260,7 @@ item/0/navigation_layers = 1
 item/1/name = "PlyaerPlaceholder"
 item/1/mesh = SubResource("CapsuleMesh_ra5dp")
 item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/mesh_cast_shadow = 1
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
