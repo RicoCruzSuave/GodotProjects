@@ -1618,6 +1618,7 @@ width = 16.0
 [node name="Weapon" type="Node2D" parent="Hero" unique_id=658159816]
 position = Vector2(26, -35)
 script = SubResource("GDScript_hb1on")
+pierce = 3.0
 
 [node name="CooldownTimer" type="Timer" parent="Hero/Weapon" unique_id=875858583]
 process_callback = 0

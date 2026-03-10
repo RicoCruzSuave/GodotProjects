@@ -87,6 +87,7 @@ config/icon="res://icon.svg"
 [debug]
 
 file_logging/max_log_files=10
+gdscript/warnings/narrowing_conversion=0
 gdscript/stdout/print_fps=false
 
 [display]

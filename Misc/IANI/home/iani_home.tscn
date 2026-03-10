@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b715gr5hcc4uh"]
+[gd_scene format=3 uid="uid://b715gr5hcc4uh"]
 
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_uihlx"]
 [ext_resource type="Script" uid="uid://cjvdqgplw3e0o" path="res://Util/Components/Character2DControlComponent.gd" id="2_c5pft"]
@@ -38,6 +38,193 @@ func lift_cycle(_arg):
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_c5pft"]
 viewport_path = NodePath("Hero/Visuals/SubViewportContainer/SubViewport")
+
+[sub_resource type="Animation" id="Animation_v72mt"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Lumbar/Chest/ArmL:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2.5219762, -2.5767522)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LegL:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("LegR:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Lumbar:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Lumbar/Chest:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.8838587, -6.9439726)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Lumbar/Chest/Neck:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.31637228, -7.0639944)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Lumbar/Chest/Neck/Head:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.3711435, -1.9652624)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Lumbar/Chest/ArmR:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.6114845, -2.1508415)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Lumbar/Chest/ArmR/RemoteTransform2D:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8.04965, 7.2251825)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath(".:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(32, 34)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Lumbar/Chest/ArmR:points")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(0, 0, 2.4716911, 7.1155396, 8.520874, 5.0393295)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Lumbar/Chest/ArmL:points")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(2.4587078, 0.9450836, 5.2295227, 6.1361237, 11.125313, 5.0226974)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Lumbar/Chest/Neck/Head:rotation")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.28894538]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Lumbar/Chest:rotation")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.14828636]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Lumbar/Chest/ArmR/RemoteTransform2D:rotation")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.020847514]
+}
+
+[sub_resource type="Animation" id="Animation_uk41c"]
+resource_name = "fall"
+step = 0.1
 
 [sub_resource type="Animation" id="Animation_dwr7x"]
 resource_name = "lifting"
@@ -224,192 +411,10 @@ tracks/14/keys = {
 "values": [-0.020847514, -0.33911645, -0.7369621]
 }
 
-[sub_resource type="Animation" id="Animation_v72mt"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Lumbar/Chest/ArmL:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-2.5219762, -2.5767522)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("LegL:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("LegR:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Lumbar:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Lumbar/Chest:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-0.8838587, -6.9439726)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Lumbar/Chest/Neck:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-0.31637228, -7.0639944)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("Lumbar/Chest/Neck/Head:position")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-0.3711435, -1.9652624)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("Lumbar/Chest/ArmR:position")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0.6114845, -2.1508415)]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("Lumbar/Chest/ArmR/RemoteTransform2D:position")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8.04965, 7.2251825)]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath(".:position")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(32, 34)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("Lumbar/Chest/ArmR:points")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [PackedVector2Array(0, 0, 2.4716911, 7.1155396, 8.520874, 5.0393295)]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("Lumbar/Chest/ArmL:points")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [PackedVector2Array(2.4587078, 0.9450836, 5.2295227, 6.1361237, 11.125313, 5.0226974)]
-}
-tracks/12/type = "value"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("Lumbar/Chest/Neck/Head:rotation")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [-0.28894538]
-}
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("Lumbar/Chest:rotation")
-tracks/13/interp = 1
-tracks/13/loop_wrap = true
-tracks/13/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.14828636]
-}
-tracks/14/type = "value"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("Lumbar/Chest/ArmR/RemoteTransform2D:rotation")
-tracks/14/interp = 1
-tracks/14/loop_wrap = true
-tracks/14/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [-0.020847514]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_uk41c"]
 _data = {
 &"RESET": SubResource("Animation_v72mt"),
+&"fall": SubResource("Animation_uk41c"),
 &"lifting": SubResource("Animation_dwr7x")
 }
 
@@ -428,230 +433,228 @@ metadata/_snap_enabled = true
 [sub_resource type="CircleShape2D" id="CircleShape2D_ob2tw"]
 radius = 25.0
 
-[node name="IaniHome" type="Node2D"]
+[node name="IaniHome" type="Node2D" unique_id=331658616]
 
-[node name="Ground" type="Line2D" parent="."]
+[node name="Ground" type="Line2D" parent="." unique_id=1705074931]
 z_index = 1
 position = Vector2(0, 188)
 points = PackedVector2Array(-100, 0, 1000, 0)
 default_color = Color(0.5211406, 0.5211406, 0.5211405, 1)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="Ground"]
+[node name="StaticBody2D" type="StaticBody2D" parent="Ground" unique_id=304331175]
 position = Vector2(245, 2)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground/StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground/StaticBody2D" unique_id=336789729]
 position = Vector2(-245, -6)
 shape = SubResource("SegmentShape2D_c5pft")
 
-[node name="Hero" type="CharacterBody2D" parent="."]
+[node name="Hero" type="CharacterBody2D" parent="." unique_id=996458292]
 z_index = 1
 position = Vector2(245, 168)
 script = SubResource("GDScript_dwr7x")
 
-[node name="Sprite2D" type="Sprite2D" parent="Hero"]
+[node name="Sprite2D" type="Sprite2D" parent="Hero" unique_id=2056296568]
 visible = false
 scale = Vector2(0.15625, 0.21875)
 texture = ExtResource("1_uihlx")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hero"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hero" unique_id=840703468]
 shape = SubResource("CapsuleShape2D_u5vfy")
 
-[node name="Movement" type="Node2D" parent="Hero"]
+[node name="Movement" type="Node2D" parent="Hero" unique_id=1973079041]
 script = ExtResource("2_c5pft")
 speed = 20.0
 jump_speed = 500.0
 friction = 0.1
 gravity = 25.0
 
-[node name="Interaction" type="Node2D" parent="Hero"]
+[node name="Interaction" type="Node2D" parent="Hero" unique_id=819505495]
 
-[node name="Visuals" type="Node2D" parent="Hero"]
+[node name="Visuals" type="Node2D" parent="Hero" unique_id=333944486]
 
-[node name="SmallDumbell" type="Node2D" parent="Hero/Visuals"]
+[node name="SmallDumbell" type="Node2D" parent="Hero/Visuals" unique_id=1893588540]
 position = Vector2(-205.29688, -134.78212)
-rotation = 0.124182984
+rotation = 0.12418298
 scale = Vector2(0.99999994, 0.99999994)
 
-[node name="SmallDumbellFront" type="Sprite2D" parent="Hero/Visuals/SmallDumbell"]
+[node name="SmallDumbellFront" type="Sprite2D" parent="Hero/Visuals/SmallDumbell" unique_id=352189870]
 z_index = 1
 position = Vector2(-1, 2)
 texture = ExtResource("3_dwr7x")
 region_enabled = true
 region_rect = Rect2(0, 5, 5, 6)
 
-[node name="SmallDumbellBack" type="Sprite2D" parent="Hero/Visuals/SmallDumbell"]
+[node name="SmallDumbellBack" type="Sprite2D" parent="Hero/Visuals/SmallDumbell" unique_id=1646290858]
 position = Vector2(-1, -1)
 texture = ExtResource("3_dwr7x")
 region_enabled = true
 region_rect = Rect2(0, 0, 5, 5)
 
-[node name="hero_lifting_1" type="Sprite2D" parent="Hero/Visuals"]
+[node name="hero_lifting_1" type="Sprite2D" parent="Hero/Visuals" unique_id=1006167581]
 position = Vector2(-160, -1)
 texture = SubResource("ViewportTexture_c5pft")
 script = ExtResource("3_t1wum")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="Hero/Visuals"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Hero/Visuals" unique_id=1770575123]
 offset_left = -245.0
 offset_top = -168.0
 offset_right = -181.0
 offset_bottom = -104.0
 
-[node name="SubViewport" type="SubViewport" parent="Hero/Visuals/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="Hero/Visuals/SubViewportContainer" unique_id=890607388]
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(64, 64)
 render_target_update_mode = 4
 
-[node name="Node2D" type="Node2D" parent="Hero/Visuals/SubViewportContainer/SubViewport"]
+[node name="Node2D" type="Node2D" parent="Hero/Visuals/SubViewportContainer/SubViewport" unique_id=338174247]
 position = Vector2(32, 34)
 rotation = -0.19877836
 
-[node name="LegL" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D"]
+[node name="LegL" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D" unique_id=1602720255]
 points = PackedVector2Array(0, 0, -2.1651382, 5.684372, -5.705532, 13.131897)
 width = 3.0
 default_color = Color(0.78352344, 0.7835234, 0.7835234, 1)
 
-[node name="LegR" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D"]
+[node name="LegR" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D" unique_id=1832605978]
 points = PackedVector2Array(0, 0, 2.3414574, 8.632355, 0.17631912, 14.316727)
 width = 3.0
 
-[node name="Lumbar" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D"]
+[node name="Lumbar" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D" unique_id=463772282]
 rotation = 0.32538164
 points = PackedVector2Array(0, 0, -0.5050583, -3.967987)
 width = 6.0
 default_color = Color(0.91228896, 0.9122889, 0.91228884, 1)
 
-[node name="Chest" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar"]
+[node name="Chest" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar" unique_id=1379022952]
 position = Vector2(-0.8838587, -6.9439726)
 rotation = 0.14828636
 points = PackedVector2Array(0.663311, 2.8241577, -0.7422867, -3.9305267)
 width = 8.0
 default_color = Color(0.91228896, 0.9122889, 0.91228884, 1)
 
-[node name="Neck" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest"]
+[node name="Neck" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest" unique_id=1549460515]
 position = Vector2(-0.31637228, -7.0639944)
 points = PackedVector2Array(0, 3, 0.3685379, 0.8284912)
 width = 2.0
 
-[node name="Head" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest/Neck"]
+[node name="Head" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest/Neck" unique_id=1177888022]
 position = Vector2(-0.3711435, -1.9652624)
 rotation = -0.28894538
 points = PackedVector2Array(0, 3, 0, -5)
 width = 8.0
 
-[node name="ArmR" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest"]
+[node name="ArmR" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest" unique_id=2141741552]
 position = Vector2(0.6114845, -2.1508415)
 rotation = 0.06466494
 points = PackedVector2Array(0, 0, 2.4716911, 7.1155396, 8.520874, 5.0393295)
 width = 2.0
 
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest/ArmR"]
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest/ArmR" unique_id=1772862124]
 position = Vector2(8.04965, 7.2251825)
 rotation = -0.020847514
 remote_path = NodePath("../../../../../../../SmallDumbell")
 
-[node name="ArmL" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest"]
+[node name="ArmL" type="Line2D" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D/Lumbar/Chest" unique_id=1954104869]
 z_index = -1
 position = Vector2(-2.5219762, -2.5767522)
 points = PackedVector2Array(2.4587078, 0.9450836, 5.2295227, 6.1361237, 11.125313, 5.0226974)
 width = 2.0
 default_color = Color(0.8175213, 0.8175213, 0.81752115, 1)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D"]
-libraries = {
-&"": SubResource("AnimationLibrary_uk41c")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Hero/Visuals/SubViewportContainer/SubViewport/Node2D" unique_id=456307185]
+libraries/ = SubResource("AnimationLibrary_uk41c")
 
-[node name="House" type="Node2D" parent="."]
+[node name="House" type="Node2D" parent="." unique_id=1384202537]
 position = Vector2(320, 94)
 
-[node name="Sprite2D" type="Sprite2D" parent="House"]
+[node name="Sprite2D" type="Sprite2D" parent="House" unique_id=731965239]
 scale = Vector2(10.140625, 2.984375)
 texture = SubResource("GradientTexture2D_u5vfy")
 
-[node name="CookingStove" type="Node2D" parent="House"]
+[node name="CookingStove" type="Node2D" parent="House" unique_id=82582793]
 position = Vector2(-170, 73)
 
-[node name="StoveV1" type="Sprite2D" parent="House/CookingStove"]
+[node name="StoveV1" type="Sprite2D" parent="House/CookingStove" unique_id=1704563860]
 texture = ExtResource("2_eljx0")
 
-[node name="CookingSpot1" type="Marker2D" parent="House/CookingStove"]
+[node name="CookingSpot1" type="Marker2D" parent="House/CookingStove" unique_id=1363721132]
 position = Vector2(-11, 3)
 gizmo_extents = 2.0
 
-[node name="CookingSpot2" type="Marker2D" parent="House/CookingStove"]
+[node name="CookingSpot2" type="Marker2D" parent="House/CookingStove" unique_id=759871324]
 position = Vector2(3, 3)
 gizmo_extents = 2.0
 
-[node name="CookingSpot3" type="Marker2D" parent="House/CookingStove"]
+[node name="CookingSpot3" type="Marker2D" parent="House/CookingStove" unique_id=1491120310]
 position = Vector2(17, 3)
 gizmo_extents = 2.0
 
-[node name="StoringSpot1" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot1" type="Marker2D" parent="House/CookingStove" unique_id=1052722673]
 position = Vector2(-13, -11)
 gizmo_extents = 2.0
 
-[node name="StoringSpot2" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot2" type="Marker2D" parent="House/CookingStove" unique_id=545332359]
 position = Vector2(-6, -11)
 gizmo_extents = 2.0
 
-[node name="StoringSpot3" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot3" type="Marker2D" parent="House/CookingStove" unique_id=679521947]
 position = Vector2(1, -11)
 gizmo_extents = 2.0
 
-[node name="StoringSpot4" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot4" type="Marker2D" parent="House/CookingStove" unique_id=376455011]
 position = Vector2(7, -11)
 gizmo_extents = 2.0
 
-[node name="StoringSpot5" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot5" type="Marker2D" parent="House/CookingStove" unique_id=354202654]
 position = Vector2(13, -11)
 gizmo_extents = 2.0
 
-[node name="StoringSpot6" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot6" type="Marker2D" parent="House/CookingStove" unique_id=1373559710]
 position = Vector2(-26, 8)
 gizmo_extents = 2.0
 
-[node name="StoringSpot7" type="Marker2D" parent="House/CookingStove"]
+[node name="StoringSpot7" type="Marker2D" parent="House/CookingStove" unique_id=674698323]
 position = Vector2(-21, 8)
 gizmo_extents = 2.0
 
-[node name="OvenSpot1" type="Marker2D" parent="House/CookingStove"]
+[node name="OvenSpot1" type="Marker2D" parent="House/CookingStove" unique_id=787494540]
 position = Vector2(-12, 10)
 gizmo_extents = 2.0
 
-[node name="OvenSpot2" type="Marker2D" parent="House/CookingStove"]
+[node name="OvenSpot2" type="Marker2D" parent="House/CookingStove" unique_id=317294385]
 position = Vector2(2, 10)
 gizmo_extents = 2.0
 
-[node name="FrySpot1" type="Marker2D" parent="House/CookingStove"]
+[node name="FrySpot1" type="Marker2D" parent="House/CookingStove" unique_id=1701696401]
 position = Vector2(14, 7)
 gizmo_extents = 2.0
 
-[node name="FrySpot2" type="Marker2D" parent="House/CookingStove"]
+[node name="FrySpot2" type="Marker2D" parent="House/CookingStove" unique_id=1814796354]
 position = Vector2(19, 7)
 gizmo_extents = 2.0
 
-[node name="WeightLifting" type="Node2D" parent="House"]
+[node name="WeightLifting" type="Node2D" parent="House" unique_id=340664377]
 position = Vector2(-214, 73)
 
-[node name="WeightRackIani" type="Sprite2D" parent="House/WeightLifting"]
+[node name="WeightRackIani" type="Sprite2D" parent="House/WeightLifting" unique_id=1822257116]
 texture = ExtResource("2_u5vfy")
 
-[node name="RelaxingChair" type="Node2D" parent="House"]
+[node name="RelaxingChair" type="Node2D" parent="House" unique_id=332832959]
 position = Vector2(-297, 74)
 
-[node name="SittingSilloutte" type="Sprite2D" parent="House/RelaxingChair"]
+[node name="SittingSilloutte" type="Sprite2D" parent="House/RelaxingChair" unique_id=1469096058]
 visible = false
 texture = ExtResource("6_dwr7x")
 
-[node name="TinyChairExportExport" type="Sprite2D" parent="House/RelaxingChair"]
+[node name="TinyChairExportExport" type="Sprite2D" parent="House/RelaxingChair" unique_id=1347118834]
 texture = ExtResource("3_vinlq")
 
-[node name="Interactable" type="Area2D" parent="House/RelaxingChair"]
+[node name="Interactable" type="Area2D" parent="House/RelaxingChair" unique_id=953690691]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="House/RelaxingChair/Interactable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="House/RelaxingChair/Interactable" unique_id=977687714]
 shape = SubResource("CircleShape2D_ob2tw")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1278410320]
 position = Vector2(39, 35)
 zoom = Vector2(5.59, 5.59)

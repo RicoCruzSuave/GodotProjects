@@ -1,0 +1,227 @@
+[gd_scene format=3 uid="uid://0si838m8w0f5"]
+
+[ext_resource type="Script" uid="uid://bvcffmjrb6iop" path="res://Misc/IdleTest/Assets/minifantasy_character_importer_popup.gd" id="1_at1tj"]
+
+[sub_resource type="Theme" id="Theme_at1tj"]
+Label/colors/font_color = Color(0.79607844, 0.54509807, 0.9411765, 1)
+Label/font_sizes/font_size = 14
+SpinBox/constants/buttons_width = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyhbu"]
+bg_color = Color(0, 0.10980392, 0.2509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1qes"]
+bg_color = Color(0.11764706, 0.16470589, 0.37254903, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.45882353, 0.84313726, 0.85490197, 1)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+expand_margin_left = 8.0
+expand_margin_top = 8.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
+
+[node name="MinifantasyCharacterImporterPopup" type="Window" unique_id=655746687]
+oversampling_override = 1.0
+initial_position = 1
+size = Vector2i(640, 400)
+script = ExtResource("1_at1tj")
+
+[node name="Control" type="Control" parent="." unique_id=223569070]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_at1tj")
+
+[node name="Panel" type="Panel" parent="Control" unique_id=373282255]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uyhbu")
+
+[node name="Options" type="Control" parent="Control" unique_id=1064921166]
+layout_mode = 1
+anchor_left = 0.032291666
+anchor_top = 0.044444446
+anchor_right = 0.96774995
+anchor_bottom = 0.24122225
+offset_right = -0.040000916
+offset_bottom = -0.26000214
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Control/Options" unique_id=99141706]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_d1qes")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Options" unique_id=1488353294]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 26
+
+[node name="SelectedNode" type="VBoxContainer" parent="Control/Options/HBoxContainer" unique_id=1547990790]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/SelectedNode" unique_id=662423273]
+layout_mode = 2
+text = "Selected Node"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="Control/Options/HBoxContainer/SelectedNode" unique_id=731100492]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 12
+text = "NodeName"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationSpeed" type="VBoxContainer" parent="Control/Options/HBoxContainer" unique_id=190492040]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/AnimationSpeed" unique_id=523161771]
+layout_mode = 2
+text = "Animation Speed"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="Control/Options/HBoxContainer/AnimationSpeed" unique_id=2129749214]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 12
+text = "NodeName"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RowSuffixes" type="ScrollContainer" parent="Control/Options/HBoxContainer" unique_id=1985191690]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Options/HBoxContainer/RowSuffixes" unique_id=15488787]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer" unique_id=1688038625]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer" unique_id=1040299700]
+layout_mode = 2
+text = "Row 1 Suffix"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer" unique_id=444245853]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "_forward_left"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer" unique_id=436730159]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer2" unique_id=1597394369]
+layout_mode = 2
+text = "Row 2 Suffix"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer2" unique_id=1365001663]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "_forward_right"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer" unique_id=1138388618]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer3" unique_id=253119307]
+layout_mode = 2
+text = "Row 3 Suffix"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer3" unique_id=479511798]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "_back_left"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer" unique_id=669325757]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer4" unique_id=1741637656]
+layout_mode = 2
+text = "Row 4 Suffix"
+
+[node name="LineEdit" type="LineEdit" parent="Control/Options/HBoxContainer/RowSuffixes/VBoxContainer/HBoxContainer4" unique_id=1168919654]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "_back_right"
+
+[node name="SpriteSize" type="VBoxContainer" parent="Control/Options/HBoxContainer" unique_id=828232851]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Label" type="Label" parent="Control/Options/HBoxContainer/SpriteSize" unique_id=1590419508]
+layout_mode = 2
+text = "Sprite Size"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Options/HBoxContainer/SpriteSize" unique_id=198863366]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="SpinBoxX" type="SpinBox" parent="Control/Options/HBoxContainer/SpriteSize/HBoxContainer" unique_id=1396063313]
+layout_mode = 2
+min_value = -1080.0
+max_value = 1080.0
+value = 32.0
+rounded = true
+alignment = 1
+
+[node name="SpinBoxY" type="SpinBox" parent="Control/Options/HBoxContainer/SpriteSize/HBoxContainer" unique_id=954736831]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1080.0
+max_value = 1080.0
+value = 32.0
+rounded = true
+
+[node name="AnimationListScroll" type="ScrollContainer" parent="Control" unique_id=1084295219]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.026041666
+anchor_top = 0.2537037
+anchor_right = 0.9739583
+anchor_bottom = 0.9425926
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="AnimationList" type="VBoxContainer" parent="Control/AnimationListScroll" unique_id=1215038546]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="Control" unique_id=1201946530]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Done"
