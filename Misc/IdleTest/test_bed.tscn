@@ -10,6 +10,7 @@
 [ext_resource type="SpriteFrames" uid="uid://b0p61ae5wuoox" path="res://Misc/IdleTest/Assets/Characters/Minifantasy_TrueHeroes_v1.0/Minifantasy_TrueHeroes_Assets/Rogue/rogue_sprite_frames.tres" id="4_v0jm1"]
 [ext_resource type="Script" uid="uid://bgh33adiel2bn" path="res://Misc/IdleTest/Scripts/Components/animation_char.gd" id="5_f52r1"]
 [ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="10_f70g8"]
+[ext_resource type="Script" uid="uid://brl7sqd3v03av" path="res://Misc/IdleTest/Scripts/node_map.gd" id="11_e7ncd"]
 
 [sub_resource type="Gradient" id="Gradient_pt11p"]
 interpolation_mode = 1
@@ -55,7 +56,7 @@ script = ExtResource("1_v0jm1")
 [node name="Facing" type="Node2D" parent="Entities/Heros/Barbarian" unique_id=2044635709]
 
 [node name="Attack" type="Node2D" parent="Entities/Heros/Barbarian/Facing" unique_id=1683687882]
-position = Vector2(-7, 0)
+position = Vector2(16, 0)
 script = ExtResource("2_f70g8")
 
 [node name="Movement" type="Node2D" parent="Entities/Heros/Barbarian" unique_id=482961733]
@@ -133,3 +134,16 @@ texture = ExtResource("10_f70g8")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1374499418]
 position = Vector2(210, 58)
 zoom = Vector2(3, 3)
+
+[node name="NodeMap" type="Node2D" parent="." unique_id=800443353]
+scale = Vector2(4, 4)
+script = ExtResource("11_e7ncd")
+density = 128
+number_of_bridges = null
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="NodeMap" unique_id=1166251430]
+
+[node name="POIs" type="Node2D" parent="NodeMap" unique_id=1504823464]
+visible = false
+
+[node name="Town" type="Node2D" parent="NodeMap" unique_id=139300799]

@@ -11,6 +11,9 @@ extends CharacterBody2D
 var state :
 	set(new_value): state_machine.state = new_value
 	get: return state_machine.state
+var state_blocking :
+	set(new_value): state_machine.blocking = new_value
+	get: return state_machine.blocking
 var facing_dir :
 	set(new_value): facing.rotation = new_value
 	get: return facing.rotation
@@ -18,39 +21,46 @@ var facing_dir :
 
 func _ready() -> void:
 	state_machine.state_entered.connect(state_entered)
-	set_component_target_recursive(self, "component_target")
+	set_component_target_recursive(self, "component_target", self)
 
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("ui_accept"):
-		state_machine.state = "ATTACK"
-	
 	var input_dir : = Vector2(
 		Input.get_axis("left","right"),
 		Input.get_axis("up","down"),
 	)
-	movement.move(input_dir)
-	if input_dir:
-		state_machine.state = "WALK"
-		facing_dir = input_dir.angle()
-	#else:
-		#state_machine.state = "IDLE"
+	
+	match state:
+		"IDLE", "WALK":
+			if Input.is_action_just_pressed("ui_accept"):
+				state_machine.state = "ATTACK"
+	
+			if input_dir:
+				movement.move(input_dir)
+				state_machine.state = "WALK"
+				facing_dir = input_dir.angle()
+			else:
+				state_machine.state = "IDLE"
+		_:
+			state_machine.state = "IDLE"
 	
 	
 func state_entered(_new_state):
 	if state == "ATTACK":
 		visuals.play(visuals.get_anim_string(), 1.0 / 3.0)
-		state_machine.blocking = true
+		#state_machine.blocking = true
 		attack.attack()
 		
-func set_component_target_recursive(root_node: Node, var_name: String, limit : = 10) -> void:
+func set_component_target_recursive(root_node: Node, var_name: String, value , limit : = 10) -> void:
+	if limit <= 0:
+		return
 	# Check if the current node has the variable
 	if var_name in root_node:
-		root_node.set(var_name, limit)
+		root_node.set(var_name, value)
 		print("Set ", var_name, " on: ", root_node.name)
 
 	# Recursively check all children
 	for child in root_node.get_children():
-		set_component_target_recursive(child, var_name, limit)
+		set_component_target_recursive(child, var_name, value, limit - 1)
 
 
 		
