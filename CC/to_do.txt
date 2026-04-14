@@ -1,0 +1,7 @@
+[ ] Create basic cave level from Perlin noise
+[ ] Create exit points
+[ ] Create random items
+[ ] Add bosses
+	[ ] Fight
+	[ ] Quest
+	[ ] Trade

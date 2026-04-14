@@ -1,0 +1,9 @@
+v0.00.001 - 03/26/26:
+	- Added basic character movement
+	- Added general room outline
+	- Added character facing direction component
+	- Added basic interaction
+	- Added basic inventory
+	- Added grab and place interactions
+	- Added holding spot for invetory
+v0.00.002 - 

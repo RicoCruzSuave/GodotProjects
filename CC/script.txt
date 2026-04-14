@@ -1,0 +1,21 @@
+Core Concept:
+	A longer term roguelike that is meant to provide a satisfying loop 
+	while also allowing meaningful progress to be made in shorter time spans over multiple sessions.
+	Each level is cave with many items hidden around, creatures with their own unique behaviors,
+	and multiple paths through/exits that each have a different requirement to pass. 
+	This game prioritizes a feeling of steady progress, a closed economy, familiarity, exploration, and coop.
+	
+Core features:
+	- Procedural cave levels
+	- Procedural entities
+	- Non combat options
+	- Procedural items
+	- Hidden items
+	- Destructible terrain
+	- Drop in coop
+	- Complex and deep character AI
+	- Unique characters
+	
+
+Entity Types:
+	- Builder

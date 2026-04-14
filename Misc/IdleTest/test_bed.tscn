@@ -138,8 +138,9 @@ zoom = Vector2(3, 3)
 [node name="NodeMap" type="Node2D" parent="." unique_id=800443353]
 scale = Vector2(4, 4)
 script = ExtResource("11_e7ncd")
-density = 128
-number_of_bridges = null
+density = 64
+mst_range = Vector2i(0, 0)
+number_of_bridges = 8
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="NodeMap" unique_id=1166251430]
 
@@ -147,3 +148,6 @@ number_of_bridges = null
 visible = false
 
 [node name="Town" type="Node2D" parent="NodeMap" unique_id=139300799]
+
+[node name="@Marker2D@358148" type="Marker2D" parent="NodeMap/Town" unique_id=693985524]
+position = Vector2(224, 148)
