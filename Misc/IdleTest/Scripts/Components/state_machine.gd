@@ -17,7 +17,7 @@ var component_target : = get_parent()
 var state = 0 :
 	set = set_state,
 	get = get_state
-	
+
 func _process(_delta: float) -> void:
 	if debug:
 		label.text = get_state() + " " + str(blocking)
@@ -29,7 +29,7 @@ func set_states_nodes(new_array : Array[String]) -> void:
 		for state_name in STATES:
 			var new_state_node : = Node2D.new()
 			#print(state_name)
-			
+
 			new_state_node.name = state_name
 			new_state_node.add_to_group("state_node")
 			add_child(new_state_node)
@@ -55,12 +55,6 @@ func set_state(new_state) -> void:
 		state_entered.emit(new_state_index)
 	else:
 		print_debug("Tried to set state to something weird ", new_state)
-	
+
 func get_state() -> String:
 	return STATES[state]
-			
-			
-			
-			
-			
-			

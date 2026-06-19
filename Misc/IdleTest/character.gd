@@ -28,12 +28,12 @@ func _process(_delta: float) -> void:
 		Input.get_axis("left","right"),
 		Input.get_axis("up","down"),
 	)
-	
+
 	match state:
 		"IDLE", "WALK":
 			if Input.is_action_just_pressed("ui_accept"):
 				state_machine.state = "ATTACK"
-	
+
 			if input_dir:
 				movement.move(input_dir)
 				state_machine.state = "WALK"
@@ -42,14 +42,14 @@ func _process(_delta: float) -> void:
 				state_machine.state = "IDLE"
 		_:
 			state_machine.state = "IDLE"
-	
-	
+
+
 func state_entered(_new_state):
 	if state == "ATTACK":
 		visuals.play(visuals.get_anim_string(), 1.0 / 3.0)
 		#state_machine.blocking = true
 		attack.attack()
-		
+
 func set_component_target_recursive(root_node: Node, var_name: String, value , limit : = 10) -> void:
 	if limit <= 0:
 		return
@@ -63,11 +63,8 @@ func set_component_target_recursive(root_node: Node, var_name: String, value , l
 		set_component_target_recursive(child, var_name, value, limit - 1)
 
 
-		
+
 #region Expose Methods
 func move(dir : Vector2, multiplier : = 1.0) -> void:
 	movement.move(dir, multiplier)
 #endregion
-
-
-	

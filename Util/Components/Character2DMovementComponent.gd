@@ -18,9 +18,9 @@ func _physics_process(_delta: float) -> void:
 			Input.get_axis("left", "right"),
 			Input.get_axis("up", "down"),
 		)
-		
+
 		move(input_dir)
-		
+
 	if parent.motion_mode == CharacterBody2D.MOTION_MODE_GROUNDED:
 		parent.velocity += Vector2.DOWN * gravity
 	parent.velocity *= 1.0 - friction
@@ -34,3 +34,7 @@ func move(dir : Vector2, multiplier : = 1.0) -> void:
 		else:
 			dir.y *= 0.0
 	parent.velocity += dir * accel * multiplier
+
+func move_towards(point : Vector2, multiplier : = 1.0) -> void:
+	var dir : = parent.global_position.direction_to(point)
+	move(dir, multiplier)

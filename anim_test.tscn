@@ -1,0 +1,349 @@
+[gd_scene format=3 uid="uid://b3pt3sg0xot2v"]
+
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_ttyv3"]
+
+[sub_resource type="Animation" id="Animation_4pmk4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Line2D3:points")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(96, 64, 104, 104)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:points")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(96, 188, 104, 104)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Line2D:points")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(92, 184, 88, 224, 96, 268, 80, 268)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Line2D5:points")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(104, 184, 100, 220, 104, 264, 88, 264)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Line2D2:points")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(96, 180, 112, 152, 104, 116)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Line2D2/Line2D2:points")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(108, 148, 84, 164, 76, 184, 92, 196, 116, 200, 128, 180, 117.71361, 159.42723, 108, 148, 108, 164, 96, 164, 100, 168, 88, 176, 92, 188, 116, 168, 120, 180, 96, 196)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Line2D4:points")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(32, 148, 68, 140, 104, 116)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Line2D4/Line2D4:points")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [PackedVector2Array(48, 152, 32, 156, 32, 172, 24, 140, 28, 156, -112, 188)]
+}
+
+[sub_resource type="Animation" id="Animation_82u7t"]
+resource_name = "test"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:points")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(96, 188, 104, 104), PackedVector2Array(96, 188, 92, 104)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Line2D:points")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(92, 184, 88, 224, 96, 268, 80, 268), PackedVector2Array(92, 184, 76, 224, 72, 272, 52, 268)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Line2D5:points")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(104, 184, 100, 220, 104, 264, 88, 264), PackedVector2Array(92, 188, 96, 224, 108, 260, 96, 264)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Line2D2:points")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(96, 180, 112, 152, 104, 116), PackedVector2Array(60, 156, 96, 152, 92, 116)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Line2D2/Line2D2:points")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(108, 148, 84, 164, 76, 184, 92, 196, 116, 200, 128, 180, 117.71361, 159.42723, 108, 148, 108, 164, 96, 164, 100, 168, 88, 176, 92, 188, 116, 168, 120, 180, 96, 196), PackedVector2Array(72, 140, 36, 156, 76, 184, 92, 196, 116, 200, 128, 180, 117.71361, 159.42723, 72, 140, 108, 164, 56, 156, 100, 168, 88, 176, 92, 188, 116, 168, 120, 180, 96, 196)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Line2D4:points")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(32, 148, 68, 140, 104, 116), PackedVector2Array(32, 148, 72, 156, 88, 124)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Line2D4/Line2D4:points")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(48, 152, 32, 156, 32, 172, 24, 140, 28, 156, -112, 188), PackedVector2Array(40, 176, 28, 148, 8, 160, 48, 140, 28, 148, -16, 60)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Line2D3:points")
+tracks/7/interp = 2
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(-0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedVector2Array(96, 64, 104, 104), PackedVector2Array(80, 64, 92, 108)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_awqen"]
+_data = {
+&"RESET": SubResource("Animation_4pmk4"),
+&"test": SubResource("Animation_82u7t")
+}
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mmt7a"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[node name="Node2D" type="Node2D" unique_id=633194226]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1705962140]
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=2134861217]
+handle_input_locally = false
+size = Vector2i(128, 128)
+size_2d_override = Vector2i(512, 512)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport" unique_id=454553603]
+visible = false
+position = Vector2(128, 176)
+texture = ExtResource("1_ttyv3")
+
+[node name="Polygon2D" type="Polygon2D" parent="SubViewportContainer/SubViewport" unique_id=1632135975]
+visible = false
+polygon = PackedVector2Array(0, 121, 115, -1, 149, 90, 31, 207)
+
+[node name="Line2D" type="Line2D" parent="SubViewportContainer/SubViewport" unique_id=31424903]
+points = PackedVector2Array(96, 188, 104, 104)
+width = 25.0
+default_color = Color(0.7539839, 0.75398386, 0.75398386, 1)
+
+[node name="Line2D" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D" unique_id=1668810653]
+points = PackedVector2Array(92, 184, 88, 224, 96, 268, 80, 268)
+width = 15.0
+
+[node name="Line2D5" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D" unique_id=1644059637]
+z_index = -1
+points = PackedVector2Array(104, 184, 100, 220, 104, 264, 88, 264)
+width = 15.0
+default_color = Color(0.37413925, 0.37413928, 0.37413922, 1)
+
+[node name="Line2D2" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D" unique_id=28903118]
+points = PackedVector2Array(96, 180, 112, 152, 104, 116)
+
+[node name="Line2D4" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D" unique_id=219826536]
+z_index = -1
+position = Vector2(0, -8)
+points = PackedVector2Array(32, 148, 68, 140, 104, 116)
+default_color = Color(0.38928655, 0.38928664, 0.38928658, 1)
+
+[node name="Line2D3" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D" unique_id=1416170532]
+position = Vector2(0, -8)
+points = PackedVector2Array(96, 64, 104, 104)
+width = 38.0
+default_color = Color(0.80049086, 0.80049074, 0.80049074, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport/Line2D" unique_id=833551761]
+libraries/ = SubResource("AnimationLibrary_awqen")
+
+[node name="Line2D3" type="Line2D" parent="SubViewportContainer/SubViewport" unique_id=1962966439]
+position = Vector2(340, 0)
+points = PackedVector2Array(96, 188, 104, 104)
+width = 25.0
+default_color = Color(0.7539839, 0.75398386, 0.75398386, 1)
+
+[node name="Line2D" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3" unique_id=542658831]
+points = PackedVector2Array(92, 184, 88, 224, 96, 268, 80, 268)
+width = 15.0
+
+[node name="Line2D5" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3" unique_id=218953980]
+z_index = -1
+points = PackedVector2Array(104, 184, 100, 220, 104, 264, 88, 264)
+width = 15.0
+default_color = Color(0.37413925, 0.37413928, 0.37413922, 1)
+
+[node name="Line2D2" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3" unique_id=616460924]
+points = PackedVector2Array(96, 180, 112, 152, 104, 116)
+
+[node name="Line2D2" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3/Line2D2" unique_id=703575113]
+visible = false
+points = PackedVector2Array(108, 148, 84, 164, 76, 184, 92, 196, 116, 200, 128, 180, 117.71361, 159.42723, 108, 148, 108, 164, 96, 164, 100, 168, 88, 176, 92, 188, 116, 168, 120, 180, 96, 196)
+default_color = Color(0.83678824, 0.59532285, 0.53177994, 1)
+
+[node name="Line2D4" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3" unique_id=1333661941]
+z_index = -1
+position = Vector2(0, -8)
+points = PackedVector2Array(32, 148, 68, 140, 104, 116)
+default_color = Color(0.38928655, 0.38928664, 0.38928658, 1)
+
+[node name="Line2D4" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3/Line2D4" unique_id=1430974004]
+position = Vector2(0, -8)
+points = PackedVector2Array(48, 152, 32, 156, 32, 172, 24, 140, 28, 156, -112, 188)
+default_color = Color(4.6205523e-06, 0.5202614, 0.31018907, 1)
+
+[node name="Line2D3" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D3" unique_id=2004278963]
+position = Vector2(0, -8)
+points = PackedVector2Array(96, 64, 104, 104)
+width = 38.0
+default_color = Color(0.80049086, 0.80049074, 0.80049074, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport/Line2D3" unique_id=1851340271]
+libraries/ = SubResource("AnimationLibrary_awqen")
+
+[node name="Line2D2" type="Line2D" parent="SubViewportContainer/SubViewport" unique_id=1668905178]
+position = Vector2(-8, 8)
+points = PackedVector2Array(96, 188, 104, 104)
+width = 25.0
+default_color = Color(0.7539839, 0.75398386, 0.75398386, 1)
+
+[node name="Line2D" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D2" unique_id=167896367]
+points = PackedVector2Array(92, 184, 88, 224, 96, 268, 80, 268)
+width = 15.0
+
+[node name="Line2D5" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D2" unique_id=2106414924]
+z_index = -1
+points = PackedVector2Array(104, 184, 100, 220, 104, 264, 88, 264)
+width = 15.0
+default_color = Color(0.37413925, 0.37413928, 0.37413922, 1)
+
+[node name="Line2D2" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D2" unique_id=1315625150]
+points = PackedVector2Array(96, 180, 112, 152, 104, 116)
+
+[node name="Line2D4" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D2" unique_id=1321768442]
+z_index = -1
+position = Vector2(0, -8)
+points = PackedVector2Array(32, 148, 68, 140, 104, 116)
+default_color = Color(0.38928655, 0.38928664, 0.38928658, 1)
+
+[node name="Line2D3" type="Line2D" parent="SubViewportContainer/SubViewport/Line2D2" unique_id=1417833019]
+position = Vector2(0, -8)
+points = PackedVector2Array(96, 64, 104, 104)
+width = 38.0
+default_color = Color(0.80049086, 0.80049074, 0.80049074, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport/Line2D2" unique_id=944411086]
+libraries/ = SubResource("AnimationLibrary_awqen")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1831135479]
+visible = false
+scale = Vector2(8, 8)
+texture = SubResource("ViewportTexture_mmt7a")
+centered = false

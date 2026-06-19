@@ -18,7 +18,7 @@ enum RESOLUTION {
 	DELETE,
 }
 
-@export var test_tool : = false : 
+@export var test_tool : = false :
 	set(_bool) : debug()
 
 #@export var break_point : BREAKPOINT = BREAKPOINT.FIRST
@@ -38,13 +38,13 @@ func get_nodes() -> Array:
 	if order == ORDER.RANDOM:
 		nodes_list.shuffle()
 	return nodes_list
-		
+
 	#match break_point:
 		#BREAKPOINT.ALL:
 			#return nodes_list
 		#BREAKPOINT.FIRST, _:
 			#return [nodes_list[0]]
-			
+
 func resolve(node : Node):
 	match resolution:
 		RESOLUTION.MOVE_TO_FRONT:
@@ -53,21 +53,19 @@ func resolve(node : Node):
 			move_child(node, -1)
 		RESOLUTION.RANDOMIZE_ORDER:
 			move_child(node, randi() % get_child_count())
-		RESOLUTION.DELETE:				
+		RESOLUTION.DELETE:
 			node.free()
 		RESOLUTION.NOTHING, _:
 			pass
-		
+
 func has_nodes() -> bool:
 	return get_child_count() > 0
-	
+
 func get_current_node(resolve_when_done : = false) -> Node:
 	var current_node : Node2D = get_nodes()[0]
 	if resolve_when_done:
 		resolve(current_node)
 	return current_node
-	
+
 func get_number_of_nodes() -> int:
 	return get_child_count()
-
-

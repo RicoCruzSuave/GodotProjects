@@ -9,14 +9,14 @@ extends Node2D
 @export_tool_button("Clear Connections") var cp_clear_var : = clear
 @export_tool_button("Create Bridge") var cb_var : = create_bridge
 
-@export var bounds : = Rect2i(0, 0, 480, 270) 
+@export var bounds : = Rect2i(0, 0, 480, 270)
 @export var density : = 100
 @export var repel_radius : = 16
 @export var mst_range : = Vector2i(2,8)
 @export var tree_chance : = 0.5
 @export var number_of_bridges : = 16
 @export var line_width : = 3.0
-#@export var starting_point : = bounds.position + bounds.size / 2 
+#@export var starting_point : = bounds.position + bounds.size / 2
 @onready var pois: Node2D = $POIs
 @onready var town: Node2D = $Town
 
@@ -44,12 +44,12 @@ func _draw() -> void:
 		draw_line(connection[0].position, connection[1].position, Color.PINK, line_width, false)
 	for connection in attempted_connections:
 		draw_line(connection[0].position, connection[1].position, Color.BLUE, line_width, false)
-	
-	
+
+
 func _process(_delta: float) -> void:
 	queue_redraw()
-	
-	
+
+
 func generate_town() -> void:
 	connections.clear()
 	for child in town.get_children():
@@ -60,7 +60,7 @@ func generate_town() -> void:
 	new_town.owner = get_tree().edited_scene_root
 	new_town.position.x = randi_range(bounds.position.x, bounds.end.x)
 	new_town.position.y = randi_range(bounds.position.y, bounds.end.y)
-	
+
 func generate_pois() -> void:
 	##TODO: Some method of overlap prevention
 	connections.clear()
@@ -99,7 +99,7 @@ func generate_pois() -> void:
 		used_coords.append(new_hash)
 		new_marker.position = new_coords
 		new_marker.name = str(new_marker.position)
-	## Poisson 
+	## Poisson
 	#var min_dist : = repel_radius
 	#var max_dist : = repel_radius * 6
 	#var break_counter : = 12
@@ -109,7 +109,7 @@ func generate_pois() -> void:
 	#var points : = []
 	#var used_points : = []
 
-		
+
 #func connect_pois() -> void:
 	###BUG: Naive approach
 	#connections.clear()
@@ -117,12 +117,12 @@ func generate_pois() -> void:
 		#var num_of_connects: = randi_range(5,5)
 		#var other_pois : = pois.get_children().filter(func(a): return a != poi && not connections.has([a, poi]) && not connections.has([poi, a]))
 		#other_pois.append(town.get_child(0))
-		#other_pois.sort_custom(func(a,b): 
+		#other_pois.sort_custom(func(a,b):
 			#return poi.position.distance_to(a.position) < poi.position.distance_to(b.position)
 		#)
 		#for _i in num_of_connects:
 			#connections.append([poi, other_pois.pop_front()])
-			
+
 
 func clear():
 	connections.clear()
@@ -139,7 +139,7 @@ func repel_pois():
 			if connection[0].position.distance_to(connection[1].position) < repel_radius:
 				impulse += connection[0].position.direction_to(connection[1].position) * repel_radius
 		poi.position += impulse
-		
+
 func prune_connections():
 	connections.clear()
 	var unvisited_nodes : = pois.get_children()
@@ -149,10 +149,10 @@ func prune_connections():
 	# Create a guranteed path through the nodes, Primm algo
 	while unvisited_nodes.size() and break_counter > 0:
 		break_counter -= 1
-		
+
 		var min_val : = INF
 		var new_connection : Array
-		for v_node in visited_nodes: 
+		for v_node in visited_nodes:
 			for uv_node in unvisited_nodes:
 				var dist : int = v_node.position.distance_to(uv_node.position)
 				if dist < min_val and not new_connections.has([v_node, uv_node]): #and randf() < tree_chance:
@@ -161,9 +161,9 @@ func prune_connections():
 		visited_nodes.append(new_connection[1])
 		unvisited_nodes.erase(new_connection[1])
 		new_connections.append(new_connection)
-		
+
 	core_route = new_connections.duplicate()
-	
+
 	## Create MST for each node of given size
 	var mst_size : = randi_range(mst_range.x, mst_range.y)
 	var nodes : = pois.get_children()
@@ -175,15 +175,15 @@ func prune_connections():
 		var min_val : = INF
 		var new_connection : Array
 		for _i in mst_size:
-			for v_node in _visited_nodes: 
+			for v_node in _visited_nodes:
 				for uv_node in _unvisited_nodes:
 					if v_node == uv_node:
 						continue
 					var dist : int = v_node.position.distance_to(uv_node.position)
-					if dist < min_val and randf() < tree_chance and not new_connections.has([v_node, uv_node]): 
+					if dist < min_val and randf() < tree_chance and not new_connections.has([v_node, uv_node]):
 						min_val = dist
 						new_connection = [v_node, uv_node]
-			
+
 			visited_nodes.append(new_connection[1])
 			unvisited_nodes.erase(new_connection[1])
 			new_connections.append(new_connection)
@@ -197,16 +197,16 @@ func prune_connections():
 			dedup.append(connection)
 	connections = dedup
 	#debug_print_nodes()
-	
+
 func create_bridge():
 	## Connect leaf nodes with only one connection
 	attempted_connections.clear()
 	var nodes : = pois.get_children()
-	var leaf_nodes : = nodes.filter(func(a): 
+	var leaf_nodes : = nodes.filter(func(a):
 		#debug_print_nodes()
 		return get_connections_to(a).size() <= 3)
 	var town_node : = town.get_child(0)
-	leaf_nodes.sort_custom(func(a,b): 
+	leaf_nodes.sort_custom(func(a,b):
 		return a.global_position.distance_to(town_node.global_position) > \
 		b.global_position.distance_to(town_node.global_position)
 	)
@@ -232,11 +232,11 @@ func create_bridge():
 				print_debug("Bridge created ", bridge)
 				return
 		print_debug("No bridge created")
-		
+
 	#nodes.sort_custom(func(a,b):
 		#return get_connections_to(a).size() < get_connections_to(b).size()
 	#)
-	
+
 	## Create a bridge
 	#attempted_connections.clear()
 	#var nodes : = pois.get_children()
@@ -264,7 +264,7 @@ func create_bridge():
 			#print_debug("Bridge created ", bridge)
 			#return
 	#print_debug("No bridge created")
-	
+
 func debug_print_nodes():
 	for a in pois.get_children():
 		var self_count : = 0
@@ -281,8 +281,7 @@ func debug_print_nodes():
 		#print(get_connections_to(a).size(),"\n")
 		print("\nMarker: {0}\nSelf Count: {1}\nConnections: {2}\n".format(
 			[a, self_count, get_connections_to(a).size()]))
-		
-			
+
+
 func get_connections_to(node) -> Array:
 	return connections.filter(func(connection : Array): return connection.has(node))
-	
