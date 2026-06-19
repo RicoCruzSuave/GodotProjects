@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://dycuyu7jfv7lo"]
+
+[ext_resource type="Script" uid="uid://dw68u611vohk0" path="res://Misc/IdleTest/character.gd" id="1_8ragn"]
+[ext_resource type="Script" uid="uid://4gu5nq4t0vve" path="res://Misc/IdleTest/Scripts/Components/attack.gd" id="2_pgs2o"]
+[ext_resource type="Script" uid="uid://c5w6vrkegwf8e" path="res://Misc/IdleTest/Scripts/Components/movement.gd" id="3_m037o"]
+[ext_resource type="Script" uid="uid://bgh33adiel2bn" path="res://Misc/IdleTest/Scripts/Components/animation_char.gd" id="4_xbwpa"]
+[ext_resource type="SpriteFrames" uid="uid://cgr0587meqvda" path="res://Misc/IdleTest/Assets/Characters/Minifantasy_TrueHeroes_v1.0/Minifantasy_TrueHeroes_Assets/Barbarian/barbarian_sprite_frames.tres" id="5_v8l6n"]
+[ext_resource type="SpriteFrames" uid="uid://cr8do3sp037va" path="res://Misc/IdleTest/Assets/Characters/Minifantasy_TrueHeroes_v1.0/Minifantasy_TrueHeroes_Assets/Barbarian/barbarian_shadow_sprite_frames.tres" id="6_gc24w"]
+[ext_resource type="Script" uid="uid://bfcddmhih5ctq" path="res://Misc/IdleTest/Scripts/Components/state_machine.gd" id="7_3jqlb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mjsms"]
+radius = 4.1231055
+
+[node name="Entity" type="CharacterBody2D" unique_id=928190755]
+script = ExtResource("1_8ragn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2103818595]
+position = Vector2(1, -1)
+shape = SubResource("CircleShape2D_mjsms")
+
+[node name="Facing" type="Node2D" parent="." unique_id=1408269623]
+
+[node name="Attack" type="Node2D" parent="Facing" unique_id=1571283072]
+position = Vector2(16, 0)
+script = ExtResource("2_pgs2o")
+
+[node name="Movement" type="Node2D" parent="." unique_id=96583363]
+script = ExtResource("3_m037o")
+top_speed = 256.0
+accel = 3.0
+
+[node name="Visuals" type="Node2D" parent="." unique_id=1184574987]
+script = ExtResource("4_xbwpa")
+
+[node name="Body" type="AnimatedSprite2D" parent="Visuals" unique_id=2121862569]
+sprite_frames = ExtResource("5_v8l6n")
+animation = &"attack_forward_left"
+frame = 5
+frame_progress = 1.0
+
+[node name="Shadow" type="AnimatedSprite2D" parent="Visuals" unique_id=23782783]
+sprite_frames = ExtResource("6_gc24w")
+animation = &"jump_forward_left"
+
+[node name="StateMachine" type="Node2D" parent="." unique_id=2024596812]
+script = ExtResource("7_3jqlb")
+STATES = Array[String](["IDLE", "ATTACK", "WALK", "DIE"])
+debug = true
+
+[node name="Label" type="Label" parent="StateMachine" unique_id=702870273]
+offset_left = -19.0
+offset_top = -32.0
+offset_right = 21.0
+offset_bottom = -9.0
+theme_override_font_sizes/font_size = 8
+text = "IDLEfalse"
+
+[node name="IDLE" type="Node2D" parent="StateMachine" unique_id=1645260579]
+
+[node name="ATTACK" type="Node2D" parent="StateMachine" unique_id=1306127931]
+
+[node name="WALK" type="Node2D" parent="StateMachine" unique_id=1921929575]
+
+[node name="DIE" type="Node2D" parent="StateMachine" unique_id=149239288]
+
+[node name="AI" type="Node2D" parent="." unique_id=540619713]
+
+[node name="Goal" type="Node2D" parent="AI" unique_id=173378694]
+
+[node name="Target" type="Node2D" parent="AI" unique_id=914992217]
