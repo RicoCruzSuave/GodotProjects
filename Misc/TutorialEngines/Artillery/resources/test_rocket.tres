@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TESpellData" format=3 uid="uid://bgmyc8cjcky3c"]
+
+[ext_resource type="Script" uid="uid://1fg8usv0gdq0" path="res://Misc/TutorialEngines/Artillery/resources/spell_data.gd" id="1_skgjh"]
+
+[resource]
+script = ExtResource("1_skgjh")
+spell_name = "Rocket"
+metadata/_custom_type_script = "uid://1fg8usv0gdq0"

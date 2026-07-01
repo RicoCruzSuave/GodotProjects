@@ -1,0 +1,71 @@
+[gd_scene format=4 uid="uid://ojfcx5t6ow12"]
+
+[ext_resource type="TileSet" uid="uid://7lwagfnu7iye" path="res://tileset_proto_16.tres" id="1_35620"]
+[ext_resource type="PackedScene" uid="uid://pehwd54cmc6r" path="res://Misc/TutorialEngines/Artillery/player_entity.tscn" id="2_gp3g0"]
+
+[sub_resource type="Gradient" id="Gradient_gp3g0"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+colors = PackedColorArray(0.19, 0.19, 0.19, 1, 0.056291588, 0.056291603, 0.056291573, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_g4e01"]
+noise_type = 3
+fractal_octaves = 8
+fractal_lacunarity = 1.63
+fractal_gain = 0.69
+domain_warp_type = 1
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8liq5"]
+width = 240
+height = 134
+noise = SubResource("FastNoiseLite_g4e01")
+color_ramp = SubResource("Gradient_gp3g0")
+in_3d_space = true
+normalize = false
+
+[sub_resource type="GDScript" id="GDScript_is71f"]
+script/source = "extends Sprite2D
+
+@export var scroll_speed : = 10.0
+@export var warp_speed : = 3.0
+
+func _process(delta: float) -> void:
+	#for i in range(10):
+		texture.noise.offset.x += delta * scroll_speed
+		texture.noise.offset.z += delta * warp_speed
+		queue_redraw()
+		NoiseTexture2D
+"
+
+[node name="TestMap" type="Node2D" unique_id=2108513055]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1145748380]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = SubResource("NoiseTexture2D_8liq5")
+centered = false
+script = SubResource("GDScript_is71f")
+
+[node name="CollisionLayer" type="TileMapLayer" parent="." unique_id=1757337483]
+tile_map_data = PackedByteArray("AAABABYAAAAAAAAAAAACABYAAAAAAAAAAAADABYAAAAAAAAAAAAEABYAAAAAAAAAAAAFABYAAAAAAAAAAAAGABYAAAAAAAAAAAAHABYAAAAAAAAAAAAIABYAAAAAAAAAAAAJABYAAAAAAAAAAAAKABYAAAAAAAAAAAALABYAAAAAAAAAAAAMABYAAAAAAAAAAAANABYAAAAAAAAAAAAOABYAAAAAAAAAAAAPABYAAAAAAAAAAAAQABYAAAAAAAAAAAARABYAAAAAAAAAAAASABYAAAAAAAAAAAATABYAAAAAAAAAAAAUABYAAAAAAAAAAAAVABYAAAAAAAAAAAAWABYAAAAAAAAAAAAXABYAAAAAAAAAAAAlABYAAAAAAAAAAAAmABYAAAAAAAAAAAAnABYAAAAAAAAAAAAoABYAAAAAAAAAAAApABYAAAAAAAAAAAAqABYAAAAAAAAAAAArABYAAAAAAAAAAAAsABYAAAAAAAAAAAAtABYAAAAAAAAAAAAuABYAAAAAAAAAAAAvABYAAAAAAAAAAAAwABYAAAAAAAAAAAAxABYAAAAAAAAAAAAyABYAAAAAAAAAAAAzABYAAAAAAAAAAAA0ABYAAAAAAAAAAAA1ABYAAAAAAAAAAAA2ABYAAAAAAAAAAAA3ABYAAAAAAAAAAAA4ABYAAAAAAAAAAAA6ABYAAAAAAAAAAAA5ABYAAAAAAAAAAAA=")
+tile_set = ExtResource("1_35620")
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=869564717]
+
+[node name="SpawnA" type="Marker2D" parent="SpawnPoints" unique_id=721035404]
+position = Vector2(192, 336)
+
+[node name="SpawnB" type="Marker2D" parent="SpawnPoints" unique_id=1983379698]
+position = Vector2(768, 336)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=460969640]
+position = Vector2(480, 272)
+
+[node name="Entity" parent="." unique_id=190145554 instance=ExtResource("2_gp3g0")]
+position = Vector2(192, 336)
+
+[node name="Entity2" parent="." unique_id=688380032 instance=ExtResource("2_gp3g0")]
+position = Vector2(768, 336)
+is_facing_right = false

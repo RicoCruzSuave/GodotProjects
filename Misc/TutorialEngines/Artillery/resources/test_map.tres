@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="TEMapData" format=3 uid="uid://d1xc3q4mmttb3"]
+
+[ext_resource type="Script" uid="uid://daob16bs8yfs8" path="res://Misc/TutorialEngines/Artillery/resources/map_data.gd" id="1_147dg"]
+[ext_resource type="PackedScene" uid="uid://ojfcx5t6ow12" path="res://Misc/TutorialEngines/Artillery/test_map.tscn" id="1_ah2my"]
+
+[resource]
+script = ExtResource("1_147dg")
+map_scene = ExtResource("1_ah2my")
+metadata/_custom_type_script = "uid://daob16bs8yfs8"

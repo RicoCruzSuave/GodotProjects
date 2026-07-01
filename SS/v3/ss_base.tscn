@@ -1,0 +1,442 @@
+[gd_scene format=3 uid="uid://cl5u27438nice"]
+
+[ext_resource type="Texture2D" uid="uid://d2syxekk7sox3" path="res://icon.svg" id="1_ejqgo"]
+
+[sub_resource type="GDScript" id="GDScript_ejqgo"]
+script/source = "extends Camera2D
+
+func _process(_delta: float) -> void:
+	var focus : = get_viewport().gui_get_focus_owner()
+	if focus:
+		global_position = focus.global_position.snapped(Vector2(960,540))
+		if Input.is_action_just_pressed(\"ui_accept\"):
+			print(focus.global_position)
+			print(global_position)
+"
+
+[node name="Main" type="Node2D" unique_id=2108569154]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=737474752]
+position_smoothing_enabled = true
+script = SubResource("GDScript_ejqgo")
+
+[node name="Screens" type="Control" parent="." unique_id=1307379471]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Control" parent="Screens" unique_id=2098357732]
+layout_mode = 1
+anchor_left = -12.0
+anchor_top = -6.75
+anchor_right = 12.0
+anchor_bottom = 6.75
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Screens/Title" unique_id=335139372]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Screens/Title" unique_id=935267124]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.36875
+anchor_top = 0.30555555
+anchor_right = 0.63704175
+anchor_bottom = 0.70881486
+offset_right = 0.43997192
+offset_bottom = 0.23999023
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="Screens/Title/VBoxContainer" unique_id=1802151497]
+layout_mode = 2
+text = "Tower"
+
+[node name="Options" type="Control" parent="Screens" unique_id=1538696203]
+layout_mode = 1
+anchor_left = -35.95
+anchor_top = -6.75
+anchor_right = -11.95
+anchor_bottom = 6.75
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Screens/Options" unique_id=2045174766]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/Options" unique_id=537516291]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.14791666
+anchor_top = 0.083333336
+anchor_right = 0.8226667
+anchor_bottom = 0.89062965
+offset_right = 0.23999786
+offset_bottom = 0.059993744
+metadata/_edit_use_anchors_ = true
+
+[node name="OptionNames" type="VBoxContainer" parent="Screens/Options/HBoxContainer" unique_id=1937897791]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Screens/Options/HBoxContainer/OptionNames" unique_id=200443041]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Volume"
+
+[node name="Label2" type="Label" parent="Screens/Options/HBoxContainer/OptionNames" unique_id=1421423616]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Theme"
+
+[node name="Label3" type="Label" parent="Screens/Options/HBoxContainer/OptionNames" unique_id=400617064]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Screen shake"
+
+[node name="OptionValues" type="VBoxContainer" parent="Screens/Options/HBoxContainer" unique_id=945647114]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSlider" type="HSlider" parent="Screens/Options/HBoxContainer/OptionValues" unique_id=1665423092]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="OptionButton" type="OptionButton" parent="Screens/Options/HBoxContainer/OptionValues" unique_id=124806531]
+layout_mode = 2
+size_flags_vertical = 6
+item_count = 2
+popup/item_0/text = "Theme1"
+popup/item_0/id = 0
+popup/item_1/text = "Theme2"
+popup/item_1/id = 1
+
+[node name="CheckBox" type="CheckBox" parent="Screens/Options/HBoxContainer/OptionValues" unique_id=1485865439]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Training" type="Control" parent="Screens" unique_id=236814344]
+layout_mode = 1
+anchor_left = 12.0
+anchor_top = -6.75
+anchor_right = 36.0
+anchor_bottom = 6.75
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Screens/Training" unique_id=940813858]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Screens/Training" unique_id=273332862]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25208333
+anchor_top = 0.19074073
+anchor_right = 0.744
+anchor_bottom = 0.707
+offset_right = -0.23999023
+offset_bottom = 0.22000122
+stretch = true
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="Screens/Training/SubViewportContainer" unique_id=257856161]
+size = Vector2i(472, 279)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Screens/Training" unique_id=785076850]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.047916666
+anchor_top = 0.1037037
+anchor_right = 0.24512501
+anchor_bottom = 0.8277037
+offset_right = -0.3200035
+offset_bottom = 0.040000916
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="Screens/Training/VBoxContainer" unique_id=645230510]
+layout_mode = 2
+text = "Spell Set 1"
+
+[node name="Button2" type="Button" parent="Screens/Training/VBoxContainer" unique_id=1861832299]
+layout_mode = 2
+text = "Spell Set 2"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Screens/Training" unique_id=1383994097]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7583333
+anchor_top = 0.098148145
+anchor_right = 0.9555417
+anchor_bottom = 0.82214814
+offset_right = -0.3200035
+offset_bottom = 0.040000916
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="Screens/Training/VBoxContainer2" unique_id=295432702]
+layout_mode = 2
+text = "Spell Set 1"
+
+[node name="Button2" type="Button" parent="Screens/Training/VBoxContainer2" unique_id=634719378]
+layout_mode = 2
+text = "Spell Set 2"
+
+[node name="Button" type="Button" parent="Screens/Training" unique_id=1244666843]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.29270834
+anchor_top = 0.7259259
+anchor_right = 0.70770836
+anchor_bottom = 0.8131852
+offset_right = -0.4000244
+offset_bottom = -0.120025635
+text = "Run Test"
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/Training" unique_id=832468899]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.31666666
+anchor_top = 0.044444446
+anchor_right = 0.6746667
+anchor_bottom = 0.119
+offset_right = 0.3199768
+offset_bottom = -0.26000214
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="Screens/Training/HBoxContainer" unique_id=1179415203]
+layout_mode = 2
+size_flags_horizontal = 6
+text = ">"
+
+[node name="Button2" type="Button" parent="Screens/Training/HBoxContainer" unique_id=1394642508]
+layout_mode = 2
+size_flags_horizontal = 6
+text = ">>"
+
+[node name="Button3" type="Button" parent="Screens/Training/HBoxContainer" unique_id=387360365]
+layout_mode = 2
+size_flags_horizontal = 6
+text = ">>>"
+
+[node name="Battle" type="Control" parent="Screens" unique_id=1709525682]
+layout_mode = 1
+anchor_left = -12.0
+anchor_top = 6.75
+anchor_right = 12.0
+anchor_bottom = 20.25
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Screens/Battle" unique_id=1552246005]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StageSelection" type="GridContainer" parent="Screens/Battle" unique_id=2107087634]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.134375
+anchor_top = 0.17592593
+anchor_right = 0.67220837
+anchor_bottom = 0.76288885
+offset_right = -0.32000732
+offset_bottom = 0.040008545
+columns = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureButton" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=1946809129]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton2" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=2014637894]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton3" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=959617831]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton4" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=1417185730]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton5" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=129222905]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton6" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=694690678]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton7" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=90450748]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="TextureButton8" type="TextureButton" parent="Screens/Battle/StageSelection" unique_id=1803362042]
+layout_mode = 2
+texture_normal = ExtResource("1_ejqgo")
+
+[node name="CustomOptions" type="VBoxContainer" parent="Screens/Battle" unique_id=1683491465]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.70208335
+anchor_top = 0.16111113
+anchor_right = 0.9415834
+anchor_bottom = 0.78474075
+offset_right = 29.079956
+offset_bottom = 0.23999023
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/Battle/CustomOptions" unique_id=1775555560]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Screens/Battle/CustomOptions/HBoxContainer" unique_id=731540846]
+layout_mode = 2
+text = "Starting Stamina"
+
+[node name="SpinBox" type="SpinBox" parent="Screens/Battle/CustomOptions/HBoxContainer" unique_id=1326265371]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Screens/Battle/CustomOptions" unique_id=1001616350]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Screens/Battle/CustomOptions/HBoxContainer2" unique_id=161897354]
+layout_mode = 2
+text = "Time Limit"
+
+[node name="SpinBox" type="SpinBox" parent="Screens/Battle/CustomOptions/HBoxContainer2" unique_id=848063614]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Screens/Battle/CustomOptions" unique_id=2071274857]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Screens/Battle/CustomOptions/HBoxContainer3" unique_id=36420550]
+layout_mode = 2
+text = "Allow Spell Banning"
+
+[node name="CheckBox" type="CheckBox" parent="Screens/Battle/CustomOptions/HBoxContainer3" unique_id=3167190]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Screens/Battle/CustomOptions" unique_id=537055221]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Screens/Battle/CustomOptions/HBoxContainer4" unique_id=555929060]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Seed"
+
+[node name="LineEdit" type="LineEdit" parent="Screens/Battle/CustomOptions/HBoxContainer4" unique_id=1613624667]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Screens/Battle/CustomOptions" unique_id=902890716]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Screens/Battle/CustomOptions/HBoxContainer5" unique_id=541602569]
+layout_mode = 2
+text = "Banned Spells"
+
+[node name="MenuButton" type="MenuButton" parent="Screens/Battle/CustomOptions/HBoxContainer5" unique_id=1833192797]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add Spells"
+alignment = 2
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Screens/Battle/CustomOptions" unique_id=1279091669]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Screens/Battle/CustomOptions/HBoxContainer6" unique_id=1046648144]
+layout_mode = 2
+text = "Match Continuation"
+
+[node name="CheckBox" type="CheckBox" parent="Screens/Battle/CustomOptions/HBoxContainer6" unique_id=898263845]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="Button" type="Button" parent="Screens/Battle" unique_id=1100405906]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.76770836
+anchor_top = 0.87777776
+anchor_right = 0.9265001
+anchor_bottom = 0.9274445
+offset_right = -0.44006348
+offset_bottom = 0.17996216
+text = "Start Battle"
+metadata/_edit_use_anchors_ = true
+
+[node name="Tower" type="Control" parent="Screens" unique_id=322952343]
+layout_mode = 1
+anchor_left = -12.0
+anchor_top = -20.25
+anchor_right = 12.0
+anchor_bottom = -6.75
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Screens/Tower" unique_id=2058420211]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Screens/Tower" unique_id=865756159]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.17604166
+anchor_top = 0.24814814
+anchor_right = 0.82941663
+anchor_bottom = 0.7348889
+offset_right = -0.23999023
+offset_bottom = 0.1599884
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="Screens/Tower/HBoxContainer" unique_id=1899787386]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save File 1"
+
+[node name="Button2" type="Button" parent="Screens/Tower/HBoxContainer" unique_id=810466594]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save File 2"
+
+[node name="Button3" type="Button" parent="Screens/Tower/HBoxContainer" unique_id=646309985]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save File 3"
